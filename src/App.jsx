@@ -1509,6 +1509,7 @@ function App() {
       mode: signupType === 'CHILD' ? 'PERSONAL' : signupType,
       firstName: formData.firstName,
       lastName: formData.lastName,
+      phoneNumber: formData.mobileNumber,
       dob: formData.dob
     };
 
@@ -1673,7 +1674,8 @@ function App() {
     let payload = {
       username: finalUsername,
       password: formData.password,
-      mode: type
+      mode: type,
+      phoneNumber: formData.mobileNumber
     };
 
     if (type === 'BUSINESS') {
@@ -4067,7 +4069,7 @@ function App() {
             <div className="auth-step-merged">
               {mobileOtpStep === 'MOBILE' ? (
                 <form onSubmit={handleSendMobileOtp}>
-                  <div className="input-group">
+                  <div className="auth-input-group" style={{ textAlign: 'left' }}>
                     <label>Mobile Number</label>
                     <PhoneInput
                       country={'in'}
@@ -4105,7 +4107,7 @@ function App() {
                 </form>
               ) : (
                 <form onSubmit={handleVerifyMobileOtp}>
-                  <div className="input-group">
+                  <div className="auth-input-group" style={{ textAlign: 'left' }}>
                     <label>Enter the 6-digit OTP</label>
                     <input
                       type="text"
