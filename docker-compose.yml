@@ -1,0 +1,7 @@
+services:
+  b2auth-fe:
+    image: ghcr.io/betasoftnet-png/b2auth-fe:latest
+    container_name: b2auth-fe
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3103:80"
