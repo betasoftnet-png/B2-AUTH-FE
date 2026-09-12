@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import {
   LayoutDashboard, Mail, ShieldCheck, Settings, Activity, LogOut,
-  Smartphone, Monitor, Tablet, CheckCircle, AlertCircle,
+  Smartphone, Monitor, Tablet, CheckCircle, AlertCircle, XCircle, Search, Building,
+  Minus, FileText, Download, Briefcase, FileSignature, UploadCloud, UserPlus, Info,
   Trash2, Edit3, Save, Plus, ChevronRight, ChevronDown, User, Phone,
-  Globe, Clock, MapPin, Briefcase,
+  Globe, Clock, MapPin,
   LockIcon,
   LockOpenIcon,
   Check,
@@ -244,8 +247,10 @@ function App() {
     businessName: '', businessType: '', registrationNumber: '',
     ownerFirstName: '', ownerLastName: '', domain: '', dob: '',
     parentName: '', parentEmail: '', parentPhone: '', parentOtp: '',
+    mobileNumber: '', mobileOtp: ''
   });
 
+  const [mobileOtpStep, setMobileOtpStep] = useState('MOBILE');
   const [tempToken, setTempToken] = useState('');
   const [accessToken, setAccessToken] = useState('');
   const [userEmails, setUserEmails] = useState([]);
@@ -1582,7 +1587,62 @@ function App() {
     if (tempToken) {
       handleCreateMailbox(e);
     } else {
+      setView('signup-mobile-verify');
+    }
+  };
+
+  const handleSendMobileOtp = async (e) => {
+    e.preventDefault();
+    if (!formData.mobileNumber) {
+      setError('Mobile number is required');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    try {
+      const response = await axios.post(`${API_BASE}/auth/send-mobile-otp`, { mobile: formData.mobileNumber });
+      
+      if (response.data && response.data.success === false) {
+          setError(response.data.message || 'Failed to send OTP');
+          setLoading(false);
+          return;
+      }
+
+      setMobileOtpStep('OTP');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to send OTP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyMobileOtp = async (e) => {
+    e.preventDefault();
+    if (!formData.mobileOtp) {
+      setError('Please enter the OTP');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    try {
+      const response = await axios.post(`${API_BASE}/auth/verify-mobile-otp`, {
+          mobile: formData.mobileNumber,
+          otp: formData.mobileOtp
+      });
+
+      if (response.data && response.data.success === false) {
+          setError(response.data.message || 'Invalid OTP');
+          setLoading(false);
+          return;
+      }
+      
       setView('signup-password-setup');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid OTP');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -3028,6 +3088,7 @@ function App() {
              view === 'signup-parent-verify' ? 'Parent verification details' :
              view === 'signup-business' ? 'Enter business details' :
              view === 'signup-mail' ? 'Choose your email address' :
+             view === 'signup-mobile-verify' ? 'Verify your mobile number' :
              view === 'signup-password-setup' ? 'Choose a strong password' :
              view.startsWith('signup') ? 'Create your account' :
              view.startsWith('forgot-password') ? 'Verify your identity' : 'Use your BETA Account'}
@@ -3999,6 +4060,73 @@ function App() {
                 </button>
               </div>
             </form>
+          )}
+
+          {view === 'signup-mobile-verify' && (
+            <div className="auth-step-merged">
+              {mobileOtpStep === 'MOBILE' ? (
+                <form onSubmit={handleSendMobileOtp}>
+                  <div className="input-group">
+                    <label>Mobile Number</label>
+                    <PhoneInput
+                      country={'in'}
+                      value={formData.mobileNumber}
+                      onChange={(phone) => setFormData(prev => ({ ...prev, mobileNumber: '+' + phone }))}
+                      enableSearch={true}
+                      containerStyle={{ width: '100%', marginTop: '8px' }}
+                      inputStyle={{
+                        width: '100%',
+                        padding: '12px 12px 12px 50px',
+                        background: 'var(--surface)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '12px',
+                        fontSize: '16px',
+                        color: 'var(--text-main)',
+                        height: '48px'
+                      }}
+                      buttonStyle={{
+                        background: 'transparent',
+                        border: 'none',
+                        left: '4px'
+                      }}
+                      dropdownStyle={{
+                        background: 'var(--surface)',
+                        color: 'var(--text-main)'
+                      }}
+                    />
+                  </div>
+                  <div className="btn-group" style={{ marginTop: '24px' }}>
+                    <button type="button" className="text-btn" onClick={() => setView('signup-mail')}>Back</button>
+                    <button type="submit" className="primary-btn" disabled={loading}>
+                      {loading ? 'Sending...' : 'Send OTP'}
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <form onSubmit={handleVerifyMobileOtp}>
+                  <div className="input-group">
+                    <label>Enter the 6-digit OTP</label>
+                    <input
+                      type="text"
+                      value={formData.mobileOtp || ''}
+                      onChange={(e) => setFormData({ ...formData, mobileOtp: e.target.value })}
+                      required
+                      placeholder="123456"
+                      style={{ textAlign: 'center', letterSpacing: '0.2em', fontSize: '1.25rem' }}
+                    />
+                    <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '12px', textAlign: 'center' }}>
+                      Code sent to {formData.mobileNumber}. <button type="button" onClick={() => setMobileOtpStep('MOBILE')} style={{ color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Change number</button>
+                    </p>
+                  </div>
+                  <div className="btn-group" style={{ marginTop: '24px' }}>
+                    <button type="button" className="text-btn" onClick={() => setMobileOtpStep('MOBILE')}>Back</button>
+                    <button type="submit" className="primary-btn" disabled={loading}>
+                      {loading ? 'Verifying...' : 'Verify OTP'}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
           )}
 
           {view === 'signup-password-setup' && (
