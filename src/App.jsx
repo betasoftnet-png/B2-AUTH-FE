@@ -4094,7 +4094,8 @@ function App() {
                       }}
                       dropdownStyle={{
                         background: 'var(--surface)',
-                        color: 'var(--text-main)'
+                        color: 'var(--text-main)',
+                        zIndex: 100
                       }}
                     />
                   </div>
@@ -4245,17 +4246,17 @@ function App() {
                   <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
                     A verification code was sent to your recovery method. Enter it below to continue.
                   </p>
-                  <div className="login-input-wrapper">
+                  <div className="auth-input-group" style={{ textAlign: 'left' }}>
                     <input
                       type="text"
                       name="otp"
-                      placeholder="Enter 6-digit code"
+                      placeholder="123456"
                       value={formData.otp}
                       onChange={handleInputChange}
                       required
                       autoFocus
-                      className="otp-input-elite"
                       maxLength="6"
+                      style={{ textAlign: 'center', letterSpacing: '0.2em', fontSize: '1.25rem' }}
                     />
                   </div>
                 </div>
