@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import PhoneInput from 'react-phone-input-2';
+import PhoneInputLib from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+const PhoneInput = PhoneInputLib.default || PhoneInputLib;
 import {
   LayoutDashboard, Mail, ShieldCheck, Settings, Activity, LogOut,
   Smartphone, Monitor, Tablet, CheckCircle, AlertCircle, XCircle, Search, Building,
