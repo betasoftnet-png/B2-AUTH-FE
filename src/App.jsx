@@ -684,7 +684,7 @@ function App() {
   };
 
   const handleMakePrimary = async (emailId) => {
-    if (profileData?.accountType === 'PERSONAL') {
+    if (profileData?.accountType === 'PUBLIC' || profileData?.accountType === 'PERSONAL') {
       setLoading(true);
       try {
         const res = await axios.post(
