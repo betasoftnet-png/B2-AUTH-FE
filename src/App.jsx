@@ -471,7 +471,7 @@ function App() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const refId = params.get('reference_id');
+    const refId = params.get('reference_id') || params.get('verification_id');
     const cid = params.get('client_id');
     const ruri = params.get('redirect_uri');
 
@@ -683,9 +683,26 @@ function App() {
     }
   };
 
-  const handleMakePrimary = (emailId) => {
-    setPanData({ panNumber: '', panName: '', emailId });
-    setShowPanModal(true);
+  const handleMakePrimary = async (emailId) => {
+    if (profileData?.accountType === 'PERSONAL') {
+      setLoading(true);
+      try {
+        const res = await axios.post(
+          `${API_BASE}/verification/initiate/${emailId}`,
+          {},
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+        if (res.data.success && res.data.data.redirectUrl) {
+          window.location.href = res.data.data.redirectUrl;
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to initiate verification');
+        setLoading(false);
+      }
+    } else {
+      setPanData({ panNumber: '', panName: '', emailId });
+      setShowPanModal(true);
+    }
   };
 
   const handleVerifyPan = async (e) => {
