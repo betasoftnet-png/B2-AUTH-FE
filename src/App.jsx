@@ -3039,13 +3039,15 @@ function App() {
                     Please select your business type to proceed with verification.
                   </p>
                   <button 
-                    className="auth-btn-primary" 
+                    className="action-btn primary-solid" 
+                    style={{ width: '100%' }}
                     onClick={() => handleBusinessTypeSelect('Sole Proprietorship')}
                   >
                     Sole Proprietorship
                   </button>
                   <button 
-                    className="auth-btn-outline" 
+                    className="action-btn secondary" 
+                    style={{ width: '100%' }}
                     onClick={() => handleBusinessTypeSelect('Organization')}
                   >
                     Organization
@@ -3082,11 +3084,11 @@ function App() {
                   {error && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{error}</div>}
                   <button
                     type="submit"
-                    className="auth-btn-primary"
+                    className="action-btn primary-solid"
                     disabled={loading || !gstData.gstin}
                     style={{ marginTop: '16px', width: '100%' }}
                   >
-                    {loading ? <div className="spinner-small" /> : "Verify GSTIN"}
+                    {loading ? <RefreshCw className="spin" size={16} /> : "Verify GSTIN"}
                   </button>
                 </form>
               </div>
