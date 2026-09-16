@@ -309,6 +309,10 @@ function App() {
   const [setup2FACode, setSetup2FACode] = useState('');
   const [customAlert, setCustomAlert] = useState({ show: false, message: '', type: 'success' });
   const [showPanModal, setShowPanModal] = useState(false);
+  const [showBusinessTypeModal, setShowBusinessTypeModal] = useState(false);
+  const [showGstModal, setShowGstModal] = useState(false);
+  const [businessTypeData, setBusinessTypeData] = useState({ emailId: null });
+  const [gstData, setGstData] = useState({ gstin: '', emailId: null });
   const [panData, setPanData] = useState({ panNumber: '', panName: '', gstin: '', emailId: null });
   const topbarRightRef = useRef(null);
 
@@ -700,8 +704,8 @@ function App() {
         setLoading(false);
       }
     } else {
-      setPanData({ panNumber: '', panName: '', emailId });
-      setShowPanModal(true);
+      setBusinessTypeData({ emailId });
+      setShowBusinessTypeModal(true);
     }
   };
 
@@ -725,6 +729,39 @@ function App() {
       setLoading(false);
     }
   };
+
+  const handleBusinessTypeSelect = (type) => {
+    setShowBusinessTypeModal(false);
+    if (type === 'Sole Proprietorship') {
+      setGstData({ gstin: '', emailId: businessTypeData.emailId });
+      setShowGstModal(true);
+    } else {
+      setPanData({ panNumber: '', panName: '', gstin: '', emailId: businessTypeData.emailId });
+      setShowPanModal(true);
+    }
+  };
+
+  const handleVerifyGst = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await axios.post(
+        `${API_BASE}/verification/verify-gst/${gstData.emailId}`,
+        { gstin: gstData.gstin },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      if (res.data.success) {
+        setShowGstModal(false);
+        showAlert("GSTIN verified successfully. Email is now primary.");
+        fetchEmails(accessToken);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to verify GSTIN');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const fetchRecoveryInfo = async (token) => {
     try {
@@ -2987,6 +3024,75 @@ function App() {
             )}
           </AnimatePresence>
 
+          {/* Business Type Modal */}
+          {showBusinessTypeModal && (
+            <div className="auth-modal-overlay">
+              <div className="auth-modal-content animate-scale-in" style={{ maxWidth: "400px" }}>
+                <div className="auth-modal-header">
+                  <h3>Select Business Type</h3>
+                  <button className="auth-close-btn" onClick={() => setShowBusinessTypeModal(false)}>
+                    <X size={20} />
+                  </button>
+                </div>
+                <div className="auth-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                  <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+                    Please select your business type to proceed with verification.
+                  </p>
+                  <button 
+                    className="auth-btn-primary" 
+                    onClick={() => handleBusinessTypeSelect('Sole Proprietorship')}
+                  >
+                    Sole Proprietorship
+                  </button>
+                  <button 
+                    className="auth-btn-outline" 
+                    onClick={() => handleBusinessTypeSelect('Organization')}
+                  >
+                    Organization
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* GST Verification Modal */}
+          {showGstModal && (
+            <div className="auth-modal-overlay">
+              <div className="auth-modal-content animate-scale-in" style={{ maxWidth: "400px" }}>
+                <div className="auth-modal-header">
+                  <h3>Verify GSTIN</h3>
+                  <button className="auth-close-btn" onClick={() => setShowGstModal(false)}>
+                    <X size={20} />
+                  </button>
+                </div>
+                <form onSubmit={handleVerifyGst} className="auth-modal-body">
+                  <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                    Please verify your GSTIN to make this email your primary account.
+                  </p>
+                  <div className="auth-input-group">
+                    <label>GSTIN</label>
+                    <input
+                      type="text"
+                      placeholder="Enter active GSTIN"
+                      value={gstData.gstin}
+                      onChange={e => setGstData({ ...gstData, gstin: e.target.value.toUpperCase() })}
+                      required
+                    />
+                  </div>
+                  {error && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{error}</div>}
+                  <button
+                    type="submit"
+                    className="auth-btn-primary"
+                    disabled={loading || !gstData.gstin}
+                    style={{ marginTop: '16px', width: '100%' }}
+                  >
+                    {loading ? <div className="spinner-small" /> : "Verify GSTIN"}
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
           {/* PAN Verification Modal */}
           {showPanModal && (
             <div className="auth-modal-overlay">
@@ -3516,7 +3622,7 @@ function App() {
                       >
                         <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'var(--primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', fontSize: '20px', fontWeight: 'bold' }}>S</div>
                         <div>
-                          <h4 style={{ margin: '0 0 4px 0', fontSize: '16px' }}>Small Business</h4>
+                          <h4 style={{ margin: '0 0 4px 0', fontSize: '16px' }}>Sole Proprietorship</h4>
                           <p style={{ margin: '0', fontSize: '13px', color: 'var(--text-secondary)' }}>Verify instantly using your GSTIN</p>
                         </div>
                       </div>
@@ -3531,7 +3637,7 @@ function App() {
                       >
                         <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'var(--primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', fontSize: '20px', fontWeight: 'bold' }}>L</div>
                         <div>
-                          <h4 style={{ margin: '0 0 4px 0', fontSize: '16px' }}>Large Business</h4>
+                          <h4 style={{ margin: '0 0 4px 0', fontSize: '16px' }}>Organization</h4>
                           <p style={{ margin: '0', fontSize: '13px', color: 'var(--text-secondary)' }}>Verify via CIN, PAN, and GSTIN details</p>
                         </div>
                       </div>
