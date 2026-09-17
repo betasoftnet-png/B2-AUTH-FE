@@ -314,6 +314,8 @@ function App() {
   const [businessTypeData, setBusinessTypeData] = useState({ emailId: null });
   const [gstData, setGstData] = useState({ gstin: '', emailId: null });
   const [panData, setPanData] = useState({ panNumber: '', panName: '', gstin: '', emailId: null });
+  const [fetchedGstins, setFetchedGstins] = useState([]);
+  const [fetchingGstins, setFetchingGstins] = useState(false);
   const topbarRightRef = useRef(null);
 
   const showAlert = (message, type = 'success') => {
@@ -709,6 +711,32 @@ function App() {
     }
   };
 
+  const handleFetchGstins = async () => {
+    if (panData.panNumber.length !== 10) return;
+    setFetchingGstins(true);
+    setError('');
+    try {
+      const response = await fetch(`${apiBaseUrl}/verification/fetch-gstins?pan=${panData.panNumber}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (data.status === 'SUCCESS' && data.data && data.data.length > 0) {
+        setFetchedGstins(data.data);
+        if (data.data.length === 1) {
+          setPanData({ ...panData, gstin: data.data[0].gstin });
+        }
+      } else {
+        setError(data.message || 'No active GSTINs found for this PAN.');
+        setFetchedGstins([]);
+      }
+    } catch (err) {
+      setError('Failed to fetch GSTINs.');
+      setFetchedGstins([]);
+    } finally {
+      setFetchingGstins(false);
+    }
+  };
+
   const handleVerifyPan = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -737,6 +765,7 @@ function App() {
       setShowGstModal(true);
     } else {
       setPanData({ panNumber: '', panName: '', gstin: '', emailId: businessTypeData.emailId });
+      setFetchedGstins([]);
       setShowPanModal(true);
     }
   };
@@ -3123,15 +3152,38 @@ function App() {
                   
                   {profileData?.accountType === 'BUSINESS' ? (
                     <div className="auth-input-group">
-                      <label style={{ marginTop: '10px' }}>GSTIN</label>
-                      <input
-                        style={{ marginBottom: '10px' }}
-                        type="text"
-                        placeholder="Enter active GSTIN for this PAN"
-                        value={panData.gstin}
-                        onChange={e => setPanData({ ...panData, gstin: e.target.value.toUpperCase() })}
-                        required
-                      />
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end', marginBottom: '10px' }}>
+                        <div style={{ flex: 1 }}>
+                          <label style={{ marginTop: '10px' }}>Fetch GSTINs</label>
+                          <button
+                            type="button"
+                            className="action-btn outline full-width"
+                            onClick={handleFetchGstins}
+                            disabled={fetchingGstins || panData.panNumber.length !== 10}
+                          >
+                            {fetchingGstins ? <RefreshCw className="spin" size={16} /> : "Get GSTINs for PAN"}
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {fetchedGstins.length > 0 && (
+                        <>
+                          <label style={{ marginTop: '10px' }}>Select GSTIN</label>
+                          <select
+                            style={{ marginBottom: '10px', width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
+                            value={panData.gstin}
+                            onChange={e => setPanData({ ...panData, gstin: e.target.value })}
+                            required
+                          >
+                            <option value="">Select a GSTIN</option>
+                            {fetchedGstins.map(g => (
+                              <option key={g.gstin} value={g.gstin}>
+                                {g.gstin} - {g.stateJurisdiction || g.state || 'ACTIVE'}
+                              </option>
+                            ))}
+                          </select>
+                        </>
+                      )}
                     </div>
                   ) : (
                     <div className="auth-input-group">
