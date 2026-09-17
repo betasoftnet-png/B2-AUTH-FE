@@ -716,11 +716,11 @@ function App() {
     setFetchingGstins(true);
     setError('');
     try {
-      const response = await fetch(`${apiBaseUrl}/verification/fetch-gstins?pan=${panData.panNumber}`, {
+      const response = await fetch(`${API_BASE}/verification/fetch-gstins?pan=${panData.panNumber}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
-      if (data.status === 'SUCCESS' && data.data && data.data.length > 0) {
+      if (data.success && data.data && data.data.length > 0) {
         setFetchedGstins(data.data);
         if (data.data.length === 1) {
           setPanData({ ...panData, gstin: data.data[0].gstin });
