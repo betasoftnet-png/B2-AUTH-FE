@@ -3122,8 +3122,17 @@ function App() {
                   </div>
                   
                   {profileData?.accountType === 'BUSINESS' ? (
-                    // For Business/Organization, we only need PAN. The backend will fetch the GSTIN automatically.
-                    null
+                    <div className="auth-input-group">
+                      <label style={{ marginTop: '10px' }}>GSTIN</label>
+                      <input
+                        style={{ marginBottom: '10px' }}
+                        type="text"
+                        placeholder="Enter active GSTIN for this PAN"
+                        value={panData.gstin}
+                        onChange={e => setPanData({ ...panData, gstin: e.target.value.toUpperCase() })}
+                        required
+                      />
+                    </div>
                   ) : (
                     <div className="auth-input-group">
                       <label style={{ marginTop: '10px' }}>Name on PAN</label>
