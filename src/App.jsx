@@ -717,7 +717,7 @@ function App() {
     setError('');
     try {
       const response = await axios.get(`${API_BASE}/verification/fetch-gstins?pan=${panData.panNumber}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${accessToken}` }
       });
       
       const data = response.data;
