@@ -716,10 +716,11 @@ function App() {
     setFetchingGstins(true);
     setError('');
     try {
-      const response = await fetch(`${API_BASE}/verification/fetch-gstins?pan=${panData.panNumber}`, {
+      const response = await axios.get(`${API_BASE}/verification/fetch-gstins?pan=${panData.panNumber}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      const data = await response.json();
+      
+      const data = response.data;
       if (data.success && data.data && data.data.length > 0) {
         setFetchedGstins(data.data);
         if (data.data.length === 1) {
@@ -730,7 +731,8 @@ function App() {
         setFetchedGstins([]);
       }
     } catch (err) {
-      setError('Failed to fetch GSTINs.');
+      const errMsg = err.response?.data?.message || err.message || 'Unknown error';
+      setError(errMsg);
       setFetchedGstins([]);
     } finally {
       setFetchingGstins(false);
