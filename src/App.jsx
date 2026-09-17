@@ -230,6 +230,11 @@ function App() {
   const [view, setView] = useState(getInitialView); // login-email, login-password, signup-selection, signup-profile, signup-child, signup-business, signup-mail, dashboard, verifying, signup-vkyc
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [verifyPanResult, setVerifyPanResult] = useState('');
+  
+  // States for Business Signup GSTIN Fetch
+  const [signupFetchedGstins, setSignupFetchedGstins] = useState([]);
+  const [fetchingSignupGstins, setFetchingSignupGstins] = useState(false);
   const [vkycUrl, setVkycUrl] = useState('');
 
   // OAuth Context
@@ -3711,26 +3716,63 @@ function App() {
 
                       {primaryBusinessData.size === 'small' ? (
                         <div className="input-group">
-                          <input type="text" value={primaryBusinessData.gstin} onChange={e => setPrimaryBusinessData(prev => ({ ...prev, gstin: e.target.value }))} required placeholder=" " />
-                          <label>GSTIN Number</label>
+                          <input type="text" value={primaryBusinessData.pan} onChange={e => setPrimaryBusinessData(prev => ({ ...prev, pan: e.target.value }))} required placeholder=" " />
+                          <label>PAN Number</label>
                         </div>
                       ) : (
                         <>
-                          <div className="name-grid">
-                            <div className="input-group">
-                              <input type="text" value={primaryBusinessData.pan} onChange={e => setPrimaryBusinessData(prev => ({ ...prev, pan: e.target.value }))} required placeholder=" " />
-                              <label>PAN Number</label>
-                            </div>
-                            <div className="input-group">
-                              <input type="text" value={primaryBusinessData.gstin} onChange={e => setPrimaryBusinessData(prev => ({ ...prev, gstin: e.target.value }))} required placeholder=" " />
-                              <label>GSTIN</label>
-                            </div>
-                          </div>
                           <div className="input-group">
                             <input type="text" value={primaryBusinessData.cin} onChange={e => setPrimaryBusinessData(prev => ({ ...prev, cin: e.target.value }))} required placeholder=" " />
                             <label>CIN Number</label>
                           </div>
+                          <div className="input-group">
+                            <input type="text" value={primaryBusinessData.pan} onChange={e => setPrimaryBusinessData(prev => ({ ...prev, pan: e.target.value }))} required placeholder=" " />
+                            <label>PAN Number</label>
+                          </div>
                         </>
+                      )}
+
+                      {signupFetchedGstins.length === 0 ? (
+                         <div className="auth-actions">
+                          <button type="button" className="secondary-btn" onClick={() => {
+                            if (!primaryBusinessData.pan) { setError('PAN is required'); return; }
+                            setFetchingSignupGstins(true);
+                            setError('');
+                            axios.get(`${API_BASE}/auth/fetch-gstins?pan=${primaryBusinessData.pan}`)
+                              .then(res => {
+                                if (res.data.success && res.data.data && res.data.data.length > 0) {
+                                  setSignupFetchedGstins(res.data.data);
+                                  if (res.data.data.length === 1) {
+                                    setPrimaryBusinessData(prev => ({ ...prev, gstin: res.data.data[0].gstin }));
+                                  }
+                                } else {
+                                  setError('No active GSTINs found for this PAN');
+                                }
+                              })
+                              .catch(err => {
+                                setError(err.response?.data?.message || err.message || 'Failed to fetch GSTINs');
+                              })
+                              .finally(() => setFetchingSignupGstins(false));
+                          }} disabled={fetchingSignupGstins}>
+                            {fetchingSignupGstins ? 'Fetching...' : 'Get GSTINs for PAN'}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="input-group">
+                          <select
+                            value={primaryBusinessData.gstin}
+                            onChange={(e) => setPrimaryBusinessData(prev => ({ ...prev, gstin: e.target.value }))}
+                            required
+                            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)', background: 'transparent' }}
+                          >
+                            <option value="" disabled>Select GSTIN</option>
+                            {signupFetchedGstins.map(g => (
+                              <option key={g.gstin} value={g.gstin}>
+                                {g.gstin} - {g.businessName} ({g.state})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       )}
                       
                       <div className="auth-actions">
