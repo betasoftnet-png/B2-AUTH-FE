@@ -14,7 +14,8 @@ import {
   Check,
   Circle,
   X,
-  RefreshCw
+  RefreshCw,
+  ChevronLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import betaLogo from './assets/beta2.png';
@@ -3226,6 +3227,29 @@ function App() {
   return (
     <div className="google-auth-container">
       <div className="auth-card">
+        {accessToken && view !== 'dashboard' && !view.startsWith('verifying') && (
+          <button 
+            type="button"
+            onClick={() => setView('dashboard')}
+            style={{ 
+              position: 'absolute', 
+              top: '24px', 
+              left: '24px', 
+              background: 'none', 
+              border: 'none', 
+              color: 'var(--text-secondary)', 
+              cursor: 'pointer', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '4px', 
+              fontSize: '14px',
+              fontWeight: '500',
+              zIndex: 10
+            }}
+          >
+            <ChevronLeft size={16} /> Dashboard
+          </button>
+        )}
         <div className="language-selector-container">
           <select
             value={language}
