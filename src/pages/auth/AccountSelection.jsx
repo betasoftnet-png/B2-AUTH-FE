@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
 import authLogo from '../../assets/auth2.png';
+import betaLogo from '../../assets/beta2.png';
 import cliksBusinessLogo from '../../assets/cliks-business.png';
 import cliksLogo from '../../assets/cliks.png';
 import bitToolLogo from '../../assets/BIT-TOOL-2.png';
@@ -53,12 +54,14 @@ const AccountSelection = () => {
     // Note: add more here if needed,
     addAuthMode, authenticatorAccounts, businessSignupType, businessTypeData, calculateAge, dashboardTab, error, expandedExternalSessionId, expandedSessionId, externalSessions, fetchAuthenticatorAccounts, fetchEmails, fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, handleAddAuthenticatorAccount, handleBusinessTypeSelect, handleChangePassword, handleDeleteAuthenticatorAccount, handleDisable2FA, handleEnable2FA, handleForgotPasswordClick, handleMailFormSubmit, handleProfileClick, handleRevokeExternalSession, handleRevokeSession, handleSignOutAll, handleVerificationCallback, isEditingRecovery, leaveLegalPage, normalizeIdentifier, onboardingData, onboardingStep, parseUserAgent, profileData, recoveryInfo, redirectUri, saveAccount, sessions, setAccessToken, setAddAuthMode, setAuthenticatorAccounts, setBusinessSignupType, setBusinessTypeData, setClientId, setDashboardTab, setError, setExpandedExternalSessionId, setExpandedSessionId, setExternalSessions, setFetchedGstins, setFetchingGstins, setIsEditingRecovery, setLoading, setOnboardingData, setOnboardingStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setSessions, setSettingsData, setSetup2FAData, setShowAddAuthModal, setShowBusinessTypeModal, setShowChangePasswordModal, setShowGstModal, setShowPanModal, setShowSetup2FAModal, setSidebarCategory, setState, setSuccessMessage, setTempToken, setUserEmails, setVerificationStatus, setVerifyPanResult, setVkycUrl, settingsData, setup2FACode, showAddAuthModal, showAlert, showBusinessTypeModal, showChangePasswordModal, showGstModal, showLegalPage, showPanModal, showSetup2FAModal, sidebarCategory, state, successMessage, tempToken, verificationStatus, vkycUrl,} = useAppContext();
 
+
   return (
     <>
       <div className="account-switcher-container">
-              <header className="switcher-header">
-                <h2>Choose an account</h2>
-                <p>to continue to {clientId ? clientId.replace(/-/g, ' ') : 'B2Auth'}</p>
+              <header className="switcher-header" style={{ textAlign: 'center', marginBottom: '24px' }}>
+                <img src={betaLogo} alt="b2auth" className="auth-logo" style={{ height: '48px', marginBottom: '16px' }} />
+                <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '8px' }}>Choose an account</h2>
+                <p style={{ fontSize: '14px', color: '#64748b' }}>to continue to {clientId ? clientId.replace(/-/g, ' ') : 'B2Auth'}</p>
               </header>
 
               <div className="account-list-premium">

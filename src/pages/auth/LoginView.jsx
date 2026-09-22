@@ -163,8 +163,8 @@ const LoginView = () => {
         </div>
       )}
 
+      {error && <div className="error-message" style={{ color: 'red', marginTop: '16px', marginBottom: '16px', textAlign: 'center', width: '100%' }}>{error}</div>}
       <div className="login-btn-container">
-        {error && <div className="error-message" style={{ color: 'red', marginBottom: '10px', textAlign: 'center' }}>{error}</div>}
         <button type="submit" className="merged-login-btn" disabled={loading}>
           {loading ? '...' : 'Login'}
         </button>

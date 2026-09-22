@@ -1,8 +1,9 @@
 import axios from 'axios';
-import PhoneInput from 'react-phone-input-2';
+import React from 'react';
+import PhoneInputLib from 'react-phone-input-2';
+const PhoneInput = PhoneInputLib.default || PhoneInputLib;
 import 'react-phone-input-2/lib/style.css';
 // const API_BASE = 'http://localhost:3000/api';
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
 import authLogo from '../../assets/auth2.png';
