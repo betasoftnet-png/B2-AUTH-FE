@@ -58,8 +58,8 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 import './App.css';
 
 const AuthenticatorCode = ({ secret }) => {
-  const [code, setCode] = useState('000000');
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [setCode] = useState('000000');
+  const [setTimeLeft] = useState(30);
 
   useEffect(() => {
     try {
@@ -78,7 +78,7 @@ const AuthenticatorCode = ({ secret }) => {
       };
 
       update();
-      const timer = setInterval(update, 1000);
+      const timer = setInterval(1000);
       return () => clearInterval(timer);
     } catch (e) {
       console.error("Invalid secret", e);
@@ -2090,6 +2090,43 @@ function App() {
     );
   }
 
+
+  const contextValue = {
+    AuthenticatorCode, PasswordRequirements, accessToken, accounts, addAuthMode, authenticatorAccounts,
+    businessSignupType, businessTypeData, calculateAge, clientId, customAlert, dashboardTab, error,
+    expandedExternalSessionId, expandedSessionId, externalSessions, fetchAuthenticatorAccounts, fetchEmails,
+    fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, fetchSuggestions, fetchedGstins,
+    fetchingGstins, fetchingSignupGstins, formData, gstData, handleAddAccount, handleAddAuthenticatorAccount,
+    handleBusinessTypeSelect, handleChangePassword, handleCreateAccountClick, handleCreateMailbox,
+    handleDeleteAuthenticatorAccount, handleDisable2FA, handleEnable2FA, handleFetchGstins, handleFileChange,
+    handleFinalSignupSubmit, handleForgotInModal, handleForgotPasswordClick, handleForgotPasswordClickWithEmail,
+    handleForgotPasswordIdentifierSubmit, handleGoToMailSignup, handleInputChange, handleLogin, handleLogout,
+    handleMailFormSubmit, handleMakePrimary, handleOnboardingSubmit, handleOutsideClick, handleProcessQR,
+    handleProfileClick, handleRegisterProfile, handleResetPassword, handleRevokeExternalSession, handleRevokeSession,
+    handleSelectAccount, handleSend2faRecoveryOtp, handleSendMobileOtp, handleSendOtp, handleSendParentOtp,
+    handleSignOutAll, handleSwitchAccount, handleUpdateRecovery, handleVerificationCallback, handleVerify2faRecoveryOtp,
+    handleVerifyAndEnable2FA, handleVerifyGst, handleVerifyLogin2fa, handleVerifyMobileOtp, handleVerifyOtp,
+    handleVerifyPan, handleVerifyParentOtp, isEditingRecovery, language, leaveLegalPage, loading, manualAuthData,
+    mobileOtpStep, normalizeIdentifier, onScanError, onScanSuccess, onboardingData, onboardingStep, panData,
+    parentOtpSent, parseUserAgent, passwordForm, poll, primaryBusinessData, primaryBusinessStep, profileData,
+    recoveryInfo, recoveryOptions, redirectUri, registrationMode, resetSignupForm, saveAccount, selectedRecoveryMethod,
+    sessions, setAccessToken, setAccounts, setAddAuthMode, setAuthenticatorAccounts, setBusinessSignupType,
+    setBusinessTypeData, setClientId, setCustomAlert, setDashboardTab, setError, setExpandedExternalSessionId,
+    setExpandedSessionId, setExternalSessions, setFetchedGstins, setFetchingGstins, setFetchingSignupGstins,
+    setFormData, setGstData, setIsEditingRecovery, setLanguage, setLoading, setManualAuthData, setMobileOtpStep,
+    setOnboardingData, setOnboardingStep, setPanData, setParentOtpSent, setPasswordForm, setPrimaryBusinessData,
+    setPrimaryBusinessStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setRegistrationMode,
+    setSelectedRecoveryMethod, setSessions, setSettingsData, setSetup2FACode, setSetup2FAData, setShow2faRecovery,
+    setShowAccountSwitcher, setShowAddAuthModal, setShowBusinessTypeModal, setShowChangePasswordModal, setShowGstModal,
+    setShowPanModal, setShowSetup2FAModal, setSidebarCategory, setSignupFetchedGstins, setSignupType, setState,
+    setSuccessMessage, setTempToken, setUseSavedAccount, setUserEmails, setUsernameSuggestions,
+    setVerificationStatus, setVerifyPanResult, setView, setVkycUrl, settingsData, setup2FACode, setup2FAData,
+    show2faRecovery, showAccountSwitcher, showAddAuthModal, showAlert, showBusinessTypeModal, showChangePasswordModal,
+    showGstModal, showLegalPage, showPanModal, showSetup2FAModal, sidebarCategory, signupFetchedGstins, signupType,
+    state, successMessage, tempToken, useSavedAccount, userEmails, usernameSuggestions,
+    validateAndRestore, validatePassword, verificationStatus, verifyPanResult, view, vkycUrl,
+    authLogo, cliksBusinessLogo, cliksLogo, bitToolLogo,
+  };
 
   return (
     <AppContext.Provider value={contextValue}>
