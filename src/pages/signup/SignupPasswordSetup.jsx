@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
-import authLogo from '../../assets/auth2.png';
+import betaLogo from '../../assets/beta2.png';
 import cliksBusinessLogo from '../../assets/cliks-business.png';
 import cliksLogo from '../../assets/cliks.png';
 import bitToolLogo from '../../assets/BIT-TOOL-2.png';
@@ -48,7 +48,7 @@ const SignupPasswordSetup = () => {
     handleResetPassword, handleUpdateRecovery, language, setLanguage,
     PasswordRequirements, validatePassword, AuthenticatorCode,
     setup2FAData, setSetup2FACode, handleVerifyAndEnable2FA,
-    cliksBusinessLogo, cliksLogo, authLogo, bitToolLogo,
+    cliksBusinessLogo, cliksLogo, betaLogo, bitToolLogo,
     // Note: add more here if needed,
     accessToken, addAuthMode, authenticatorAccounts, businessSignupType, businessTypeData, calculateAge, clientId, dashboardTab, error, expandedExternalSessionId, expandedSessionId, externalSessions, fetchAuthenticatorAccounts, fetchEmails, fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, handleAddAuthenticatorAccount, handleBusinessTypeSelect, handleChangePassword, handleDeleteAuthenticatorAccount, handleDisable2FA, handleEnable2FA, handleForgotPasswordClick, handleMailFormSubmit, handleProfileClick, handleRevokeExternalSession, handleRevokeSession, handleSignOutAll, handleVerificationCallback, isEditingRecovery, leaveLegalPage, normalizeIdentifier, onboardingData, onboardingStep, parseUserAgent, profileData, recoveryInfo, redirectUri, saveAccount, sessions, setAccessToken, setAddAuthMode, setAuthenticatorAccounts, setBusinessSignupType, setBusinessTypeData, setClientId, setDashboardTab, setError, setExpandedExternalSessionId, setExpandedSessionId, setExternalSessions, setFetchedGstins, setFetchingGstins, setIsEditingRecovery, setLoading, setOnboardingData, setOnboardingStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setSessions, setSettingsData, setSetup2FAData, setShowAddAuthModal, setShowBusinessTypeModal, setShowChangePasswordModal, setShowGstModal, setShowPanModal, setShowSetup2FAModal, setSidebarCategory, setState, setSuccessMessage, setTempToken, setUserEmails, setVerificationStatus, setVerifyPanResult, setVkycUrl, settingsData, setup2FACode, showAddAuthModal, showAlert, showBusinessTypeModal, showChangePasswordModal, showGstModal, showLegalPage, showPanModal, showSetup2FAModal, sidebarCategory, state, successMessage, tempToken, verificationStatus, vkycUrl,} = useAppContext();
 
@@ -56,7 +56,7 @@ const SignupPasswordSetup = () => {
     <>
       <form onSubmit={handleFinalSignupSubmit} className="auth-step">
               <div className="input-field-group" style={{ width: '100%', textAlign: 'center' }}>
-                <img src={authLogo} alt="b2auth" className="auth-logo" style={{ height: '40px', marginBottom: '16px' }} />
+                <img src={betaLogo} alt="b2auth" className="auth-logo" style={{ height: '48px', marginBottom: '16px' }} />
                 <label style={{ fontSize: '18px', fontWeight: '700', display: 'block', marginBottom: '8px' }}>Create password</label>
                 <div style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', marginBottom: '8px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Step 3 of 3</div>
               </div>
