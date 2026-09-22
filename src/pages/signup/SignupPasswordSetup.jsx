@@ -55,9 +55,14 @@ const SignupPasswordSetup = () => {
   return (
     <>
       <form onSubmit={handleFinalSignupSubmit} className="auth-step">
+              <div className="input-field-group" style={{ width: '100%', textAlign: 'center' }}>
+                <img src={authLogo} alt="b2auth" className="auth-logo" style={{ height: '40px', marginBottom: '16px' }} />
+                <label style={{ fontSize: '18px', fontWeight: '700', display: 'block', marginBottom: '8px' }}>Create password</label>
+                <div style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', marginBottom: '8px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Step 3 of 3</div>
+              </div>
               <div className="signup-inputs-container">
-                <p style={{ fontSize: '14px', color: '#475569', marginBottom: '24px' }}>
-                  Create a strong password for your new email address: <span style={{ color: 'var(--primary)', textAlign: 'center' }}>{formData.emailName}@bnxmail.com</span>
+                <p style={{ fontSize: '14px', color: '#475569', marginBottom: '24px', textAlign: 'center' }}>
+                  Create a strong password for your new email address: <span style={{ color: 'var(--primary)', fontWeight: '600' }}>{formData.emailName}@bnxmail.com</span>
                 </p>
 
                 <div className="input-group">

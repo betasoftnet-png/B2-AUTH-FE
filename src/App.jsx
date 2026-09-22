@@ -499,7 +499,7 @@ function App() {
       }
     };
 
-    const timer = setTimeout(500);
+    const timer = setTimeout(fetchSuggestions, 500);
     return () => clearTimeout(timer);
   }, [formData.firstName, formData.lastName, formData.dob, signupType]);
 

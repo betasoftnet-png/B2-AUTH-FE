@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import { useAppContext } from '../../context/AppContext';
 import authLogo from '../../assets/auth2.png';
 import cliksBusinessLogo from '../../assets/cliks-business.png';

@@ -55,6 +55,14 @@ const SignupChild = () => {
   return (
     <>
       <form onSubmit={handleGoToMailSignup} className="auth-step">
+              <div className="input-field-group" style={{ width: '100%', textAlign: 'center' }}>
+                <img src={authLogo} alt="b2auth" className="auth-logo" style={{ height: '40px', marginBottom: '16px' }} />
+                <label style={{ fontSize: '18px', fontWeight: '700', display: 'block', marginBottom: '8px' }}>Create child profile</label>
+                <div style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', marginBottom: '8px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Step 1 of 3</div>
+                <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
+                  Tell us a bit about your child.
+                </p>
+              </div>
               <div className="name-grid">
                 <div className="input-group"><input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required placeholder=" " /><label>First name</label></div>
                 <div className="input-group"><input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required placeholder=" " /><label>Last name</label></div>

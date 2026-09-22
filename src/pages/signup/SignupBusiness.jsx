@@ -57,6 +57,14 @@ const SignupBusiness = () => {
   return (
     <>
       <form onSubmit={handleGoToMailSignup} className="auth-step">
+              <div className="input-field-group" style={{ width: '100%', textAlign: 'center' }}>
+                <img src={authLogo} alt="b2auth" className="auth-logo" style={{ height: '40px', marginBottom: '16px' }} />
+                <label style={{ fontSize: '18px', fontWeight: '700', display: 'block', marginBottom: '8px' }}>Create business account</label>
+                <div style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', marginBottom: '8px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Step 1 of 3</div>
+                <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
+                  Choose your business account type.
+                </p>
+              </div>
               
               {(businessSignupType === 'secondary' || primaryBusinessStep === 0) && (
                 <div className="business-signup-tabs" style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
