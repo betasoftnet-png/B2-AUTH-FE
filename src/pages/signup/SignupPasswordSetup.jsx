@@ -65,6 +65,8 @@ const SignupPasswordSetup = () => {
                   Create a strong password for your new email address: <span style={{ color: 'var(--primary)', fontWeight: '600' }}>{formData.emailName}@bnxmail.com</span>
                 </p>
 
+                {error && <div className="error-message" style={{ color: 'red', marginBottom: '16px', textAlign: 'center', width: '100%' }}>{error}</div>}
+
                 <div className="input-group">
                   <input 
                     type="password" 

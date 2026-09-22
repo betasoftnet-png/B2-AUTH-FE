@@ -5,6 +5,7 @@ const PhoneInput = PhoneInputLib.default || PhoneInputLib;
 import 'react-phone-input-2/lib/style.css';
 import { useAppContext } from '../../context/AppContext';
 import authLogo from '../../assets/auth2.png';
+import betaLogo from '../../assets/beta2.png';
 import cliksBusinessLogo from '../../assets/cliks-business.png';
 import cliksLogo from '../../assets/cliks.png';
 import bitToolLogo from '../../assets/BIT-TOOL-2.png';
@@ -58,6 +59,16 @@ const SignupMobileVerify = () => {
   return (
     <>
       <div className="auth-step-merged">
+        <div className="input-field-group" style={{ width: '100%', textAlign: 'center', marginBottom: '24px' }}>
+          <img src={betaLogo} alt="b2auth" className="auth-logo" style={{ height: '48px', marginBottom: '16px' }} />
+          <label style={{ fontSize: '18px', fontWeight: '700', display: 'block', marginBottom: '8px' }}>
+            {mobileOtpStep === 'MOBILE' ? 'Verify your mobile number' : 'Enter OTP'}
+          </label>
+          <div style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', marginBottom: '8px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+            Step 2 of 3
+          </div>
+        </div>
+
               {mobileOtpStep === 'MOBILE' ? (
                 <form onSubmit={handleSendMobileOtp}>
                   <div className="auth-input-group" style={{ textAlign: 'left' }}>
