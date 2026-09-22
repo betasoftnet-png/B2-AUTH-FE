@@ -101,9 +101,18 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 const getInitialView = () => {
   if (window.location.pathname === '/privacy-policy') return 'legal-privacy';
   if (window.location.pathname === '/terms-and-conditions') return 'legal-terms';
+  
+  const params = new URLSearchParams(window.location.search);
+  const refId = params.get('reference_id') || params.get('verification_id');
+  const cid = params.get('client_id');
+  
+  const storedToken = localStorage.getItem('bnx_accessToken');
+  const storedUser = localStorage.getItem('bnx_userData');
+  
+  if (storedToken && storedUser && !refId && !cid) return 'restoring';
+  
   return 'login-email';
 };
-
 
 function App() {
   const location = useLocation();
@@ -140,7 +149,7 @@ function App() {
 
   const [mobileOtpStep, setMobileOtpStep] = useState('MOBILE');
   const [tempToken, setTempToken] = useState('');
-  const [accessToken, setAccessToken] = useState('');
+  const [accessToken, setAccessToken] = useState(() => localStorage.getItem('bnx_accessToken') || '');
   const [userEmails, setUserEmails] = useState([]);
   const [recoveryOptions, setRecoveryOptions] = useState(null);
   const [selectedRecoveryMethod, setSelectedRecoveryMethod] = useState('');
@@ -2168,6 +2177,10 @@ function App() {
             view === 'signup-mail' ? <SignupMail /> :
             view === 'signup-mobile-verify' ? <SignupMobileVerify /> :
             <SignupPasswordSetup />
+          ) : view === 'restoring' ? (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', minHeight: '300px' }}>
+              <RefreshCw className="spin" size={24} color="#64748b" />
+            </div>
           ) : <LoginView />} />
         </Route>
       </Routes>
