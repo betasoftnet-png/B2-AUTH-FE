@@ -1,7 +1,21 @@
-import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { LayoutDashboard, Mail, ShieldCheck, Settings, Activity, LogOut, Plus, ChevronRight, User, Globe, Building } from 'lucide-react';
+import {
+  LayoutDashboard, Mail, ShieldCheck, Settings, Activity, LogOut,
+  Smartphone, Monitor, Tablet, CheckCircle, AlertCircle, XCircle, Search, Building,
+  Minus, FileText, Download, Briefcase, FileSignature, UploadCloud, UserPlus, Info,
+  Trash2, Edit3, Save, Plus, ChevronRight, ChevronDown, User, Phone,
+  Globe, Clock, MapPin,
+  LockIcon,
+  LockOpenIcon,
+  Check,
+  Circle,
+  X,
+  RefreshCw,
+  ChevronLeft
+} from 'lucide-react';
 import authLogo from '../assets/auth2.png';
 import cliksLogo from '../assets/cliks.png';
 import cliksBusinessLogo from '../assets/cliks-business.png';
@@ -13,11 +27,17 @@ const DashboardLayout = () => {
     topbarRightRef, showAccountSwitcher, setShowAccountSwitcher, accounts,
     handleSwitchAccount, handleProfileClick, sidebarCategory, setSidebarCategory,
     accessToken, fetchFullProfile, fetchAuthenticatorAccounts, fetchSessions, fetchExternalSessions,
-    handleGoToMailSignup
-  } = useAppContext();
+    handleGoToMailSignup,
+    AuthenticatorCode, PasswordRequirements, addAuthMode, authenticatorAccounts, businessSignupType, businessTypeData, calculateAge, clientId, customAlert, dashboardTab, error, expandedExternalSessionId, expandedSessionId, externalSessions, fetchEmails, fetchRecoveryInfo, fetchedGstins, fetchingGstins, fetchingSignupGstins, formData, gstData, handleAddAuthenticatorAccount, handleBusinessTypeSelect, handleChangePassword, handleCreateAccountClick, handleCreateMailbox, handleDeleteAuthenticatorAccount, handleDisable2FA, handleEnable2FA, handleFetchGstins, handleFileChange, handleFinalSignupSubmit, handleForgotInModal, handleForgotPasswordClick, handleForgotPasswordClickWithEmail, handleForgotPasswordIdentifierSubmit, handleInputChange, handleLogin, handleMailFormSubmit, handleMakePrimary, handleOnboardingSubmit, handleProcessQR, handleRegisterProfile, handleResetPassword, handleRevokeExternalSession, handleRevokeSession, handleSelectAccount, handleSend2faRecoveryOtp, handleSendMobileOtp, handleSendOtp, handleSendParentOtp, handleSignOutAll, handleUpdateRecovery, handleVerificationCallback, handleVerify2faRecoveryOtp, handleVerifyAndEnable2FA, handleVerifyGst, handleVerifyLogin2fa, handleVerifyMobileOtp, handleVerifyOtp, handleVerifyPan, handleVerifyParentOtp, isEditingRecovery, language, leaveLegalPage, loading, manualAuthData, mobileOtpStep, normalizeIdentifier, onboardingData, onboardingStep, panData, parentOtpSent, parseUserAgent, passwordForm, primaryBusinessData, primaryBusinessStep, recoveryInfo, recoveryOptions, registrationMode, resetSignupForm, saveAccount, selectedRecoveryMethod, sessions, setAccessToken, setAccounts, setAddAuthMode, setAuthenticatorAccounts, setBusinessSignupType, setBusinessTypeData, setClientId, setCustomAlert, setDashboardTab, setError, setExpandedExternalSessionId, setExpandedSessionId, setExternalSessions, setFetchedGstins, setFetchingGstins, setFetchingSignupGstins, setFormData, setGstData, setIsEditingRecovery, setLanguage, setLoading, setManualAuthData, setMobileOtpStep, setOnboardingData, setOnboardingStep, setPanData, setParentOtpSent, setPasswordForm, setPrimaryBusinessData, setPrimaryBusinessStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setRegistrationMode, setSelectedRecoveryMethod, setSessions, setSettingsData, setSetup2FACode, setSetup2FAData, setShow2faRecovery, setShowAddAuthModal, setShowBusinessTypeModal, setShowChangePasswordModal, setShowGstModal, setShowPanModal, setShowSetup2FAModal, setSignupFetchedGstins, setSignupType, setState, setSuccessMessage, setTempToken, setUseSavedAccount, setUserEmails, setUsernameSuggestions, setVerificationStatus, setVerifyPanResult, setView, setVkycUrl, settingsData, setup2FACode, setup2FAData, show2faRecovery, showAddAuthModal, showAlert, showBusinessTypeModal, showChangePasswordModal, showGstModal, showLegalPage, showPanModal, showSetup2FAModal, signupFetchedGstins, signupType, state, successMessage, tempToken, useSavedAccount, userEmails, usernameSuggestions, validatePassword, verificationStatus, verifyPanResult, view, vkycUrl, authLogo, cliksBusinessLogo, cliksLogo, bitToolLogo,} = useAppContext();
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (!accessToken) {
+      navigate('/');
+    }
+  }, [accessToken, navigate]);
 
   const currentTab = location.pathname.split('/')[1] || 'dashboard';
 

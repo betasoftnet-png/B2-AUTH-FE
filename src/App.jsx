@@ -1905,6 +1905,7 @@ function App() {
     setExternalSessions([]);
     setUseSavedAccount(false);
     setView('login-email');
+    navigate('/');
   };
 
   const fetchFullProfile = async (token) => {
@@ -1943,6 +1944,7 @@ function App() {
     setView('login-email');
     setUseSavedAccount(false);
     setFormData(prev => ({ ...prev, identifier: '', password: '' }));
+    navigate('/');
   };
 
   if (view === 'legal-privacy' || view === 'legal-terms') {

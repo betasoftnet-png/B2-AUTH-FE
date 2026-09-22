@@ -1,7 +1,20 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
-import { Mail, CheckCircle, Smartphone, Monitor, Tablet, XCircle, AlertCircle, RefreshCw, Trash2, Edit3, Save, Plus, ChevronDown, Check, X, ShieldCheck } from 'lucide-react';
+import {
+  LayoutDashboard, Mail, ShieldCheck, Settings, Activity, LogOut,
+  Smartphone, Monitor, Tablet, CheckCircle, AlertCircle, XCircle, Search, Building,
+  Minus, FileText, Download, Briefcase, FileSignature, UploadCloud, UserPlus, Info,
+  Trash2, Edit3, Save, Plus, ChevronRight, ChevronDown, User, Phone,
+  Globe, Clock, MapPin,
+  LockIcon,
+  LockOpenIcon,
+  Check,
+  Circle,
+  X,
+  RefreshCw,
+  ChevronLeft
+} from 'lucide-react';
 
 const EmailsTab = () => {
   const {
@@ -22,8 +35,8 @@ const EmailsTab = () => {
     handleChangePassword, language, setLanguage, recoveryInfo,
     isEditingRecovery, setIsEditingRecovery, handleUpdateRecovery,
     PasswordRequirements, handleProcessQR, onScanSuccess, onScanError,
-    // Add any other destructured state from AppContext here
-  } = useAppContext();
+    // Add any other destructured state from AppContext here,
+    AuthenticatorCode, accessToken, accounts, businessSignupType, businessTypeData, calculateAge, clientId, customAlert, dashboardTab, fetchAuthenticatorAccounts, fetchEmails, fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, fetchingSignupGstins, formData, gstData, handleAddAccount, handleBusinessTypeSelect, handleCreateAccountClick, handleCreateMailbox, handleEnable2FA, handleFileChange, handleFinalSignupSubmit, handleForgotInModal, handleForgotPasswordClick, handleForgotPasswordClickWithEmail, handleForgotPasswordIdentifierSubmit, handleGoToMailSignup, handleLogin, handleLogout, handleMailFormSubmit, handleOnboardingSubmit, handleProfileClick, handleRegisterProfile, handleResetPassword, handleSelectAccount, handleSendMobileOtp, handleSendOtp, handleSendParentOtp, handleSwitchAccount, handleVerificationCallback, handleVerifyGst, handleVerifyLogin2fa, handleVerifyMobileOtp, handleVerifyOtp, handleVerifyPan, handleVerifyParentOtp, leaveLegalPage, normalizeIdentifier, onboardingData, onboardingStep, panData, parentOtpSent, parseUserAgent, primaryBusinessData, primaryBusinessStep, recoveryOptions, redirectUri, registrationMode, resetSignupForm, saveAccount, selectedRecoveryMethod, setAccessToken, setAccounts, setAuthenticatorAccounts, setBusinessSignupType, setBusinessTypeData, setClientId, setCustomAlert, setDashboardTab, setExternalSessions, setFetchedGstins, setFetchingGstins, setFetchingSignupGstins, setFormData, setGstData, setLoading, setOnboardingData, setOnboardingStep, setPanData, setParentOtpSent, setPasswordForm, setPrimaryBusinessData, setPrimaryBusinessStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setRegistrationMode, setSelectedRecoveryMethod, setSessions, setSettingsData, setSetup2FAData, setShowAccountSwitcher, setShowBusinessTypeModal, setSidebarCategory, setSignupFetchedGstins, setSignupType, setState, setSuccessMessage, setTempToken, setUseSavedAccount, setUserEmails, setUsernameSuggestions, setVerificationStatus, setVerifyPanResult, setView, setVkycUrl, settingsData, showAccountSwitcher, showAlert, showBusinessTypeModal, showGstModal, showLegalPage, showPanModal, sidebarCategory, signupFetchedGstins, signupType, successMessage, tempToken, useSavedAccount, usernameSuggestions, validatePassword, verificationStatus, verifyPanResult, view, vkycUrl, authLogo, cliksBusinessLogo, cliksLogo, bitToolLogo,} = useAppContext();
 
   return (
     <>

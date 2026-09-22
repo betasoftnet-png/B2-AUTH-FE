@@ -1,5 +1,7 @@
+import axios from 'axios';
+const API_BASE = 'http://localhost:3000/api';
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
 import authLogo from '../../assets/auth2.png';
 import cliksBusinessLogo from '../../assets/cliks-business.png';

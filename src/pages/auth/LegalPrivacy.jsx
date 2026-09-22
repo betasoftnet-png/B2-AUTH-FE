@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
 import { useAppContext } from '../../context/AppContext';
 import authLogo from '../../assets/auth2.png';

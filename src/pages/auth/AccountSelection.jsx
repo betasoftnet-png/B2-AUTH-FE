@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
 import authLogo from '../../assets/auth2.png';
 import cliksBusinessLogo from '../../assets/cliks-business.png';
