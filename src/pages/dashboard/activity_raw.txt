@@ -1,0 +1,19 @@
+{dashboardTab === 'activity' && (
+              <motion.div
+                key="activity"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="content-section"
+              >
+                <header className="section-header">
+                  <h2>Recent Activity</h2>
+                  <p>A log of important security events on your account.</p>
+                </header>
+                <div className="activity-placeholder">
+                  <Activity size={64} />
+                  <h3>Nothing to show yet</h3>
+                  <p>Your recent sign-ins and security changes will appear here.</p>
+                </div>
+              </motion.div>
+            )}

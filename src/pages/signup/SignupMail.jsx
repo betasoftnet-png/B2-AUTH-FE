@@ -1,0 +1,129 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { useAppContext } from '../../context/AppContext';
+import authLogo from '../../assets/auth2.png';
+import cliksBusinessLogo from '../../assets/cliks-business.png';
+import cliksLogo from '../../assets/cliks.png';
+import bitToolLogo from '../../assets/BIT-TOOL-2.png';
+import { Phone, Check, ChevronDown, RefreshCw, Smartphone, Monitor, Tablet, Building, Globe, Briefcase, FileText, Download, UserPlus, Info, Plus } from 'lucide-react';
+
+const SignupMail = () => {
+
+  const {
+    view, setView, customAlert, setCustomAlert, accounts, setAccounts,
+    handleLogin, handleLogout, loading, handleAddAccount, handleRemoveAccount,
+    formData, setFormData, handleInputChange, passwordForm, setPasswordForm,
+    handleSelectAccount, useSavedAccount, setUseSavedAccount, handleSwitchAccount,
+    showAccountSwitcher, setShowAccountSwitcher, handleCreateAccountClick,
+    handleGoToMailSignup, handleForgotInModal, handleVerifyLogin2fa,
+    manualAuthData, setManualAuthData, handleVerifyOtp, timeLeft,
+    handleSendOtp, handleForgotPasswordIdentifierSubmit,
+    handleForgotPasswordClickWithEmail, handleVerifyPan, verifyPanResult,
+    panData, setPanData, handleMakePrimary, selectedRecoveryMethod,
+    setSelectedRecoveryMethod, recoveryOptions, handleSend2faRecoveryOtp,
+    handleVerify2faRecoveryOtp, show2faRecovery, setShow2faRecovery,
+    signupType, setSignupType, handleFileChange, handleProcessQR,
+    registrationMode, setRegistrationMode, resetSignupForm,
+    handleRegisterProfile, handleVerifyParentOtp, handleSendParentOtp,
+    parentOtpSent, setParentOtpSent, handleSendMobileOtp, handleVerifyMobileOtp,
+    mobileOtpStep, setMobileOtpStep, handleVerifyGst, gstData, setGstData,
+    handleFetchGstins, fetchingGstins, fetchedGstins, handleSelectGstin,
+    signupFetchedGstins, setSignupFetchedGstins, fetchingSignupGstins, setFetchingSignupGstins,
+    primaryBusinessData, setPrimaryBusinessData, primaryBusinessStep, setPrimaryBusinessStep,
+    handleOnboardingSubmit, handleFinalSignupSubmit, handleCreateMailbox,
+    userEmails, usernameSuggestions, setUsernameSuggestions, 
+    handleResetPassword, handleUpdateRecovery, language, setLanguage,
+    PasswordRequirements, validatePassword, AuthenticatorCode,
+    setup2FAData, setSetup2FACode, handleVerifyAndEnable2FA,
+    cliksBusinessLogo, cliksLogo, authLogo, bitToolLogo,
+    // Note: add more here if needed
+  } = useAppContext();
+
+  return (
+    <>
+      <form onSubmit={handleMailFormSubmit} className="auth-step-merged">
+              <div className="login-grid-2f">
+                <div className="input-field-group" style={{ width: '100%' }}>
+                  <label style={{ fontSize: '18px', fontWeight: '700', display: 'block', marginBottom: '8px' }}>Choose your email address</label>
+                  <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
+                    Select one of the suggested handles or enter a custom one.
+                  </p>
+
+                  {usernameSuggestions && usernameSuggestions.length > 0 && (
+                    <div className="username-suggestions-container" style={{ marginBottom: '24px', width: '100%' }}>
+                      <span className="suggestions-title" style={{ fontSize: '13px', fontWeight: '600', color: '#64748b', marginBottom: '12px', display: 'block' }}>Suggested email addresses:</span>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', width: '100%' }}>
+                        {usernameSuggestions.map((suggestion) => {
+                          const fullEmail = `${suggestion}@bnxmail.com`;
+                          const isSelected = formData.emailName === suggestion;
+                          return (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              className={`suggestion-chip ${isSelected ? 'active' : ''}`}
+                              style={{
+                                background: isSelected ? 'var(--primary)' : 'rgba(241, 245, 249, 0.8)',
+                                border: '1px solid',
+                                borderColor: isSelected ? 'var(--primary)' : '#e2e8f0',
+                                borderRadius: '20px',
+                                padding: '8px 16px',
+                                fontSize: '13px',
+                                color: isSelected ? '#ffffff' : '#334155',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                                outline: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px'
+                              }}
+                              onClick={() => {
+                                setFormData(prev => ({ ...prev, username: suggestion, emailName: suggestion }));
+                                setError('');
+                              }}
+                            >
+                              <Mail size={14} style={{ color: isSelected ? '#ffffff' : '#64748b' }} />
+                              <span>{fullEmail}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="manual-handle-section" style={{ marginTop: '16px', width: '100%' }}>
+                    <span className="suggestions-title" style={{ fontSize: '14px', fontWeight: '600', color: '#475569', marginBottom: '8px', display: 'block' }}>Or create your own:</span>
+                    <div className="input-group-mail" style={{ display: 'flex', alignItems: 'center', position: 'relative', width: '100%' }}>
+                      <input
+                        type="text"
+                        name="emailName"
+                        value={formData.emailName}
+                        onChange={(e) => {
+                          const val = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, "");
+                          setFormData(prev => ({ ...prev, username: val, emailName: val }));
+                          setError('');
+                        }}
+                        placeholder="Choose your handle"
+                        className="custom-handle-input"
+                      />
+                      <span className="domain-suffix">@bnxmail.com</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="auth-actions">
+                <button type="button" className="text-btn" onClick={() => {
+                  if (signupType === 'CHILD') setView('signup-parent-verify');
+                  else if (signupType === 'BUSINESS') setView('signup-business');
+                  else setView('signup-profile');
+                }}>Back</button>
+                <button type="submit" className="primary-btn" disabled={loading}>
+                  {tempToken ? (loading ? 'Creating...' : 'Create Email') : 'Next'}
+                </button>
+              </div>
+            </form>
+    </>
+  );
+};
+
+export default SignupMail;
