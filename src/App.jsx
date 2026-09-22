@@ -991,6 +991,7 @@ function App() {
       fetchExternalSessions(token);
       fetchRecoveryInfo(token);
       setView('dashboard');
+      if (window.location.pathname === '/') navigate('/dashboard');
       setLoading(false);
     }
   };
@@ -1134,6 +1135,7 @@ function App() {
             setView('signup-business-onboarding');
           } else {
             setView('dashboard');
+            if (window.location.pathname === '/') navigate('/dashboard');
           }
         } else if (clientId === 'account-ui' && redirectUri) {
           saveAccount(token, {
@@ -1171,7 +1173,10 @@ function App() {
         }
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid credentials');
+      console.error("Login Error:", err);
+      const msg = err.response?.data?.message || err.message || 'Invalid credentials';
+      alert('Login Error: ' + msg);
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -1209,6 +1214,7 @@ function App() {
           fetchExternalSessions(token);
           fetchRecoveryInfo(token);
           setView('dashboard');
+          if (window.location.pathname === '/') navigate('/dashboard');
         } else if (clientId === 'account-ui' && redirectUri) {
           saveAccount(token, {
             email: userData.email,
@@ -1430,6 +1436,7 @@ function App() {
         }
         
         setView('dashboard');
+        if (window.location.pathname === '/') navigate('/dashboard');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to complete business profile onboarding.');
@@ -1851,6 +1858,7 @@ function App() {
         fetchExternalSessions(res.data.data.accessToken);
         fetchRecoveryInfo(res.data.data.accessToken);
         setView('dashboard');
+        if (window.location.pathname === '/') navigate('/dashboard');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid recovery code');
