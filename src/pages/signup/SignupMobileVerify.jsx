@@ -5,7 +5,20 @@ import authLogo from '../../assets/auth2.png';
 import cliksBusinessLogo from '../../assets/cliks-business.png';
 import cliksLogo from '../../assets/cliks.png';
 import bitToolLogo from '../../assets/BIT-TOOL-2.png';
-import { Phone, Check, ChevronDown, RefreshCw, Smartphone, Monitor, Tablet, Building, Globe, Briefcase, FileText, Download, UserPlus, Info, Plus } from 'lucide-react';
+import {
+  LayoutDashboard, Mail, ShieldCheck, Settings, Activity, LogOut,
+  Smartphone, Monitor, Tablet, CheckCircle, AlertCircle, XCircle, Search, Building,
+  Minus, FileText, Download, Briefcase, FileSignature, UploadCloud, UserPlus, Info,
+  Trash2, Edit3, Save, Plus, ChevronRight, ChevronDown, User, Phone,
+  Globe, Clock, MapPin,
+  LockIcon,
+  LockOpenIcon,
+  Check,
+  Circle,
+  X,
+  RefreshCw,
+  ChevronLeft
+} from 'lucide-react';
 
 const SignupMobileVerify = () => {
 
@@ -36,8 +49,8 @@ const SignupMobileVerify = () => {
     PasswordRequirements, validatePassword, AuthenticatorCode,
     setup2FAData, setSetup2FACode, handleVerifyAndEnable2FA,
     cliksBusinessLogo, cliksLogo, authLogo, bitToolLogo,
-    // Note: add more here if needed
-  } = useAppContext();
+    // Note: add more here if needed,
+    accessToken, addAuthMode, authenticatorAccounts, businessSignupType, businessTypeData, calculateAge, clientId, dashboardTab, error, expandedExternalSessionId, expandedSessionId, externalSessions, fetchAuthenticatorAccounts, fetchEmails, fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, handleAddAuthenticatorAccount, handleBusinessTypeSelect, handleChangePassword, handleDeleteAuthenticatorAccount, handleDisable2FA, handleEnable2FA, handleForgotPasswordClick, handleMailFormSubmit, handleProfileClick, handleRevokeExternalSession, handleRevokeSession, handleSignOutAll, handleVerificationCallback, isEditingRecovery, leaveLegalPage, normalizeIdentifier, onboardingData, onboardingStep, parseUserAgent, profileData, recoveryInfo, redirectUri, saveAccount, sessions, setAccessToken, setAddAuthMode, setAuthenticatorAccounts, setBusinessSignupType, setBusinessTypeData, setClientId, setDashboardTab, setError, setExpandedExternalSessionId, setExpandedSessionId, setExternalSessions, setFetchedGstins, setFetchingGstins, setIsEditingRecovery, setLoading, setOnboardingData, setOnboardingStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setSessions, setSettingsData, setSetup2FAData, setShowAddAuthModal, setShowBusinessTypeModal, setShowChangePasswordModal, setShowGstModal, setShowPanModal, setShowSetup2FAModal, setSidebarCategory, setState, setSuccessMessage, setTempToken, setUserEmails, setVerificationStatus, setVerifyPanResult, setVkycUrl, settingsData, setup2FACode, showAddAuthModal, showAlert, showBusinessTypeModal, showChangePasswordModal, showGstModal, showLegalPage, showPanModal, showSetup2FAModal, sidebarCategory, state, successMessage, tempToken, verificationStatus, vkycUrl,} = useAppContext();
 
   return (
     <>

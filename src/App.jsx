@@ -343,7 +343,7 @@ function App() {
             setLoading(false);
           } else if (upperStatus === 'PENDING' && attempts < maxAttempts) {
             attempts++;
-            setTimeout(poll, 3000);
+            setTimeout(3000);
           } else {
             setLoading(false);
             if (upperStatus !== 'PENDING') {
@@ -499,7 +499,7 @@ function App() {
       }
     };
 
-    const timer = setTimeout(fetchSuggestions, 500);
+    const timer = setTimeout(500);
     return () => clearTimeout(timer);
   }, [formData.firstName, formData.lastName, formData.dob, signupType]);
 
@@ -753,7 +753,7 @@ function App() {
           // Ignore errors
         };
 
-        scanner.render(onScanSuccess, onScanError);
+        scanner.render(onScanError);
       }, 300);
 
       return () => {
@@ -2095,20 +2095,20 @@ function App() {
     AuthenticatorCode, PasswordRequirements, accessToken, accounts, addAuthMode, authenticatorAccounts,
     businessSignupType, businessTypeData, calculateAge, clientId, customAlert, dashboardTab, error,
     expandedExternalSessionId, expandedSessionId, externalSessions, fetchAuthenticatorAccounts, fetchEmails,
-    fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, fetchSuggestions, fetchedGstins,
+    fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, fetchedGstins,
     fetchingGstins, fetchingSignupGstins, formData, gstData, handleAddAccount, handleAddAuthenticatorAccount,
     handleBusinessTypeSelect, handleChangePassword, handleCreateAccountClick, handleCreateMailbox,
     handleDeleteAuthenticatorAccount, handleDisable2FA, handleEnable2FA, handleFetchGstins, handleFileChange,
     handleFinalSignupSubmit, handleForgotInModal, handleForgotPasswordClick, handleForgotPasswordClickWithEmail,
     handleForgotPasswordIdentifierSubmit, handleGoToMailSignup, handleInputChange, handleLogin, handleLogout,
-    handleMailFormSubmit, handleMakePrimary, handleOnboardingSubmit, handleOutsideClick, handleProcessQR,
+    handleMailFormSubmit, handleMakePrimary, handleOnboardingSubmit, handleProcessQR,
     handleProfileClick, handleRegisterProfile, handleResetPassword, handleRevokeExternalSession, handleRevokeSession,
     handleSelectAccount, handleSend2faRecoveryOtp, handleSendMobileOtp, handleSendOtp, handleSendParentOtp,
     handleSignOutAll, handleSwitchAccount, handleUpdateRecovery, handleVerificationCallback, handleVerify2faRecoveryOtp,
     handleVerifyAndEnable2FA, handleVerifyGst, handleVerifyLogin2fa, handleVerifyMobileOtp, handleVerifyOtp,
     handleVerifyPan, handleVerifyParentOtp, isEditingRecovery, language, leaveLegalPage, loading, manualAuthData,
-    mobileOtpStep, normalizeIdentifier, onScanError, onScanSuccess, onboardingData, onboardingStep, panData,
-    parentOtpSent, parseUserAgent, passwordForm, poll, primaryBusinessData, primaryBusinessStep, profileData,
+    mobileOtpStep, normalizeIdentifier, onboardingData, onboardingStep, panData,
+    parentOtpSent, parseUserAgent, passwordForm, primaryBusinessData, primaryBusinessStep, profileData,
     recoveryInfo, recoveryOptions, redirectUri, registrationMode, resetSignupForm, saveAccount, selectedRecoveryMethod,
     sessions, setAccessToken, setAccounts, setAddAuthMode, setAuthenticatorAccounts, setBusinessSignupType,
     setBusinessTypeData, setClientId, setCustomAlert, setDashboardTab, setError, setExpandedExternalSessionId,
@@ -2124,7 +2124,7 @@ function App() {
     show2faRecovery, showAccountSwitcher, showAddAuthModal, showAlert, showBusinessTypeModal, showChangePasswordModal,
     showGstModal, showLegalPage, showPanModal, showSetup2FAModal, sidebarCategory, signupFetchedGstins, signupType,
     state, successMessage, tempToken, useSavedAccount, userEmails, usernameSuggestions,
-    validateAndRestore, validatePassword, verificationStatus, verifyPanResult, view, vkycUrl,
+    validatePassword, verificationStatus, verifyPanResult, view, vkycUrl,
     authLogo, cliksBusinessLogo, cliksLogo, bitToolLogo,
   };
 
