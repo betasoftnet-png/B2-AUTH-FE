@@ -1070,6 +1070,8 @@ function App() {
   };
 
   const handleLogin = async (e) => {
+    console.log('HANDLE LOGIN TRIGGERED');
+    alert('Handle Login Triggered');
     e.preventDefault();
     setLoading(true);
     setError('');
