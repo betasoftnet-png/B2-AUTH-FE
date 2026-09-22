@@ -590,6 +590,9 @@ function App() {
         );
         if (res.data.success && res.data.data.redirectUrl) {
           window.location.href = res.data.data.redirectUrl;
+        } else {
+          setError(res.data.message || 'Verification redirect failed');
+          setLoading(false);
         }
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to initiate verification');

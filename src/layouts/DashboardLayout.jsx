@@ -219,6 +219,165 @@ const DashboardLayout = () => {
             <Outlet />
           </AnimatePresence>
         </main>
+
+        {/* Business Type Modal */}
+        {showBusinessTypeModal && (
+          <div className="auth-modal-overlay">
+            <div className="auth-modal-content animate-scale-in" style={{ maxWidth: "400px" }}>
+              <div className="auth-modal-header">
+                <h3>Select Business Type</h3>
+                <button className="auth-close-btn" onClick={() => setShowBusinessTypeModal(false)}>
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="auth-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+                  Please select your business type to proceed with verification.
+                </p>
+                <button 
+                  className="action-btn primary-solid" 
+                  style={{ width: '100%' }}
+                  onClick={() => handleBusinessTypeSelect('Sole Proprietorship')}
+                >
+                  Sole Proprietorship
+                </button>
+                <button 
+                  className="action-btn secondary" 
+                  style={{ width: '100%' }}
+                  onClick={() => handleBusinessTypeSelect('Organization')}
+                >
+                  Organization
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* GST Verification Modal */}
+        {showGstModal && (
+          <div className="auth-modal-overlay">
+            <div className="auth-modal-content animate-scale-in" style={{ maxWidth: "400px" }}>
+              <div className="auth-modal-header">
+                <h3>Verify GSTIN</h3>
+                <button className="auth-close-btn" onClick={() => setShowGstModal(false)}>
+                  <X size={20} />
+                </button>
+              </div>
+              <form onSubmit={handleVerifyGst} className="auth-modal-body">
+                <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                  Please verify your GSTIN to make this email your primary account.
+                </p>
+                <div className="auth-input-group">
+                  <label>GSTIN</label>
+                  <input
+                    type="text"
+                    placeholder="Enter active GSTIN"
+                    value={gstData.gstin}
+                    onChange={e => setGstData({ ...gstData, gstin: e.target.value.toUpperCase() })}
+                    required
+                  />
+                </div>
+                {error && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{error}</div>}
+                <button
+                  type="submit"
+                  className="action-btn primary-solid"
+                  disabled={loading || !gstData.gstin}
+                  style={{ marginTop: '16px', width: '100%' }}
+                >
+                  {loading ? <RefreshCw className="spin" size={16} /> : "Verify GSTIN"}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* PAN Verification Modal */}
+        {showPanModal && (
+          <div className="auth-modal-overlay">
+            <div className="auth-modal-content animate-scale-in" style={{ maxWidth: "400px" }}>
+              <div className="auth-modal-header">
+                <h3>Verify PAN</h3>
+                <button className="auth-close-btn" onClick={() => setShowPanModal(false)}>
+                  <X size={20} />
+                </button>
+              </div>
+              <form onSubmit={handleVerifyPan} className="auth-modal-body">
+                <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                  Please verify your PAN to make this email your primary account.
+                </p>
+                <div className="auth-input-group">
+                  <label>PAN Number</label>
+                  <input
+                    type="text"
+                    placeholder="Enter 10-digit PAN"
+                    value={panData.panNumber}
+                    onChange={e => setPanData({ ...panData, panNumber: e.target.value.toUpperCase() })}
+                    maxLength={10}
+                    required
+                  />
+                </div>
+                
+                {profileData?.accountType === 'BUSINESS' ? (
+                  <div className="auth-input-group">
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end', marginBottom: '10px' }}>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ marginTop: '10px' }}>Fetch GSTINs</label>
+                        <button
+                          type="button"
+                          className="action-btn outline full-width"
+                          onClick={handleFetchGstins}
+                          disabled={fetchingGstins || panData.panNumber.length !== 10}
+                        >
+                          {fetchingGstins ? <RefreshCw className="spin" size={16} /> : "Get GSTINs for PAN"}
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {fetchedGstins.length > 0 && (
+                      <>
+                        <label style={{ marginTop: '10px' }}>Select GSTIN</label>
+                        <select
+                          style={{ marginBottom: '10px', width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
+                          value={panData.gstin}
+                          onChange={e => setPanData({ ...panData, gstin: e.target.value })}
+                          required
+                        >
+                          <option value="">Select a GSTIN</option>
+                          {fetchedGstins.map(g => (
+                            <option key={g.gstin} value={g.gstin}>
+                              {g.gstin} - {g.stateJurisdiction || g.state || 'ACTIVE'}
+                            </option>
+                          ))}
+                        </select>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <div className="auth-input-group">
+                    <label style={{ marginTop: '10px' }}>Name on PAN</label>
+                    <input
+                      style={{ marginBottom: '10px' }}
+                      type="text"
+                      placeholder="Enter exact name as per PAN"
+                      value={panData.panName}
+                      onChange={e => setPanData({ ...panData, panName: e.target.value })}
+                      required
+                    />
+                  </div>
+                )}
+
+                {error && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{error}</div>}
+                <button
+                  type="submit"
+                  className="action-btn primary-solid full-width"
+                  disabled={loading || panData.panNumber.length !== 10 || (profileData?.accountType === 'BUSINESS' ? !panData.gstin : !panData.panName)}
+                >
+                  {loading ? <RefreshCw className="spin" size={16} /> : "Verify & Make Primary"}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
   );
 };

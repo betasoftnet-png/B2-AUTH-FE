@@ -52,6 +52,7 @@ const EmailsTab = () => {
                   <h2>Admin</h2>
                   <p>Manage your linked mail accounts and primary address.</p>
                 </header>
+                {error && <div className="error-message" style={{ color: 'red', marginBottom: '16px', backgroundColor: '#fee2e2', padding: '10px', borderRadius: '4px' }}>{error}</div>}
                 <div className="identity-container animate-scale-in">
                   {userEmails.map(email => (
                     <div key={email.id} className="identity-row">
