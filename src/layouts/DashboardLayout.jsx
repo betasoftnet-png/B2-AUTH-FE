@@ -119,7 +119,8 @@ const DashboardLayout = () => {
                             {profileData?.accountType === 'PUBLIC' ? 'PERSONAL' : (profileData?.accountType || 'PERSONAL')}
                           </span>
                           {profileData?.accountType === 'BUSINESS' && profileData?.isPrimary && (
-                            <span style={{ fontSize: '10px', background: '#f0fdf4', color: '#15803d', padding: '3px 10px', borderRadius: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', border: '1px solid #bbf7d0' }}>
+                            <span style={{ fontSize: '10px', background: '#f0fdf4', color: '#15803d', padding: '3px 10px', borderRadius: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center' }}>
+                              <Check size={12} style={{ marginRight: '4px' }} />
                               Primary
                             </span>
                           )}
@@ -146,7 +147,8 @@ const DashboardLayout = () => {
                                 {account.userData?.accountType === 'PUBLIC' ? 'PERSONAL' : (account.userData?.accountType || 'PERSONAL')}
                               </span>
                               {account.userData?.accountType === 'BUSINESS' && account.userData?.isPrimary && (
-                                <span style={{ fontSize: '9px', background: '#f0fdf4', color: '#15803d', padding: '2px 8px', borderRadius: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', border: '1px solid #bbf7d0' }}>
+                                <span style={{ fontSize: '9px', background: '#f0fdf4', color: '#15803d', padding: '2px 8px', borderRadius: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center' }}>
+                                  <Check size={10} style={{ marginRight: '3px' }} />
                                   Primary
                                 </span>
                               )}
