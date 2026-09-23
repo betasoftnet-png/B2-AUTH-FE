@@ -1306,7 +1306,6 @@ function App() {
           const type = primaryBusinessData.size === 'small' ? 'GSTIN' : 'LARGE_BUSINESS';
           axios.post(`${API_BASE}/auth/verify-business`, {
             type: type,
-            cin: primaryBusinessData.cin,
             pan: primaryBusinessData.pan,
             gstin: primaryBusinessData.gstin
           })
@@ -1531,7 +1530,6 @@ function App() {
       payload.domain = 'bnxmail.com';
       if (businessSignupType === 'primary') {
         payload.businessSize = primaryBusinessData.size; // 'small' or 'large'
-        payload.cin = primaryBusinessData.cin;
         payload.gstin = primaryBusinessData.gstin;
         // The newly added detailed fields:
         payload.businessType = onboardingData.businessType;
