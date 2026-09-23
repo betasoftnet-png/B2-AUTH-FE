@@ -1369,6 +1369,11 @@ function App() {
       setError('Parent email is required');
       return;
     }
+    
+    if (!formData.parentEmail.trim().toLowerCase().endsWith('@bnxmail.com')) {
+      setError('Parent email must be a valid @bnxmail.com address');
+      return;
+    }
     setLoading(true);
     setError('');
     try {

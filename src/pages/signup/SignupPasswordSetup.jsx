@@ -58,7 +58,9 @@ const SignupPasswordSetup = () => {
               <div className="input-field-group" style={{ width: '100%', textAlign: 'center' }}>
                 <img src={betaLogo} alt="b2auth" className="auth-logo" style={{ height: '48px', marginBottom: '16px' }} />
                 <label style={{ fontSize: '18px', fontWeight: '700', display: 'block', marginBottom: '8px' }}>Create password</label>
-                <div style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', marginBottom: '8px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Step 3 of 3</div>
+                <div style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', marginBottom: '8px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                  {signupType === 'CHILD' ? 'Step 5 of 5' : 'Step 4 of 4'}
+                </div>
               </div>
               <div className="signup-inputs-container">
                 <p style={{ fontSize: '14px', color: '#475569', marginBottom: '24px', textAlign: 'center' }}>

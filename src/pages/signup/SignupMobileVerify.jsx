@@ -65,7 +65,7 @@ const SignupMobileVerify = () => {
             {mobileOtpStep === 'MOBILE' ? 'Verify your mobile number' : 'Enter OTP'}
           </label>
           <div style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', marginBottom: '8px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-            Step 2 of 3
+            {signupType === 'CHILD' ? 'Step 4 of 5' : 'Step 3 of 4'}
           </div>
         </div>
 

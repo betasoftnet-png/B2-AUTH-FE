@@ -62,7 +62,7 @@ const SignupParentVerify = () => {
             Verify Parent Details
           </label>
           <div style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', marginBottom: '8px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-            Step 2 of 3
+            Step 2 of 5
           </div>
         </div>
 
