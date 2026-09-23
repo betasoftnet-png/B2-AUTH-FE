@@ -62,6 +62,7 @@ const SignupChild = () => {
                 <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
                   Tell us a bit about your child.
                 </p>
+                {error && <div className="error-message" style={{ marginBottom: '16px' }}>{error}</div>}
               </div>
               <div className="name-grid">
                 <div className="input-group"><input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required placeholder=" " /><label>First name</label></div>

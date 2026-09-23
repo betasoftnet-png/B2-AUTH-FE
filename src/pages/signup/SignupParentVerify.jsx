@@ -70,7 +70,7 @@ const SignupParentVerify = () => {
                 <p style={{ fontSize: '14px', color: '#475569', marginBottom: '24px' }}>
                   Please verify your parent's contact details. We'll send a verification code to their email.
                 </p>
-
+                {error && <div className="error-message" style={{ marginBottom: '16px' }}>{error}</div>}
                 <div className="input-group">
                   <input 
                     type="text" 

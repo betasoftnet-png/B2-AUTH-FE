@@ -64,6 +64,7 @@ const SignupBusiness = () => {
                 <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
                   Choose your business account type.
                 </p>
+                {error && <div className="error-message" style={{ marginBottom: '16px' }}>{error}</div>}
               </div>
               
               {(businessSignupType === 'secondary' || primaryBusinessStep === 0) && (
