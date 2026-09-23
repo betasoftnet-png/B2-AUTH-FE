@@ -609,6 +609,7 @@ function App() {
       }
     } else {
       setBusinessTypeData({ emailId });
+      setError('');
       setShowBusinessTypeModal(true);
     }
   };

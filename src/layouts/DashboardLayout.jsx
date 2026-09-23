@@ -250,7 +250,7 @@ const DashboardLayout = () => {
             <div className="auth-modal-content animate-scale-in" style={{ maxWidth: "400px" }}>
               <div className="auth-modal-header">
                 <h3>Select Business Type</h3>
-                <button className="auth-close-btn" onClick={() => setShowBusinessTypeModal(false)}>
+                <button className="auth-close-btn" onClick={() => { setShowBusinessTypeModal(false); setError(''); }}>
                   <X size={20} />
                 </button>
               </div>
@@ -283,7 +283,7 @@ const DashboardLayout = () => {
             <div className="auth-modal-content animate-scale-in" style={{ maxWidth: "400px" }}>
               <div className="auth-modal-header">
                 <h3>Verify GSTIN</h3>
-                <button className="auth-close-btn" onClick={() => setShowGstModal(false)}>
+                <button className="auth-close-btn" onClick={() => { setShowGstModal(false); setError(''); }}>
                   <X size={20} />
                 </button>
               </div>
@@ -321,7 +321,7 @@ const DashboardLayout = () => {
             <div className="auth-modal-content animate-scale-in" style={{ maxWidth: "400px" }}>
               <div className="auth-modal-header">
                 <h3>Verify PAN</h3>
-                <button className="auth-close-btn" onClick={() => setShowPanModal(false)}>
+                <button className="auth-close-btn" onClick={() => { setShowPanModal(false); setError(''); }}>
                   <X size={20} />
                 </button>
               </div>
