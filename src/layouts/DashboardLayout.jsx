@@ -114,6 +114,16 @@ const DashboardLayout = () => {
                       <div className="banner-info">
                         <div className="banner-name">{formData.firstName} {formData.lastName}</div>
                         <div className="banner-email">{formData.identifier}</div>
+                        <div className="banner-tags" style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+                          <span style={{ fontSize: '10px', background: 'var(--primary-soft)', color: 'var(--primary)', padding: '2px 6px', borderRadius: '4px', fontWeight: '600', textTransform: 'uppercase' }}>
+                            {profileData?.accountType === 'PUBLIC' ? 'PERSONAL' : (profileData?.accountType || 'PERSONAL')}
+                          </span>
+                          {profileData?.accountType === 'BUSINESS' && profileData?.isPrimary && (
+                            <span style={{ fontSize: '10px', background: '#e0f2fe', color: '#0369a1', padding: '2px 6px', borderRadius: '4px', fontWeight: '600', textTransform: 'uppercase' }}>
+                              Primary
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <button className="manage-link" onClick={handleProfileClick}>Manage your Account</button>
                     </div>
@@ -131,6 +141,16 @@ const DashboardLayout = () => {
                           <div className="row-info">
                             <div className="row-name">{account.userData?.firstName} {account.userData?.lastName}</div>
                             <div className="row-email">{account.userData?.email}</div>
+                            <div className="row-tags" style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+                              <span style={{ fontSize: '10px', background: 'var(--primary-soft)', color: 'var(--primary)', padding: '2px 6px', borderRadius: '4px', fontWeight: '600', textTransform: 'uppercase' }}>
+                                {account.userData?.accountType === 'PUBLIC' ? 'PERSONAL' : (account.userData?.accountType || 'PERSONAL')}
+                              </span>
+                              {account.userData?.accountType === 'BUSINESS' && account.userData?.isPrimary && (
+                                <span style={{ fontSize: '10px', background: '#e0f2fe', color: '#0369a1', padding: '2px 6px', borderRadius: '4px', fontWeight: '600', textTransform: 'uppercase' }}>
+                                  Primary
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       ))}
