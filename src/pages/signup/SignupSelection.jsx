@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
 import authLogo from '../../assets/auth2.png';
+import betaLogo from '../../assets/beta2.png';
 import cliksBusinessLogo from '../../assets/cliks-business.png';
 import cliksLogo from '../../assets/cliks.png';
 import bitToolLogo from '../../assets/BIT-TOOL-2.png';
@@ -55,7 +56,11 @@ const SignupSelection = () => {
   return (
     <>
       <div className="auth-step selection-view">
-              <div className="selection-grid">
+        <div className="input-field-group" style={{ width: '100%', textAlign: 'center', marginBottom: '24px' }}>
+          <img src={betaLogo} alt="b2auth beta" className="auth-logo" style={{ height: '48px', marginBottom: '16px' }} />
+          <label style={{ fontSize: '24px', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Choose your account type</label>
+        </div>
+        <div className="selection-grid">
                 <div className="selection-card-premium" onClick={() => { resetSignupForm(); setSignupType('PERSONAL'); setView('signup-profile'); }}>
                   <div className="selection-icon-circle">
                     <User size={32} />
