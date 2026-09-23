@@ -114,12 +114,12 @@ const DashboardLayout = () => {
                       <div className="banner-info">
                         <div className="banner-name">{formData.firstName} {formData.lastName}</div>
                         <div className="banner-email">{formData.identifier}</div>
-                        <div className="banner-tags" style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
-                          <span style={{ fontSize: '10px', background: 'var(--primary-soft)', color: 'var(--primary)', padding: '2px 6px', borderRadius: '4px', fontWeight: '600', textTransform: 'uppercase' }}>
+                        <div className="banner-tags" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '6px' }}>
+                          <span style={{ fontSize: '10px', background: 'var(--primary-soft)', color: 'var(--primary)', padding: '3px 10px', borderRadius: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                             {profileData?.accountType === 'PUBLIC' ? 'PERSONAL' : (profileData?.accountType || 'PERSONAL')}
                           </span>
                           {profileData?.accountType === 'BUSINESS' && profileData?.isPrimary && (
-                            <span style={{ fontSize: '10px', background: '#e0f2fe', color: '#0369a1', padding: '2px 6px', borderRadius: '4px', fontWeight: '600', textTransform: 'uppercase' }}>
+                            <span style={{ fontSize: '10px', background: '#f0fdf4', color: '#15803d', padding: '3px 10px', borderRadius: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', border: '1px solid #bbf7d0' }}>
                               Primary
                             </span>
                           )}
@@ -141,12 +141,12 @@ const DashboardLayout = () => {
                           <div className="row-info">
                             <div className="row-name">{account.userData?.firstName} {account.userData?.lastName}</div>
                             <div className="row-email">{account.userData?.email}</div>
-                            <div className="row-tags" style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
-                              <span style={{ fontSize: '10px', background: 'var(--primary-soft)', color: 'var(--primary)', padding: '2px 6px', borderRadius: '4px', fontWeight: '600', textTransform: 'uppercase' }}>
+                            <div className="row-tags" style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
+                              <span style={{ fontSize: '9px', background: 'var(--primary-soft)', color: 'var(--primary)', padding: '2px 8px', borderRadius: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                                 {account.userData?.accountType === 'PUBLIC' ? 'PERSONAL' : (account.userData?.accountType || 'PERSONAL')}
                               </span>
                               {account.userData?.accountType === 'BUSINESS' && account.userData?.isPrimary && (
-                                <span style={{ fontSize: '10px', background: '#e0f2fe', color: '#0369a1', padding: '2px 6px', borderRadius: '4px', fontWeight: '600', textTransform: 'uppercase' }}>
+                                <span style={{ fontSize: '9px', background: '#f0fdf4', color: '#15803d', padding: '2px 8px', borderRadius: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', border: '1px solid #bbf7d0' }}>
                                   Primary
                                 </span>
                               )}
@@ -228,8 +228,10 @@ const DashboardLayout = () => {
 
           <footer className="sidebar-footer">
             <button className="sidebar-item logout-minimal" onClick={handleLogout}>
-              <LogOut size={16} />
-              <span>Sign Out</span>
+              <div className="icon-box" style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <LogOut size={18} />
+              </div>
+              <span className="label" style={{ marginLeft: '12px' }}>Sign Out</span>
             </button>
           </footer>
         </aside>

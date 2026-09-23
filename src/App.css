@@ -1757,7 +1757,7 @@ body {
     width: 90px;
     padding: 30px 10px; /* Reduced padding */
   }
-  .sidebar-item .label, .sidebar-logo, .sidebar-item .icon + .label, .user-profile-mini, .brand-text {
+  .sidebar-item .label, .sidebar-logo, .sidebar-item .icon + .label, .user-profile-mini, .brand-text, .sidebar-group-label {
     display: none;
   }
   .sidebar-item {
