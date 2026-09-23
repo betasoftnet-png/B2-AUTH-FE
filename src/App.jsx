@@ -213,6 +213,7 @@ function App() {
   const [fetchedGstins, setFetchedGstins] = useState([]);
   const [fetchingGstins, setFetchingGstins] = useState(false);
   const topbarRightRef = useRef(null);
+  const signupSubmitRef = useRef(false);
 
   const showAlert = (message, type = 'success') => {
     setCustomAlert({ show: true, message, type });
@@ -1463,12 +1464,15 @@ function App() {
 
   const handleFinalSignupSubmit = async (e) => {
     e.preventDefault();
+    if (signupSubmitRef.current) return;
+    
     if (!formData.username || !formData.username.trim()) {
       setError('Please select a suggested email handle or type one');
       setView('signup-mail');
       return;
     }
 
+    signupSubmitRef.current = true;
     const username = formData.username.trim();
     if (username.length < 10) {
       setError('Email handle must be atleast 10 characters long.');
@@ -1549,11 +1553,13 @@ function App() {
         );
         if (mailRes.data.success) {
           setFormData(prev => ({ ...prev, identifier: mailRes.data.data.email }));
+          signupSubmitRef.current = false;
           setView('login-password');
         }
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
+      signupSubmitRef.current = false;
     } finally {
       setLoading(false);
     }

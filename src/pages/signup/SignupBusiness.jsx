@@ -206,7 +206,7 @@ const SignupBusiness = () => {
                       <div className="signup-inputs-container">
                         <div className="name-grid">
                           <div className="input-group"><input type="text" name="businessName" value={formData.businessName} onChange={handleInputChange} required placeholder=" " /><label>Business Name</label></div>
-                          <div className="input-group"><input type="text" name="registrationNumber" value={formData.registrationNumber} onChange={handleInputChange} required placeholder=" " /><label>Registration Number (Optional)</label></div>
+                          <div className="input-group"><input type="text" name="registrationNumber" value={formData.registrationNumber} onChange={handleInputChange} placeholder=" " /><label>Registration Number (Optional)</label></div>
                         </div>
 
                         <div className="name-grid">
