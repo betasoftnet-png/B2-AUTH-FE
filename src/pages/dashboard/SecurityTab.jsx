@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
+import axios from 'axios';
 import {
   LayoutDashboard, Mail, ShieldCheck, Settings, Activity, LogOut,
   Smartphone, Monitor, Tablet, CheckCircle, AlertCircle, XCircle, Search, Building,
@@ -17,6 +18,9 @@ import {
 } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { QRCodeSVG } from 'qrcode.react';
+import betaLogo from '../../assets/beta2.png';
+
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 const SecurityTab = () => {
   const {
@@ -39,6 +43,104 @@ const SecurityTab = () => {
     PasswordRequirements, handleProcessQR, onScanSuccess, onScanError,
     // Add any other destructured state from AppContext here,
     AuthenticatorCode, accessToken, accounts, businessSignupType, businessTypeData, calculateAge, clientId, customAlert, dashboardTab, fetchAuthenticatorAccounts, fetchEmails, fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, fetchingSignupGstins, formData, gstData, handleAddAccount, handleBusinessTypeSelect, handleCreateAccountClick, handleCreateMailbox, handleEnable2FA, handleFileChange, handleFinalSignupSubmit, handleForgotInModal, handleForgotPasswordClick, handleForgotPasswordClickWithEmail, handleForgotPasswordIdentifierSubmit, handleGoToMailSignup, handleLogin, handleLogout, handleMailFormSubmit, handleOnboardingSubmit, handleProfileClick, handleRegisterProfile, handleResetPassword, handleSelectAccount, handleSendMobileOtp, handleSendOtp, handleSendParentOtp, handleSwitchAccount, handleVerificationCallback, handleVerifyGst, handleVerifyLogin2fa, handleVerifyMobileOtp, handleVerifyOtp, handleVerifyPan, handleVerifyParentOtp, leaveLegalPage, normalizeIdentifier, onboardingData, onboardingStep, panData, parentOtpSent, parseUserAgent, primaryBusinessData, primaryBusinessStep, recoveryOptions, redirectUri, registrationMode, resetSignupForm, saveAccount, selectedRecoveryMethod, setAccessToken, setAccounts, setAuthenticatorAccounts, setBusinessSignupType, setBusinessTypeData, setClientId, setCustomAlert, setDashboardTab, setExternalSessions, setFetchedGstins, setFetchingGstins, setFetchingSignupGstins, setFormData, setGstData, setLoading, setOnboardingData, setOnboardingStep, setPanData, setParentOtpSent, setPasswordForm, setPrimaryBusinessData, setPrimaryBusinessStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setRegistrationMode, setSelectedRecoveryMethod, setSessions, setSettingsData, setSetup2FAData, setShowAccountSwitcher, setShowBusinessTypeModal, setSidebarCategory, setSignupFetchedGstins, setSignupType, setState, setSuccessMessage, setTempToken, setUseSavedAccount, setUserEmails, setUsernameSuggestions, setVerificationStatus, setVerifyPanResult, setView, setVkycUrl, settingsData, showAccountSwitcher, showAlert, showBusinessTypeModal, showGstModal, showLegalPage, showPanModal, sidebarCategory, signupFetchedGstins, signupType, successMessage, tempToken, useSavedAccount, usernameSuggestions, validatePassword, verificationStatus, verifyPanResult, view, vkycUrl, authLogo, cliksBusinessLogo, cliksLogo, bitToolLogo,} = useAppContext();
+
+  const [localForgotStep, setLocalForgotStep] = useState('none'); // 'none', 'options', 'otp', 'reset'
+  const [localRecoveryOptions, setLocalRecoveryOptions] = useState([]);
+  const [selectedLocalMethod, setSelectedLocalMethod] = useState(null);
+  const [localOtp, setLocalOtp] = useState('');
+  const [localNewPassword, setLocalNewPassword] = useState('');
+  const [localConfirmPassword, setLocalConfirmPassword] = useState('');
+  const [localLoading, setLocalLoading] = useState(false);
+  const [localError, setLocalError] = useState('');
+
+  const startLocalForgotFlow = async () => {
+    setLocalLoading(true);
+    setLocalError('');
+    const email = profileData?.email || formData.identifier;
+    try {
+      const res = await axios.get(`${API_BASE}/auth/forgot-password/options?identifier=${email}`);
+      if (res.data.success) {
+        setLocalRecoveryOptions(res.data.data);
+        setLocalForgotStep('options');
+      }
+    } catch (err) {
+      setLocalError(err.response?.data?.message || 'Failed to fetch recovery options');
+    } finally {
+      setLocalLoading(false);
+    }
+  };
+
+  const handleLocalSendOtp = async (method) => {
+    setLocalLoading(true);
+    setLocalError('');
+    const email = profileData?.email || formData.identifier;
+    try {
+      await axios.post(`${API_BASE}/auth/forgot-password/send-otp`, {
+        identifier: email,
+        method: method.value,
+        type: method.type
+      });
+      setSelectedLocalMethod(method);
+      setLocalForgotStep('otp');
+    } catch (err) {
+      setLocalError(err.response?.data?.message || 'Failed to send OTP');
+    } finally {
+      setLocalLoading(false);
+    }
+  };
+
+  const handleLocalVerifyOtp = async () => {
+    setLocalLoading(true);
+    setLocalError('');
+    const email = profileData?.email || formData.identifier;
+    try {
+      const res = await axios.post(`${API_BASE}/auth/forgot-password/verify-otp`, {
+        identifier: email,
+        otp: localOtp
+      });
+      if (res.data.success) {
+        setLocalForgotStep('reset');
+      }
+    } catch (err) {
+      setLocalError(err.response?.data?.message || 'Invalid OTP');
+    } finally {
+      setLocalLoading(false);
+    }
+  };
+
+  const handleLocalResetPassword = async () => {
+    if (localNewPassword !== localConfirmPassword) {
+      setLocalError('Passwords do not match');
+      return;
+    }
+    setLocalLoading(true);
+    setLocalError('');
+    const email = profileData?.email || formData.identifier;
+    try {
+      await axios.post(`${API_BASE}/auth/reset-password`, {
+        identifier: email,
+        otp: localOtp,
+        newPassword: localNewPassword
+      });
+      showAlert("Password reset successfully");
+      closeChangePasswordModal();
+    } catch (err) {
+      setLocalError(err.response?.data?.message || 'Failed to reset password');
+    } finally {
+      setLocalLoading(false);
+    }
+  };
+
+  const closeChangePasswordModal = () => {
+    setShowChangePasswordModal(false);
+    setLocalForgotStep('none');
+    setLocalOtp('');
+    setLocalNewPassword('');
+    setLocalConfirmPassword('');
+    setLocalError('');
+    setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
+    setError('');
+  };
 
   return (
     <>
@@ -184,7 +286,9 @@ const SecurityTab = () => {
                           >
                             <div className="identity-leading">
                               <div className="identity-icon-box">
-                                {session.appName?.toLowerCase().includes('cliks business') ? (
+                                {session.appName?.toLowerCase().includes('beta storage') || session.appName?.toLowerCase().includes('beta website') ? (
+                                  <img src={betaLogo} alt="Beta App" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
+                                ) : session.appName?.toLowerCase().includes('cliks business') ? (
                                   <img src={cliksBusinessLogo} alt="Cliks Business" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
                                 ) : session.appName?.toLowerCase().includes('cliks') ? (
                                   <img src={cliksLogo} alt="Cliks" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
@@ -350,51 +454,133 @@ const SecurityTab = () => {
                   <div className="auth-modal-overlay">
                     <div className="auth-modal-content animate-scale-in" style={{ maxWidth: "400px" }}>
                       <div className="auth-modal-header">
-                        <h3>Change Password</h3>
-                        <button className="auth-close-btn" onClick={() => setShowChangePasswordModal(false)}>
+                        <h3>{localForgotStep === 'none' ? 'Change Password' : localForgotStep === 'reset' ? 'Reset Password' : 'Forgot Password'}</h3>
+                        <button className="auth-close-btn" onClick={closeChangePasswordModal}>
                           <X size={20} />
                         </button>
                       </div>
                       <div className="auth-modal-body">
-                        <div className="auth-input-group">
-                          <label>Current Password</label>
-                          <input
-                            type="password"
-                            placeholder="Enter current password"
-                            value={passwordForm.oldPassword}
-                            onChange={e => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
-                          />
-                          <div className="input-helper-link">
-                            <button type="button" onClick={handleForgotInModal} className="text-link-btn-small">Forgot password?</button>
-                          </div>
-                        </div>
-                        <div className="auth-input-group">
-                          <label>New Password</label>
-                          <input
-                            type="password"
-                            placeholder="Enter new password"
-                            value={passwordForm.newPassword}
-                            onChange={e => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                          />
-                        </div>
-                        <div className="auth-input-group">
-                          <label style={{ marginTop: '10px' }}>Confirm New Password</label>
-                          <input
-                            style={{ marginBottom: '10px' }}
-                            type="password"
-                            placeholder="Confirm new password"
-                            value={passwordForm.confirmPassword}
-                            onChange={e => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                          />
-                        </div>
-                        {error && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{error}</div>}
-                        <button
-                          className="action-btn primary-solid full-width"
-                          onClick={handleChangePassword}
-                          disabled={loading || !passwordForm.oldPassword || !passwordForm.newPassword || passwordForm.newPassword !== passwordForm.confirmPassword}
-                        >
-                          {loading ? <RefreshCw className="spin" size={16} /> : "Update Password"}
-                        </button>
+                        {localForgotStep === 'none' ? (
+                          <>
+                            <div className="auth-input-group">
+                              <label>Current Password</label>
+                              <input
+                                type="password"
+                                placeholder="Enter current password"
+                                value={passwordForm.oldPassword}
+                                onChange={e => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
+                              />
+                              <div className="input-helper-link">
+                                <button type="button" onClick={startLocalForgotFlow} className="text-link-btn-small">Forgot password?</button>
+                              </div>
+                            </div>
+                            <div className="auth-input-group">
+                              <label>New Password</label>
+                              <input
+                                type="password"
+                                placeholder="Enter new password"
+                                value={passwordForm.newPassword}
+                                onChange={e => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                              />
+                            </div>
+                            <div className="auth-input-group">
+                              <label style={{ marginTop: '10px' }}>Confirm New Password</label>
+                              <input
+                                style={{ marginBottom: '10px' }}
+                                type="password"
+                                placeholder="Confirm new password"
+                                value={passwordForm.confirmPassword}
+                                onChange={e => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                              />
+                            </div>
+                            {(error || localError) && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{error || localError}</div>}
+                            <button
+                              className="action-btn primary-solid full-width"
+                              onClick={handleChangePassword}
+                              disabled={loading || localLoading || !passwordForm.oldPassword || !passwordForm.newPassword || passwordForm.newPassword !== passwordForm.confirmPassword}
+                            >
+                              {loading || localLoading ? <RefreshCw className="spin" size={16} /> : "Update Password"}
+                            </button>
+                          </>
+                        ) : localForgotStep === 'options' ? (
+                          <>
+                            <p style={{ marginBottom: '16px', color: '#64748b', fontSize: '14px' }}>Choose a method to recover your password:</p>
+                            <div className="recovery-options-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+                              {localRecoveryOptions.map((method, idx) => (
+                                <div
+                                  key={idx}
+                                  className={`recovery-option-card ${selectedLocalMethod === method ? 'selected' : ''}`}
+                                  onClick={() => setSelectedLocalMethod(method)}
+                                  style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: selectedLocalMethod === method ? '#f1f5f9' : 'transparent' }}
+                                >
+                                  {method.type === 'authenticator' ? <Smartphone size={24} color="#0f172a" /> : <Mail size={24} color="#0f172a" />}
+                                  <div>
+                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>{method.label}</div>
+                                    <div style={{ fontSize: '13px', color: '#64748b' }}>{method.value}</div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                            {localError && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{localError}</div>}
+                            <button
+                              className="action-btn primary-solid full-width"
+                              onClick={() => handleLocalSendOtp(selectedLocalMethod)}
+                              disabled={localLoading || !selectedLocalMethod}
+                            >
+                              {localLoading ? <RefreshCw className="spin" size={16} /> : "Send Code"}
+                            </button>
+                          </>
+                        ) : localForgotStep === 'otp' ? (
+                          <>
+                            <p style={{ marginBottom: '16px', color: '#64748b', fontSize: '14px' }}>Enter the verification code sent to {selectedLocalMethod?.value}:</p>
+                            <div className="auth-input-group">
+                              <input
+                                type="text"
+                                placeholder="6-digit code"
+                                value={localOtp}
+                                onChange={e => setLocalOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                              />
+                            </div>
+                            {localError && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{localError}</div>}
+                            <button
+                              className="action-btn primary-solid full-width"
+                              onClick={handleLocalVerifyOtp}
+                              disabled={localLoading || localOtp.length !== 6}
+                            >
+                              {localLoading ? <RefreshCw className="spin" size={16} /> : "Verify Code"}
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <div className="auth-input-group">
+                              <label>New Password</label>
+                              <input
+                                type="password"
+                                placeholder="Enter new password"
+                                value={localNewPassword}
+                                onChange={e => setLocalNewPassword(e.target.value)}
+                              />
+                            </div>
+                            <div className="auth-input-group">
+                              <label style={{ marginTop: '10px' }}>Confirm New Password</label>
+                              <input
+                                style={{ marginBottom: '10px' }}
+                                type="password"
+                                placeholder="Confirm new password"
+                                value={localConfirmPassword}
+                                onChange={e => setLocalConfirmPassword(e.target.value)}
+                              />
+                            </div>
+                            {localError && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{localError}</div>}
+                            <button
+                              className="action-btn primary-solid full-width"
+                              onClick={handleLocalResetPassword}
+                              disabled={localLoading || !localNewPassword || localNewPassword !== localConfirmPassword}
+                            >
+                              {localLoading ? <RefreshCw className="spin" size={16} /> : "Reset Password"}
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
