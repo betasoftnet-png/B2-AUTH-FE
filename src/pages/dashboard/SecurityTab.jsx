@@ -45,7 +45,7 @@ const SecurityTab = () => {
     AuthenticatorCode, accessToken, accounts, businessSignupType, businessTypeData, calculateAge, clientId, customAlert, dashboardTab, fetchAuthenticatorAccounts, fetchEmails, fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, fetchingSignupGstins, formData, gstData, handleAddAccount, handleBusinessTypeSelect, handleCreateAccountClick, handleCreateMailbox, handleEnable2FA, handleFileChange, handleFinalSignupSubmit, handleForgotInModal, handleForgotPasswordClick, handleForgotPasswordClickWithEmail, handleForgotPasswordIdentifierSubmit, handleGoToMailSignup, handleLogin, handleLogout, handleMailFormSubmit, handleOnboardingSubmit, handleProfileClick, handleRegisterProfile, handleResetPassword, handleSelectAccount, handleSendMobileOtp, handleSendOtp, handleSendParentOtp, handleSwitchAccount, handleVerificationCallback, handleVerifyGst, handleVerifyLogin2fa, handleVerifyMobileOtp, handleVerifyOtp, handleVerifyPan, handleVerifyParentOtp, leaveLegalPage, normalizeIdentifier, onboardingData, onboardingStep, panData, parentOtpSent, parseUserAgent, primaryBusinessData, primaryBusinessStep, recoveryOptions, redirectUri, registrationMode, resetSignupForm, saveAccount, selectedRecoveryMethod, setAccessToken, setAccounts, setAuthenticatorAccounts, setBusinessSignupType, setBusinessTypeData, setClientId, setCustomAlert, setDashboardTab, setExternalSessions, setFetchedGstins, setFetchingGstins, setFetchingSignupGstins, setFormData, setGstData, setLoading, setOnboardingData, setOnboardingStep, setPanData, setParentOtpSent, setPasswordForm, setPrimaryBusinessData, setPrimaryBusinessStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setRegistrationMode, setSelectedRecoveryMethod, setSessions, setSettingsData, setSetup2FAData, setShowAccountSwitcher, setShowBusinessTypeModal, setSidebarCategory, setSignupFetchedGstins, setSignupType, setState, setSuccessMessage, setTempToken, setUseSavedAccount, setUserEmails, setUsernameSuggestions, setVerificationStatus, setVerifyPanResult, setView, setVkycUrl, settingsData, showAccountSwitcher, showAlert, showBusinessTypeModal, showGstModal, showLegalPage, showPanModal, sidebarCategory, signupFetchedGstins, signupType, successMessage, tempToken, useSavedAccount, usernameSuggestions, validatePassword, verificationStatus, verifyPanResult, view, vkycUrl, authLogo, cliksBusinessLogo, cliksLogo, bitToolLogo,} = useAppContext();
 
   const [localForgotStep, setLocalForgotStep] = useState('none'); // 'none', 'options', 'otp', 'reset'
-  const [localRecoveryOptions, setLocalRecoveryOptions] = useState([]);
+  const [localRecoveryOptions, setLocalRecoveryOptions] = useState({});
   const [selectedLocalMethod, setSelectedLocalMethod] = useState(null);
   const [localOtp, setLocalOtp] = useState('');
   const [localNewPassword, setLocalNewPassword] = useState('');
@@ -77,8 +77,7 @@ const SecurityTab = () => {
     try {
       await axios.post(`${API_BASE}/auth/forgot-password/send-otp`, {
         identifier: email,
-        method: method.value,
-        type: method.type
+        method: method
       });
       setSelectedLocalMethod(method);
       setLocalForgotStep('otp');
@@ -506,20 +505,32 @@ const SecurityTab = () => {
                           <>
                             <p style={{ marginBottom: '16px', color: '#64748b', fontSize: '14px' }}>Choose a method to recover your password:</p>
                             <div className="recovery-options-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
-                              {localRecoveryOptions.map((method, idx) => (
+                              {localRecoveryOptions?.recoveryEmail && (
                                 <div
-                                  key={idx}
-                                  className={`recovery-option-card ${selectedLocalMethod === method ? 'selected' : ''}`}
-                                  onClick={() => setSelectedLocalMethod(method)}
-                                  style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: selectedLocalMethod === method ? '#f1f5f9' : 'transparent' }}
+                                  className={`recovery-option-card ${selectedLocalMethod === 'EMAIL' ? 'selected' : ''}`}
+                                  onClick={() => setSelectedLocalMethod('EMAIL')}
+                                  style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: selectedLocalMethod === 'EMAIL' ? '#f1f5f9' : 'transparent' }}
                                 >
-                                  {method.type === 'authenticator' ? <Smartphone size={24} color="#0f172a" /> : <Mail size={24} color="#0f172a" />}
+                                  <Mail size={24} color="#0f172a" />
                                   <div>
-                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>{method.label}</div>
-                                    <div style={{ fontSize: '13px', color: '#64748b' }}>{method.value}</div>
+                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>Email</div>
+                                    <div style={{ fontSize: '13px', color: '#64748b' }}>{localRecoveryOptions.recoveryEmail}</div>
                                   </div>
                                 </div>
-                              ))}
+                              )}
+                              {localRecoveryOptions?.phoneNumber && (
+                                <div
+                                  className={`recovery-option-card ${selectedLocalMethod === 'PHONE' ? 'selected' : ''}`}
+                                  onClick={() => setSelectedLocalMethod('PHONE')}
+                                  style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: selectedLocalMethod === 'PHONE' ? '#f1f5f9' : 'transparent' }}
+                                >
+                                  <Smartphone size={24} color="#0f172a" />
+                                  <div>
+                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>Phone</div>
+                                    <div style={{ fontSize: '13px', color: '#64748b' }}>{localRecoveryOptions.phoneNumber}</div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                             {localError && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{localError}</div>}
                             <button
@@ -532,7 +543,7 @@ const SecurityTab = () => {
                           </>
                         ) : localForgotStep === 'otp' ? (
                           <>
-                            <p style={{ marginBottom: '16px', color: '#64748b', fontSize: '14px' }}>Enter the verification code sent to {selectedLocalMethod?.value}:</p>
+                            <p style={{ marginBottom: '16px', color: '#64748b', fontSize: '14px' }}>Enter the verification code sent to {selectedLocalMethod === 'EMAIL' ? localRecoveryOptions.recoveryEmail : localRecoveryOptions.phoneNumber}:</p>
                             <div className="auth-input-group">
                               <input
                                 type="text"
