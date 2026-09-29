@@ -1476,6 +1476,7 @@ function App() {
     if (username.length < 10) {
       setError('Email handle must be atleast 10 characters long.');
       setView('signup-mail');
+      signupSubmitRef.current = false;
       return;
     }
     const digits = (username.match(/\d/g) || []).length;
@@ -1489,17 +1490,20 @@ function App() {
     if (digits < 3 || letters < 7) {
       setError('Email handle must be at least 7 letters and 3 numbers.');
       setView('signup-mail');
+      signupSubmitRef.current = false;
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
+      signupSubmitRef.current = false;
       return;
     }
 
     const { isValid } = validatePassword(formData.password);
     if (!isValid) {
       setError('Password does not meet the security requirements');
+      signupSubmitRef.current = false;
       return;
     }
 

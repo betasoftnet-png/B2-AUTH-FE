@@ -80,7 +80,8 @@ const SignupBusinessOnboarding = () => {
               <div className="onboarding-welcome" style={{ marginBottom: '24px', textAlign: 'center' }}>
                 <img src={betaLogo} alt="b2auth beta" className="auth-logo" style={{ height: '48px', marginBottom: '16px' }} />
                 <h2 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--primary)', marginBottom: '8px' }}>Welcome, {formData.firstName || formData.username || 'User'}!</h2>
-                <p style={{ fontSize: '14px', color: '#64748b' }}>Please complete your Business Profile setup to unlock your dashboard.</p>
+                <p style={{ fontSize: '14px', color: '#64748b', marginBottom: error ? '16px' : '0' }}>Please complete your Business Profile setup to unlock your dashboard.</p>
+                {error && <div className="error-message" style={{ color: 'red', marginTop: '16px', textAlign: 'center', width: '100%', fontSize: '14px', fontWeight: '500' }}>{error}</div>}
               </div>
 
               <div className="signup-inputs-container">

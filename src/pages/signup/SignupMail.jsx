@@ -65,6 +65,8 @@ const SignupMail = () => {
                     Select one of the suggested handles or enter a custom one.
                   </p>
 
+                  {error && <div className="error-message" style={{ color: 'red', marginBottom: '16px', textAlign: 'center', width: '100%', fontSize: '14px', fontWeight: '500' }}>{error}</div>}
+
                   {usernameSuggestions && usernameSuggestions.length > 0 && (
                     <div className="username-suggestions-container" style={{ marginBottom: '24px', width: '100%' }}>
                       <span className="suggestions-title" style={{ fontSize: '13px', fontWeight: '600', color: '#64748b', marginBottom: '12px', display: 'block' }}>Suggested email addresses:</span>
