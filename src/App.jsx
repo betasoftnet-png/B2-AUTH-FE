@@ -58,8 +58,8 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 import './App.css';
 
 const AuthenticatorCode = ({ secret }) => {
-  const [setCode] = useState('000000');
-  const [setTimeLeft] = useState(30);
+  const [code, setCode] = useState('000000');
+  const [timeLeft, setTimeLeft] = useState(30);
 
   useEffect(() => {
     try {
@@ -78,7 +78,7 @@ const AuthenticatorCode = ({ secret }) => {
       };
 
       update();
-      const timer = setInterval(1000);
+      const timer = setInterval(update, 1000);
       return () => clearInterval(timer);
     } catch (e) {
       console.error("Invalid secret", e);
@@ -911,6 +911,7 @@ function App() {
     setShowChangePasswordModal(false);
     const email = profileData?.email || formData.identifier;
     setFormData(prev => ({ ...prev, identifier: email }));
+    navigate('/');
     handleForgotPasswordClickWithEmail(email);
   };
 

@@ -3,24 +3,12 @@ import React, { useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import {
-  LayoutDashboard, Mail, ShieldCheck, Settings, Activity, LogOut,
-  Smartphone, Monitor, Tablet, CheckCircle, AlertCircle, XCircle, Search, Building,
-  Minus, FileText, Download, Briefcase, FileSignature, UploadCloud, UserPlus, Info,
-  Trash2, Edit3, Save, Plus, ChevronRight, ChevronDown, User, Phone,
-  Globe, Clock, MapPin,
-  LockIcon,
-  LockOpenIcon,
-  Check,
-  Circle,
-  X,
-  RefreshCw,
-  ChevronLeft
+  LayoutDashboard, Mail, ShieldCheck, LogOut,
+  CheckCircle, Building, Briefcase, Plus, ChevronRight, ChevronDown, User,Check, X, RefreshCw
 } from 'lucide-react';
-import authLogo from '../assets/auth2.png';
+
 import betaLogo from '../assets/beta2.png';
-import cliksLogo from '../assets/cliks.png';
-import cliksBusinessLogo from '../assets/cliks-business.png';
-import bitToolLogo from '../assets/BIT-TOOL-2.png';
+
 
 const DashboardLayout = () => {
   const {
