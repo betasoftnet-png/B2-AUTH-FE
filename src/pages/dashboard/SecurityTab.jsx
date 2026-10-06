@@ -356,11 +356,7 @@ const QrScannerCard = ({ onScanSuccess }) => {
     <div className="qr-scanner-card">
       <div id="reader">
         <div id="reader__scan_region">
-          <div
-            id="scanner-video-feed"
-            ref={videoFeedRef}
-            style={{ width: "100%", height: "100%", position: "absolute", inset: 0 }}
-          />
+          <div id="scanner-video-feed" ref={videoFeedRef} />
           <div className="b2auth-scanner-hud">
             <span className="hud-corner hud-tl"></span>
             <span className="hud-corner hud-tr"></span>
