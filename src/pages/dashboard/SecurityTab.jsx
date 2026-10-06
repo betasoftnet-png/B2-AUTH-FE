@@ -17,7 +17,10 @@ import {
   ChevronLeft,
   QrCode,
   Keyboard,
-  KeyRound
+  KeyRound,
+  Lock,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { QRCodeSVG } from 'qrcode.react';
@@ -487,6 +490,10 @@ const SecurityTab = () => {
   const [localLoading, setLocalLoading] = useState(false);
   const [localError, setLocalError] = useState('');
 
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const startLocalForgotFlow = async () => {
     setLocalLoading(true);
     setLocalError('');
@@ -573,6 +580,9 @@ const SecurityTab = () => {
     setLocalError('');
     setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
     setError('');
+    setShowOldPassword(false);
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
   };
 
   return (
@@ -1043,153 +1053,387 @@ const SecurityTab = () => {
                 )}
 
                 {/* Change Password Modal */}
-                {showChangePasswordModal && (
-                  <div className="auth-modal-overlay">
-                    <div className="auth-modal-content animate-scale-in" style={{ maxWidth: "400px" }}>
-                      <div className="auth-modal-header">
-                        <h3>{localForgotStep === 'none' ? 'Change Password' : localForgotStep === 'reset' ? 'Reset Password' : 'Forgot Password'}</h3>
-                        <button className="auth-close-btn" onClick={closeChangePasswordModal}>
-                          <X size={20} />
-                        </button>
-                      </div>
-                      <div className="auth-modal-body">
+                {showChangePasswordModal && (() => {
+                  const newPwdVal = passwordForm.newPassword || '';
+                  const pwdValidation = validatePassword ? validatePassword(newPwdVal) : {
+                    requirements: {
+                      minLength: newPwdVal.length >= 8,
+                      hasUpper: /[A-Z]/.test(newPwdVal),
+                      hasNumber: /[0-9]/.test(newPwdVal),
+                      hasSpecial: /[!@#$%^&*(),.?":{}|<>]/.test(newPwdVal)
+                    }
+                  };
+                  const reqs = pwdValidation?.requirements || {};
+                  const hasLower = /[a-z]/.test(newPwdVal);
+                  const upperLowerMet = reqs.hasUpper && hasLower;
+
+                  return (
+                    <div className="auth-modal-overlay">
+                      <div className="change-pwd-modal-content animate-scale-in">
                         {localForgotStep === 'none' ? (
                           <>
-                            <div className="auth-input-group">
-                              <label>Current Password</label>
-                              <input
-                                type="password"
-                                placeholder="Enter current password"
-                                value={passwordForm.oldPassword}
-                                onChange={e => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
-                              />
-                              <div className="input-helper-link">
-                                <button type="button" onClick={startLocalForgotFlow} className="text-link-btn-small">Forgot password?</button>
+                            <div className="change-pwd-header">
+                              <div className="change-pwd-header-left">
+                                <div className="change-pwd-lock-badge">
+                                  <Lock size={20} />
+                                </div>
+                                <div className="change-pwd-header-text">
+                                  <h3 className="change-pwd-title">Change Password</h3>
+                                  <p className="change-pwd-subtitle">Update your password to keep your B2Auth account secure.</p>
+                                </div>
+                              </div>
+                              <button className="change-pwd-close-btn" onClick={closeChangePasswordModal} aria-label="Close">
+                                <X size={16} />
+                              </button>
+                            </div>
+
+                            <div className="change-pwd-body">
+                              {/* Current Password Field */}
+                              <div className="change-pwd-field">
+                                <div className="change-pwd-label-row">
+                                  <label className="change-pwd-label">Current Password</label>
+                                  <button 
+                                    type="button" 
+                                    onClick={startLocalForgotFlow} 
+                                    className="change-pwd-forgot-link"
+                                  >
+                                    Forgot password?
+                                  </button>
+                                </div>
+                                <div className="change-pwd-input-wrap">
+                                  <Lock size={16} className="change-pwd-input-icon" />
+                                  <input
+                                    type={showOldPassword ? "text" : "password"}
+                                    placeholder="Enter current password"
+                                    value={passwordForm.oldPassword}
+                                    onChange={e => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
+                                  />
+                                  <button
+                                    type="button"
+                                    className="change-pwd-toggle-btn"
+                                    onClick={() => setShowOldPassword(!showOldPassword)}
+                                    aria-label={showOldPassword ? "Hide password" : "Show password"}
+                                  >
+                                    {showOldPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* New Password Field */}
+                              <div className="change-pwd-field">
+                                <label className="change-pwd-label">New Password</label>
+                                <div className="change-pwd-input-wrap">
+                                  <Lock size={16} className="change-pwd-input-icon" />
+                                  <input
+                                    type={showNewPassword ? "text" : "password"}
+                                    placeholder="Enter new password"
+                                    value={passwordForm.newPassword}
+                                    onChange={e => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                                  />
+                                  <button
+                                    type="button"
+                                    className="change-pwd-toggle-btn"
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                    aria-label={showNewPassword ? "Hide password" : "Show password"}
+                                  >
+                                    {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                  </button>
+                                </div>
+
+                                {/* Password Requirements */}
+                                <div className="change-pwd-requirements-grid">
+                                  <div className={`change-pwd-req-item ${reqs.minLength ? 'met' : ''}`}>
+                                    {reqs.minLength ? (
+                                      <CheckCircle size={14} className="req-icon met" />
+                                    ) : (
+                                      <Circle size={14} className="req-icon" />
+                                    )}
+                                    <span>At least 8 characters</span>
+                                  </div>
+                                  <div className={`change-pwd-req-item ${reqs.hasNumber ? 'met' : ''}`}>
+                                    {reqs.hasNumber ? (
+                                      <CheckCircle size={14} className="req-icon met" />
+                                    ) : (
+                                      <Circle size={14} className="req-icon" />
+                                    )}
+                                    <span>Include a number</span>
+                                  </div>
+                                  <div className={`change-pwd-req-item ${upperLowerMet ? 'met' : ''}`}>
+                                    {upperLowerMet ? (
+                                      <CheckCircle size={14} className="req-icon met" />
+                                    ) : (
+                                      <Circle size={14} className="req-icon" />
+                                    )}
+                                    <span>Include uppercase and lowercase letters</span>
+                                  </div>
+                                  <div className={`change-pwd-req-item ${reqs.hasSpecial ? 'met' : ''}`}>
+                                    {reqs.hasSpecial ? (
+                                      <CheckCircle size={14} className="req-icon met" />
+                                    ) : (
+                                      <Circle size={14} className="req-icon" />
+                                    )}
+                                    <span>Include a special character (! @ # $ % ^ & *)</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Confirm New Password Field */}
+                              <div className="change-pwd-field">
+                                <label className="change-pwd-label">Confirm New Password</label>
+                                <div className="change-pwd-input-wrap">
+                                  <Lock size={16} className="change-pwd-input-icon" />
+                                  <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    placeholder="Confirm new password"
+                                    value={passwordForm.confirmPassword}
+                                    onChange={e => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                                  />
+                                  <button
+                                    type="button"
+                                    className="change-pwd-toggle-btn"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                                  >
+                                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                  </button>
+                                </div>
+                              </div>
+
+                              {(error || localError) && (
+                                <div className="change-pwd-error-inline">
+                                  {error || localError}
+                                </div>
+                              )}
+
+                              {/* Actions */}
+                              <div className="change-pwd-footer">
+                                <button
+                                  type="button"
+                                  className="btn-change-pwd-cancel"
+                                  onClick={closeChangePasswordModal}
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn-change-pwd-submit"
+                                  onClick={handleChangePassword}
+                                  disabled={
+                                    loading || localLoading || 
+                                    !passwordForm.oldPassword || 
+                                    !passwordForm.newPassword || 
+                                    passwordForm.newPassword !== passwordForm.confirmPassword
+                                  }
+                                >
+                                  {loading || localLoading ? (
+                                    <>
+                                      <RefreshCw className="spin" size={15} />
+                                      <span>Updating...</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Lock size={15} />
+                                      <span>Update Password</span>
+                                    </>
+                                  )}
+                                </button>
                               </div>
                             </div>
-                            <div className="auth-input-group">
-                              <label>New Password</label>
-                              <input
-                                type="password"
-                                placeholder="Enter new password"
-                                value={passwordForm.newPassword}
-                                onChange={e => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                              />
-                            </div>
-                            <div className="auth-input-group">
-                              <label style={{ marginTop: '10px' }}>Confirm New Password</label>
-                              <input
-                                style={{ marginBottom: '10px' }}
-                                type="password"
-                                placeholder="Confirm new password"
-                                value={passwordForm.confirmPassword}
-                                onChange={e => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                              />
-                            </div>
-                            {(error || localError) && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{error || localError}</div>}
-                            <button
-                              className="action-btn primary-solid full-width"
-                              onClick={handleChangePassword}
-                              disabled={loading || localLoading || !passwordForm.oldPassword || !passwordForm.newPassword || passwordForm.newPassword !== passwordForm.confirmPassword}
-                            >
-                              {loading || localLoading ? <RefreshCw className="spin" size={16} /> : "Update Password"}
-                            </button>
                           </>
                         ) : localForgotStep === 'options' ? (
                           <>
-                            <p style={{ marginBottom: '16px', color: '#64748b', fontSize: '14px' }}>Choose a method to recover your password:</p>
-                            <div className="recovery-options-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
-                              {localRecoveryOptions?.recoveryEmail && (
-                                <div
-                                  className={`recovery-option-card ${selectedLocalMethod === 'EMAIL' ? 'selected' : ''}`}
-                                  onClick={() => setSelectedLocalMethod('EMAIL')}
-                                  style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: selectedLocalMethod === 'EMAIL' ? '#f1f5f9' : 'transparent' }}
-                                >
-                                  <Mail size={24} color="#0f172a" />
-                                  <div>
-                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>Email</div>
-                                    <div style={{ fontSize: '13px', color: '#64748b' }}>{localRecoveryOptions.recoveryEmail}</div>
-                                  </div>
+                            <div className="change-pwd-header">
+                              <div className="change-pwd-header-left">
+                                <div className="change-pwd-lock-badge">
+                                  <Lock size={20} />
                                 </div>
-                              )}
-                              {localRecoveryOptions?.phoneNumber && (
-                                <div
-                                  className={`recovery-option-card ${selectedLocalMethod === 'PHONE' ? 'selected' : ''}`}
-                                  onClick={() => setSelectedLocalMethod('PHONE')}
-                                  style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: selectedLocalMethod === 'PHONE' ? '#f1f5f9' : 'transparent' }}
-                                >
-                                  <Smartphone size={24} color="#0f172a" />
-                                  <div>
-                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>Phone</div>
-                                    <div style={{ fontSize: '13px', color: '#64748b' }}>{localRecoveryOptions.phoneNumber}</div>
-                                  </div>
+                                <div className="change-pwd-header-text">
+                                  <h3 className="change-pwd-title">Forgot Password</h3>
+                                  <p className="change-pwd-subtitle">Choose a method to recover your password.</p>
                                 </div>
-                              )}
+                              </div>
+                              <button className="change-pwd-close-btn" onClick={closeChangePasswordModal} aria-label="Close">
+                                <X size={16} />
+                              </button>
                             </div>
-                            {localError && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{localError}</div>}
-                            <button
-                              className="action-btn primary-solid full-width"
-                              onClick={() => handleLocalSendOtp(selectedLocalMethod)}
-                              disabled={localLoading || !selectedLocalMethod}
-                            >
-                              {localLoading ? <RefreshCw className="spin" size={16} /> : "Send Code"}
-                            </button>
+                            <div className="change-pwd-body">
+                              <div className="recovery-options-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+                                {localRecoveryOptions?.recoveryEmail && (
+                                  <div
+                                    className={`recovery-option-card ${selectedLocalMethod === 'EMAIL' ? 'selected' : ''}`}
+                                    onClick={() => setSelectedLocalMethod('EMAIL')}
+                                    style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: selectedLocalMethod === 'EMAIL' ? '#eff6ff' : 'transparent', borderColor: selectedLocalMethod === 'EMAIL' ? '#3b82f6' : '#e2e8f0' }}
+                                  >
+                                    <Mail size={22} color="#2563eb" />
+                                    <div>
+                                      <div style={{ fontWeight: '600', color: '#0f172a' }}>Email</div>
+                                      <div style={{ fontSize: '13px', color: '#64748b' }}>{localRecoveryOptions.recoveryEmail}</div>
+                                    </div>
+                                  </div>
+                                )}
+                                {localRecoveryOptions?.phoneNumber && (
+                                  <div
+                                    className={`recovery-option-card ${selectedLocalMethod === 'PHONE' ? 'selected' : ''}`}
+                                    onClick={() => setSelectedLocalMethod('PHONE')}
+                                    style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: selectedLocalMethod === 'PHONE' ? '#eff6ff' : 'transparent', borderColor: selectedLocalMethod === 'PHONE' ? '#3b82f6' : '#e2e8f0' }}
+                                  >
+                                    <Smartphone size={22} color="#2563eb" />
+                                    <div>
+                                      <div style={{ fontWeight: '600', color: '#0f172a' }}>Phone</div>
+                                      <div style={{ fontSize: '13px', color: '#64748b' }}>{localRecoveryOptions.phoneNumber}</div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                              {localError && <div className="change-pwd-error-inline">{localError}</div>}
+                              <div className="change-pwd-footer">
+                                <button
+                                  type="button"
+                                  className="btn-change-pwd-cancel"
+                                  onClick={() => setLocalForgotStep('none')}
+                                >
+                                  Back
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn-change-pwd-submit"
+                                  onClick={() => handleLocalSendOtp(selectedLocalMethod)}
+                                  disabled={localLoading || !selectedLocalMethod}
+                                >
+                                  {localLoading ? <RefreshCw className="spin" size={15} /> : "Send Code"}
+                                </button>
+                              </div>
+                            </div>
                           </>
                         ) : localForgotStep === 'otp' ? (
                           <>
-                            <p style={{ marginBottom: '16px', color: '#64748b', fontSize: '14px' }}>Enter the verification code sent to {selectedLocalMethod === 'EMAIL' ? localRecoveryOptions.recoveryEmail : localRecoveryOptions.phoneNumber}:</p>
-                            <div className="auth-input-group">
-                              <input
-                                type="text"
-                                placeholder="6-digit code"
-                                value={localOtp}
-                                onChange={e => setLocalOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                              />
+                            <div className="change-pwd-header">
+                              <div className="change-pwd-header-left">
+                                <div className="change-pwd-lock-badge">
+                                  <Lock size={20} />
+                                </div>
+                                <div className="change-pwd-header-text">
+                                  <h3 className="change-pwd-title">Enter Verification Code</h3>
+                                  <p className="change-pwd-subtitle">Code sent to {selectedLocalMethod === 'EMAIL' ? localRecoveryOptions.recoveryEmail : localRecoveryOptions.phoneNumber}</p>
+                                </div>
+                              </div>
+                              <button className="change-pwd-close-btn" onClick={closeChangePasswordModal} aria-label="Close">
+                                <X size={16} />
+                              </button>
                             </div>
-                            {localError && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{localError}</div>}
-                            <button
-                              className="action-btn primary-solid full-width"
-                              onClick={handleLocalVerifyOtp}
-                              disabled={localLoading || localOtp.length !== 6}
-                            >
-                              {localLoading ? <RefreshCw className="spin" size={16} /> : "Verify Code"}
-                            </button>
+                            <div className="change-pwd-body">
+                              <div className="change-pwd-field">
+                                <label className="change-pwd-label">6-Digit Code</label>
+                                <div className="change-pwd-input-wrap">
+                                  <input
+                                    type="text"
+                                    placeholder="Enter 6-digit code"
+                                    value={localOtp}
+                                    onChange={e => setLocalOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                    style={{ textAlign: 'center', letterSpacing: '4px', fontWeight: '700', fontSize: '16px' }}
+                                  />
+                                </div>
+                              </div>
+                              {localError && <div className="change-pwd-error-inline">{localError}</div>}
+                              <div className="change-pwd-footer">
+                                <button
+                                  type="button"
+                                  className="btn-change-pwd-cancel"
+                                  onClick={() => setLocalForgotStep('options')}
+                                >
+                                  Back
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn-change-pwd-submit"
+                                  onClick={handleLocalVerifyOtp}
+                                  disabled={localLoading || localOtp.length !== 6}
+                                >
+                                  {localLoading ? <RefreshCw className="spin" size={15} /> : "Verify Code"}
+                                </button>
+                              </div>
+                            </div>
                           </>
                         ) : (
                           <>
-                            <div className="auth-input-group">
-                              <label>New Password</label>
-                              <input
-                                type="password"
-                                placeholder="Enter new password"
-                                value={localNewPassword}
-                                onChange={e => setLocalNewPassword(e.target.value)}
-                              />
+                            <div className="change-pwd-header">
+                              <div className="change-pwd-header-left">
+                                <div className="change-pwd-lock-badge">
+                                  <Lock size={20} />
+                                </div>
+                                <div className="change-pwd-header-text">
+                                  <h3 className="change-pwd-title">Reset Password</h3>
+                                  <p className="change-pwd-subtitle">Set a new password for your B2Auth account.</p>
+                                </div>
+                              </div>
+                              <button className="change-pwd-close-btn" onClick={closeChangePasswordModal} aria-label="Close">
+                                <X size={16} />
+                              </button>
                             </div>
-                            <div className="auth-input-group">
-                              <label style={{ marginTop: '10px' }}>Confirm New Password</label>
-                              <input
-                                style={{ marginBottom: '10px' }}
-                                type="password"
-                                placeholder="Confirm new password"
-                                value={localConfirmPassword}
-                                onChange={e => setLocalConfirmPassword(e.target.value)}
-                              />
+                            <div className="change-pwd-body">
+                              <div className="change-pwd-field">
+                                <label className="change-pwd-label">New Password</label>
+                                <div className="change-pwd-input-wrap">
+                                  <Lock size={16} className="change-pwd-input-icon" />
+                                  <input
+                                    type={showNewPassword ? "text" : "password"}
+                                    placeholder="Enter new password"
+                                    value={localNewPassword}
+                                    onChange={e => setLocalNewPassword(e.target.value)}
+                                  />
+                                  <button
+                                    type="button"
+                                    className="change-pwd-toggle-btn"
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                  >
+                                    {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                  </button>
+                                </div>
+                              </div>
+                              <div className="change-pwd-field">
+                                <label className="change-pwd-label">Confirm New Password</label>
+                                <div className="change-pwd-input-wrap">
+                                  <Lock size={16} className="change-pwd-input-icon" />
+                                  <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    placeholder="Confirm new password"
+                                    value={localConfirmPassword}
+                                    onChange={e => setLocalConfirmPassword(e.target.value)}
+                                  />
+                                  <button
+                                    type="button"
+                                    className="change-pwd-toggle-btn"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                  >
+                                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                  </button>
+                                </div>
+                              </div>
+                              {localError && <div className="change-pwd-error-inline">{localError}</div>}
+                              <div className="change-pwd-footer">
+                                <button
+                                  type="button"
+                                  className="btn-change-pwd-cancel"
+                                  onClick={closeChangePasswordModal}
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn-change-pwd-submit"
+                                  onClick={handleLocalResetPassword}
+                                  disabled={localLoading || !localNewPassword || localNewPassword !== localConfirmPassword}
+                                >
+                                  {localLoading ? <RefreshCw className="spin" size={15} /> : "Reset Password"}
+                                </button>
+                              </div>
                             </div>
-                            {localError && <div className="error-message-inline" style={{ marginBottom: "16px" }}>{localError}</div>}
-                            <button
-                              className="action-btn primary-solid full-width"
-                              onClick={handleLocalResetPassword}
-                              disabled={localLoading || !localNewPassword || localNewPassword !== localConfirmPassword}
-                            >
-                              {localLoading ? <RefreshCw className="spin" size={16} /> : "Reset Password"}
-                            </button>
                           </>
                         )}
                       </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
 
 
               </motion.div>
