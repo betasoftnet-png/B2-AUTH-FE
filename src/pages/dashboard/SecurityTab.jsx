@@ -19,144 +19,424 @@ import {
   Keyboard,
   KeyRound
 } from 'lucide-react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5Qrcode } from 'html5-qrcode';
 import { QRCodeSVG } from 'qrcode.react';
 import betaLogo from '../../assets/beta2.png';
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-// React-safe QR Scanner Component with idempotent lifecycle & cleanup
+// React-safe QR Scanner Component with robust camera detection & error handling
 const QrScannerCard = ({ onScanSuccess }) => {
-  const containerRef = useRef(null);
-  const scannerRef = useRef(null);
+  const videoFeedRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const scannerInstanceRef = useRef(null);
+  const activeStreamRef = useRef(null);
   const isMountedRef = useRef(true);
+  const isStartingRef = useRef(false);
+
+  const [isScanning, setIsScanning] = useState(false);
+  const [isStarting, setIsStarting] = useState(false);
+  const [cameraError, setCameraError] = useState(null);
+
+  const handleCameraError = (err) => {
+    const errName = err?.name || '';
+    const errMsg = String(err?.message || err || '');
+
+    if (
+      errName === 'NotAllowedError' ||
+      errName === 'PermissionDeniedError' ||
+      errMsg.includes('NotAllowedError') ||
+      errMsg.includes('Permission denied')
+    ) {
+      setCameraError({
+        title: "Camera permission denied",
+        desc: "Allow camera access in your browser settings and try again."
+      });
+    } else if (
+      errName === 'NotFoundError' ||
+      errName === 'DevicesNotFoundError' ||
+      errMsg.includes('NotFoundError') ||
+      errMsg.includes('Requested device not found')
+    ) {
+      setCameraError({
+        title: "Camera not found",
+        desc: "Please connect or enable a camera and try again."
+      });
+    } else if (
+      errName === 'NotReadableError' ||
+      errName === 'TrackStartError' ||
+      errMsg.includes('NotReadableError') ||
+      errMsg.includes('Could not start video source')
+    ) {
+      setCameraError({
+        title: "Camera is already in use",
+        desc: "Please close other applications using the camera and try again."
+      });
+    } else if (
+      errName === 'OverconstrainedError' ||
+      errMsg.includes('OverconstrainedError')
+    ) {
+      setCameraError({
+        title: "Camera constraints could not be satisfied",
+        desc: "Please check camera settings and try again."
+      });
+    } else if (
+      errName === 'SecurityError' ||
+      errMsg.includes('SecurityError')
+    ) {
+      setCameraError({
+        title: "Camera access restricted",
+        desc: "Camera access is blocked by security policy."
+      });
+    } else {
+      setCameraError({
+        title: "Camera not found",
+        desc: "Please connect or enable a camera and try again."
+      });
+    }
+  };
+
+  const cleanupScanner = async () => {
+    isStartingRef.current = false;
+
+    // 1. Stop any active MediaStream tracks
+    if (activeStreamRef.current) {
+      try {
+        activeStreamRef.current.getTracks().forEach((track) => {
+          track.enabled = false;
+          track.stop();
+        });
+      } catch (e) {
+        console.debug("Error stopping media tracks:", e);
+      }
+      activeStreamRef.current = null;
+    }
+
+    // 2. Stop and clear Html5Qrcode instance
+    const instance = scannerInstanceRef.current;
+    scannerInstanceRef.current = null;
+
+    if (instance) {
+      try {
+        if (instance.isScanning) {
+          await instance.stop();
+        }
+      } catch (e) {
+        console.debug("Scanner stop handled:", e);
+      }
+      try {
+        instance.clear();
+      } catch (e) {
+        console.debug("Scanner clear handled:", e);
+      }
+    }
+
+    if (isMountedRef.current) {
+      setIsScanning(false);
+      setIsStarting(false);
+    }
+  };
 
   useEffect(() => {
     isMountedRef.current = true;
-    let timerId = null;
-
-    const cleanupScanner = async () => {
-      if (timerId) {
-        clearTimeout(timerId);
-        timerId = null;
-      }
-
-      const instance = scannerRef.current;
-      scannerRef.current = null;
-
-      if (instance) {
-        try {
-          await instance.clear();
-        } catch (err) {
-          // Idempotent and safe ignore if already stopped or container detached
-          console.debug("Scanner clear handled:", err);
-        }
-      }
-
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
-      }
-    };
-
-    if (!containerRef.current) return;
-
-    // Small delay ensuring container DOM is mounted and sized
-    timerId = setTimeout(() => {
-      if (!isMountedRef.current || !containerRef.current) return;
-
-      try {
-        if (scannerRef.current) return; // Prevent duplicate instances
-
-        const scanner = new Html5QrcodeScanner(
-          "reader",
-          {
-            fps: 10,
-            qrbox: { width: 250, height: 250 }
-          },
-          false
-        );
-        scannerRef.current = scanner;
-
-        const handleSuccess = (decodedText) => {
-          if (!isMountedRef.current) return;
-          if (scannerRef.current) {
-            const cur = scannerRef.current;
-            scannerRef.current = null;
-            cur.clear().catch(() => {});
-          }
-          if (onScanSuccess) {
-            onScanSuccess(decodedText);
-          }
-        };
-
-        const handleError = () => {
-          // Ignore transient frame scan errors
-        };
-
-        scanner.render(handleSuccess, handleError);
-
-        // Check if unmounted while render was executing
-        if (!isMountedRef.current) {
-          cleanupScanner();
-          return;
-        }
-
-        // Decorate HUD and instruction hint as non-React DOM nodes inside #reader
-        const scanRegion = containerRef.current.querySelector("#reader__scan_region");
-        if (scanRegion && !scanRegion.querySelector(".b2auth-scanner-hud")) {
-          const hud = document.createElement("div");
-          hud.className = "b2auth-scanner-hud";
-          hud.innerHTML = `
-            <span class="hud-corner hud-tl"></span>
-            <span class="hud-corner hud-tr"></span>
-            <span class="hud-corner hud-bl"></span>
-            <span class="hud-corner hud-br"></span>
-            <div class="hud-laser-line"></div>
-            <div class="hud-qr-art">
-              <svg width="76" height="76" viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="76" height="76" rx="14" fill="#F8FAFC"/>
-                <rect x="12" y="12" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
-                <rect x="18" y="18" width="10" height="10" rx="2" fill="#4F46E5"/>
-                <rect x="42" y="12" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
-                <rect x="48" y="18" width="10" height="10" rx="2" fill="#4F46E5"/>
-                <rect x="12" y="42" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
-                <rect x="18" y="48" width="10" height="10" rx="2" fill="#4F46E5"/>
-                <rect x="42" y="42" width="6" height="6" rx="1.5" fill="#6366F1"/>
-                <rect x="58" y="42" width="6" height="6" rx="1.5" fill="#4F46E5"/>
-                <rect x="50" y="50" width="6" height="6" rx="1.5" fill="#6366F1"/>
-                <rect x="42" y="58" width="6" height="6" rx="1.5" fill="#4F46E5"/>
-                <rect x="58" y="58" width="6" height="6" rx="1.5" fill="#6366F1"/>
-                <circle cx="38" cy="23" r="2" fill="#94A3B8"/>
-                <circle cx="23" cy="38" r="2" fill="#94A3B8"/>
-                <circle cx="38" cy="38" r="2.5" fill="#4F46E5"/>
-              </svg>
-            </div>
-          `;
-          scanRegion.appendChild(hud);
-        }
-
-        const dashboard = containerRef.current.querySelector("#reader__dashboard");
-        if (dashboard && !containerRef.current.querySelector(".scanner-hint")) {
-          const hint = document.createElement("p");
-          hint.className = "scanner-hint";
-          hint.innerText = "Point your camera at the QR code";
-          dashboard.parentNode.insertBefore(hint, dashboard);
-        }
-      } catch (err) {
-        console.error("Scanner initialization failed:", err);
-        cleanupScanner();
-      }
-    }, 60);
 
     return () => {
       isMountedRef.current = false;
       cleanupScanner();
     };
-  }, [onScanSuccess]);
+  }, []);
+
+  const handleRequestPermissions = async () => {
+    if (isStartingRef.current) return;
+    isStartingRef.current = true;
+    setIsStarting(true);
+    setCameraError(null);
+
+    // 1. Check if browser supports camera access
+    if (!navigator?.mediaDevices?.getUserMedia) {
+      if (isMountedRef.current) {
+        setCameraError({
+          title: "Camera access is not supported in this browser.",
+          desc: ""
+        });
+        setIsStarting(false);
+        isStartingRef.current = false;
+      }
+      return;
+    }
+
+    try {
+      // 2. Detect available cameras using enumerateDevices()
+      let devices = [];
+      try {
+        devices = await navigator.mediaDevices.enumerateDevices();
+      } catch (e) {
+        console.debug("enumerateDevices error:", e);
+      }
+
+      const initialVideoDevices = devices.filter((d) => d.kind === "videoinput");
+      if (devices.length > 0 && initialVideoDevices.length === 0) {
+        if (isMountedRef.current) {
+          setCameraError({
+            title: "Camera not found",
+            desc: "Please connect or enable a camera and try again."
+          });
+          setIsStarting(false);
+          isStartingRef.current = false;
+        }
+        return;
+      }
+
+      // 6. Safe getUserMedia configuration
+      let testStream = null;
+      try {
+        testStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        activeStreamRef.current = testStream;
+      } catch (err) {
+        if (isMountedRef.current) {
+          handleCameraError(err);
+          setIsStarting(false);
+          isStartingRef.current = false;
+        }
+        return;
+      }
+
+      // Check if unmounted while prompt was pending
+      if (!isMountedRef.current) {
+        if (testStream) {
+          testStream.getTracks().forEach((t) => t.stop());
+        }
+        activeStreamRef.current = null;
+        return;
+      }
+
+      // 7. Stop temporary permission stream
+      if (testStream) {
+        testStream.getTracks().forEach((t) => t.stop());
+        activeStreamRef.current = null;
+      }
+
+      // Re-query devices for accurate labels/IDs
+      let freshDevices = [];
+      try {
+        freshDevices = await navigator.mediaDevices.enumerateDevices();
+      } catch (e) {
+        freshDevices = devices;
+      }
+      const freshVideoDevices = freshDevices.filter((d) => d.kind === "videoinput");
+
+      if (freshDevices.length > 0 && freshVideoDevices.length === 0) {
+        if (isMountedRef.current) {
+          setCameraError({
+            title: "Camera not found",
+            desc: "Please connect or enable a camera and try again."
+          });
+          setIsStarting(false);
+          isStartingRef.current = false;
+        }
+        return;
+      }
+
+      // Mobile: allow browser/rear camera selection without forcing exact environment
+      // Desktop: select available webcam
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      let cameraConfig;
+
+      if (isMobile) {
+        const rearCamera = freshVideoDevices.find((d) => /back|rear|environment/i.test(d.label));
+        if (rearCamera && rearCamera.deviceId) {
+          cameraConfig = rearCamera.deviceId;
+        } else {
+          cameraConfig = { facingMode: "environment" };
+        }
+      } else {
+        if (freshVideoDevices.length > 0 && freshVideoDevices[0].deviceId) {
+          cameraConfig = freshVideoDevices[0].deviceId;
+        } else {
+          cameraConfig = { facingMode: "user" };
+        }
+      }
+
+      // Initialize scanner instance (only once)
+      let scanner = scannerInstanceRef.current;
+      if (!scanner) {
+        scanner = new Html5Qrcode("scanner-video-feed");
+        scannerInstanceRef.current = scanner;
+      }
+
+      const scanConfig = {
+        fps: 10,
+        qrbox: { width: 220, height: 220 },
+        aspectRatio: 1.0
+      };
+
+      const handleScanSuccess = (decodedText) => {
+        if (!isMountedRef.current) return;
+        cleanupScanner();
+        if (onScanSuccess) {
+          onScanSuccess(decodedText);
+        }
+      };
+
+      const handleScanError = () => {
+        // Transient frame scan error, ignore
+      };
+
+      try {
+        await scanner.start(cameraConfig, scanConfig, handleScanSuccess, handleScanError);
+        if (isMountedRef.current) {
+          setIsScanning(true);
+        } else {
+          cleanupScanner();
+        }
+      } catch (startErr) {
+        // Fallback: try default camera if specific device/facingMode fails
+        try {
+          await scanner.start({ facingMode: "user" }, scanConfig, handleScanSuccess, handleScanError);
+          if (isMountedRef.current) {
+            setIsScanning(true);
+          } else {
+            cleanupScanner();
+          }
+        } catch (fallbackErr) {
+          if (isMountedRef.current) {
+            handleCameraError(startErr || fallbackErr);
+          }
+        }
+      }
+    } catch (err) {
+      if (isMountedRef.current) {
+        handleCameraError(err);
+      }
+    } finally {
+      if (isMountedRef.current) {
+        setIsStarting(false);
+        isStartingRef.current = false;
+      }
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCameraError(null);
+
+    try {
+      let scanner = scannerInstanceRef.current;
+      if (!scanner) {
+        scanner = new Html5Qrcode("scanner-video-feed");
+        scannerInstanceRef.current = scanner;
+      }
+
+      if (scanner.isScanning) {
+        await scanner.stop();
+        setIsScanning(false);
+      }
+
+      const result = await scanner.scanFileV2(file, false);
+      if (result && result.decodedText) {
+        cleanupScanner();
+        if (onScanSuccess) {
+          onScanSuccess(result.decodedText);
+        }
+      }
+    } catch (err) {
+      setCameraError({
+        title: "No QR code detected",
+        desc: "Please choose a clear image with a valid QR code."
+      });
+    } finally {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
 
   return (
     <div className="qr-scanner-card">
-      <div id="reader" ref={containerRef} style={{ width: "100%" }} />
+      <div id="reader">
+        <div id="reader__scan_region">
+          <div
+            id="scanner-video-feed"
+            ref={videoFeedRef}
+            style={{ width: "100%", height: "100%", position: "absolute", inset: 0 }}
+          />
+          <div className="b2auth-scanner-hud">
+            <span className="hud-corner hud-tl"></span>
+            <span className="hud-corner hud-tr"></span>
+            <span className="hud-corner hud-bl"></span>
+            <span className="hud-corner hud-br"></span>
+            <div className="hud-laser-line"></div>
+            {!isScanning && (
+              <div className="hud-qr-art">
+                <svg width="76" height="76" viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="76" height="76" rx="14" fill="#F8FAFC"/>
+                  <rect x="12" y="12" width="22" height="22" rx="5" stroke="#4F46E5" strokeWidth="2.5" fill="#EEF2FF"/>
+                  <rect x="18" y="18" width="10" height="10" rx="2" fill="#4F46E5"/>
+                  <rect x="42" y="12" width="22" height="22" rx="5" stroke="#4F46E5" strokeWidth="2.5" fill="#EEF2FF"/>
+                  <rect x="48" y="18" width="10" height="10" rx="2" fill="#4F46E5"/>
+                  <rect x="12" y="42" width="22" height="22" rx="5" stroke="#4F46E5" strokeWidth="2.5" fill="#EEF2FF"/>
+                  <rect x="18" y="48" width="10" height="10" rx="2" fill="#4F46E5"/>
+                  <rect x="42" y="42" width="6" height="6" rx="1.5" fill="#6366F1"/>
+                  <rect x="58" y="42" width="6" height="6" rx="1.5" fill="#4F46E5"/>
+                  <rect x="50" y="50" width="6" height="6" rx="1.5" fill="#6366F1"/>
+                  <rect x="42" y="58" width="6" height="6" rx="1.5" fill="#4F46E5"/>
+                  <rect x="58" y="58" width="6" height="6" rx="1.5" fill="#6366F1"/>
+                  <circle cx="38" cy="23" r="2" fill="#94A3B8"/>
+                  <circle cx="23" cy="38" r="2" fill="#94A3B8"/>
+                  <circle cx="38" cy="38" r="2.5" fill="#4F46E5"/>
+                </svg>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <p className="scanner-hint">Point your camera at the QR code</p>
+
+        {cameraError && (
+          <div id="reader__header_message" style={{ display: "block" }}>
+            <div style={{ fontWeight: 600 }}>{cameraError.title}</div>
+            {cameraError.desc && (
+              <div style={{ fontSize: "12px", marginTop: "3px", opacity: 0.9 }}>
+                {cameraError.desc}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div id="reader__dashboard">
+          <div id="reader__dashboard_section">
+            {!isScanning && (
+              <div id="reader__dashboard_section_csr">
+                <button
+                  id="html5-qrcode-button-camera-permission"
+                  type="button"
+                  onClick={handleRequestPermissions}
+                  disabled={isStarting}
+                >
+                  {isStarting ? "Requesting Permissions..." : "Request Camera Permissions"}
+                </button>
+              </div>
+            )}
+            <div id="reader__dashboard_section_swaplink">
+              <button
+                id="html5-qrcode-anchor-scan-type-change"
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Scan an Image File
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

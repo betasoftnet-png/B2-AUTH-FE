@@ -3115,14 +3115,20 @@ body {
 }
 
 #reader__header_message {
+  order: 2.5 !important;
   border-top: none !important;
   background: #fef2f2 !important;
   color: #ef4444 !important;
-  border-radius: 8px !important;
-  font-size: 12.5px !important;
+  border: 1px solid #fee2e2 !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
   font-weight: 500 !important;
-  padding: 6px 12px !important;
-  margin: 8px 0 !important;
+  padding: 8px 14px !important;
+  margin: 0 auto 12px !important;
+  text-align: center !important;
+  max-width: 330px !important;
+  width: 90% !important;
+  box-shadow: 0 1px 3px rgba(239, 68, 68, 0.08) !important;
 }
 
 /* Manual Entry Card Styles */
