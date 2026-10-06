@@ -4771,3 +4771,381 @@ body {
   font-weight: 400;
 }
 
+/* ========================================================
+   Redesigned Admin Page (Reference Match)
+   ======================================================== */
+.admin-primary-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.admin-primary-card {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.admin-primary-card:hover {
+  border-color: rgba(203, 213, 225, 0.9);
+  box-shadow: 0 6px 24px -2px rgba(15, 23, 42, 0.06);
+}
+
+.admin-primary-card-leading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.admin-primary-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #eef2ff;
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-primary-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.admin-primary-email {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.2px;
+  word-break: break-word;
+}
+
+.admin-primary-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.admin-meta-dot {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.admin-status-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.admin-status-dot.active {
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+}
+
+.admin-status-dot.inactive {
+  background: #94a3b8;
+}
+
+.admin-status-text {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.admin-primary-card-trailing {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.btn-admin-make-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid rgba(199, 210, 254, 0.6);
+  border-radius: 11px;
+  padding: 9px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.btn-admin-make-primary:hover:not(:disabled) {
+  background: #e0e7ff;
+  color: #3730a3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.12);
+}
+
+.btn-admin-make-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-admin-make-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-primary-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+  border-radius: 11px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Logged-in Identities Section */
+.admin-identities-section {
+  margin-top: 40px;
+}
+
+.admin-section-header {
+  margin-bottom: 22px;
+}
+
+.admin-section-header h2 {
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+  letter-spacing: -0.3px;
+}
+
+.admin-section-header p {
+  color: #64748b;
+  font-size: 13.5px;
+  margin: 0;
+  font-weight: 400;
+}
+
+.admin-identity-group {
+  margin-bottom: 26px;
+}
+
+.admin-group-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-group-title svg {
+  color: #64748b;
+}
+
+.admin-accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.admin-account-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.04);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.admin-account-card:hover {
+  background: #f8fafc;
+  border-color: rgba(203, 213, 225, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.06);
+}
+
+.admin-account-card.current-account {
+  background: #f3f4fd;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-left: 4px solid #4f46e5;
+  cursor: default;
+}
+
+.admin-account-card.current-account:hover {
+  background: #eef0fc;
+  border-color: rgba(99, 102, 241, 0.25);
+  border-left-color: #4f46e5;
+  transform: none;
+  box-shadow: 0 4px 14px -2px rgba(79, 70, 229, 0.08);
+}
+
+.admin-account-leading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.admin-account-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.admin-account-avatar.blue {
+  background: #2563eb;
+}
+
+.admin-account-avatar.purple {
+  background: #7c3aed;
+}
+
+.admin-account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.admin-account-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-account-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.2px;
+}
+
+.admin-current-badge {
+  background: #e0e7ff;
+  color: #4338ca;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2.5px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.admin-primary-tag {
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.admin-account-email {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 400;
+  word-break: break-all;
+}
+
+.admin-account-trailing {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.admin-chevron-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.admin-account-card.current-account .admin-chevron-circle {
+  background: #e8eaff;
+  color: #6366f1;
+}
+
+.admin-account-card:hover:not(.current-account) .admin-chevron-circle {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.admin-empty-accounts {
+  padding: 20px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13.5px;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px dashed #cbd5e1;
+}
+
+@media (max-width: 640px) {
+  .admin-primary-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .admin-primary-card-trailing {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .btn-admin-make-primary {
+    width: 100%;
+  }
+}
+
+
