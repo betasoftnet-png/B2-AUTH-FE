@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
 import axios from 'axios';
@@ -14,7 +14,9 @@ import {
   Circle,
   X,
   RefreshCw,
-  ChevronLeft
+  ChevronLeft,
+  QrCode,
+  Keyboard
 } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { QRCodeSVG } from 'qrcode.react';
@@ -140,6 +142,56 @@ const SecurityTab = () => {
     setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
     setError('');
   };
+
+  useEffect(() => {
+    if (!showAddAuthModal || addAuthMode !== 'scan') return;
+
+    const interval = setInterval(() => {
+      const scanRegion = document.getElementById('reader__scan_region');
+      const dashboard = document.getElementById('reader__dashboard');
+      const hint = document.querySelector('.scanner-hint');
+
+      // Ensure the instruction hint is positioned between scanRegion and dashboard
+      if (dashboard && hint && hint.nextElementSibling !== dashboard) {
+        dashboard.parentNode.insertBefore(hint, dashboard);
+      }
+
+      // Ensure HUD with corners, laser line, and QR illustration is inside scanRegion
+      if (scanRegion && !scanRegion.querySelector('.b2auth-scanner-hud')) {
+        const hud = document.createElement('div');
+        hud.className = 'b2auth-scanner-hud';
+        hud.innerHTML = `
+          <span class="hud-corner hud-tl"></span>
+          <span class="hud-corner hud-tr"></span>
+          <span class="hud-corner hud-bl"></span>
+          <span class="hud-corner hud-br"></span>
+          <div class="hud-laser-line"></div>
+          <div class="hud-qr-art">
+            <svg width="76" height="76" viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="76" height="76" rx="14" fill="#F8FAFC"/>
+              <rect x="12" y="12" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
+              <rect x="18" y="18" width="10" height="10" rx="2" fill="#4F46E5"/>
+              <rect x="42" y="12" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
+              <rect x="48" y="18" width="10" height="10" rx="2" fill="#4F46E5"/>
+              <rect x="12" y="42" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
+              <rect x="18" y="48" width="10" height="10" rx="2" fill="#4F46E5"/>
+              <rect x="42" y="42" width="6" height="6" rx="1.5" fill="#6366F1"/>
+              <rect x="58" y="42" width="6" height="6" rx="1.5" fill="#4F46E5"/>
+              <rect x="50" y="50" width="6" height="6" rx="1.5" fill="#6366F1"/>
+              <rect x="42" y="58" width="6" height="6" rx="1.5" fill="#4F46E5"/>
+              <rect x="58" y="58" width="6" height="6" rx="1.5" fill="#6366F1"/>
+              <circle cx="38" cy="23" r="2" fill="#94A3B8"/>
+              <circle cx="23" cy="38" r="2" fill="#94A3B8"/>
+              <circle cx="38" cy="38" r="2.5" fill="#4F46E5"/>
+            </svg>
+          </div>
+        `;
+        scanRegion.appendChild(hud);
+      }
+    }, 80);
+
+    return () => clearInterval(interval);
+  }, [showAddAuthModal, addAuthMode]);
 
   return (
     <>
@@ -327,31 +379,43 @@ const SecurityTab = () => {
                 {showAddAuthModal && (
                   <div className="auth-modal-overlay">
                     <div className="auth-modal-content animate-scale-in">
-                      <div className="auth-modal-header">
-                        <h3>Add New Account</h3>
-                        <button className="auth-close-btn" onClick={() => setShowAddAuthModal(false)}>
-                          <X size={20} />
+                      <div className="auth-modal-header add-authenticator-header">
+                        <div className="auth-header-left">
+                          <div className="auth-header-shield-badge">
+                            <ShieldCheck size={20} className="auth-shield-icon" />
+                          </div>
+                          <div className="auth-header-text">
+                            <h3 className="auth-modal-title">Add Authenticator Account</h3>
+                            <p className="auth-modal-subtitle">Connect an authenticator to secure your B2Auth account.</p>
+                          </div>
+                        </div>
+                        <button className="auth-close-btn" onClick={() => setShowAddAuthModal(false)} aria-label="Close">
+                          <X size={18} />
                         </button>
                       </div>
 
                       <div className="auth-tab-switcher">
                         <button
-                          className={addAuthMode === "scan" ? "active" : ""}
+                          type="button"
+                          className={`auth-tab-btn ${addAuthMode === "scan" ? "active" : ""}`}
                           onClick={() => setAddAuthMode("scan")}
                         >
-                          Scan QR Code
+                          <QrCode size={16} />
+                          <span>Scan QR Code</span>
                         </button>
                         <button
-                          className={addAuthMode === "manual" ? "active" : ""}
+                          type="button"
+                          className={`auth-tab-btn ${addAuthMode === "manual" ? "active" : ""}`}
                           onClick={() => setAddAuthMode("manual")}
                         >
-                          Manual Entry
+                          <Keyboard size={16} />
+                          <span>Manual Entry</span>
                         </button>
                       </div>
 
                       <div className="auth-modal-body">
                         {addAuthMode === "scan" ? (
-                          <div className="qr-scanner-container">
+                          <div className="qr-scanner-card">
                             <div id="reader" style={{ width: "100%" }}></div>
                             <p className="scanner-hint">Point your camera at the QR code</p>
                           </div>
@@ -376,6 +440,7 @@ const SecurityTab = () => {
                               />
                             </div>
                             <button
+                              type="button"
                               className="action-btn primary-solid full-width"
                               onClick={() => handleAddAuthenticatorAccount(manualAuthData.name, manualAuthData.secret)}
                               disabled={!manualAuthData.name || !manualAuthData.secret}

@@ -767,7 +767,7 @@ function App() {
           // Ignore errors
         };
 
-        scanner.render(onScanError);
+        scanner.render(onScanSuccess, onScanError);
       }, 300);
 
       return () => {
