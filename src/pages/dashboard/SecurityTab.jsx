@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
 import axios from 'axios';
@@ -24,6 +24,142 @@ import { QRCodeSVG } from 'qrcode.react';
 import betaLogo from '../../assets/beta2.png';
 
 const API_BASE = import.meta.env.VITE_API_BASE;
+
+// React-safe QR Scanner Component with idempotent lifecycle & cleanup
+const QrScannerCard = ({ onScanSuccess }) => {
+  const containerRef = useRef(null);
+  const scannerRef = useRef(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    let timerId = null;
+
+    const cleanupScanner = async () => {
+      if (timerId) {
+        clearTimeout(timerId);
+        timerId = null;
+      }
+
+      const instance = scannerRef.current;
+      scannerRef.current = null;
+
+      if (instance) {
+        try {
+          await instance.clear();
+        } catch (err) {
+          // Idempotent and safe ignore if already stopped or container detached
+          console.debug("Scanner clear handled:", err);
+        }
+      }
+
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
+      }
+    };
+
+    if (!containerRef.current) return;
+
+    // Small delay ensuring container DOM is mounted and sized
+    timerId = setTimeout(() => {
+      if (!isMountedRef.current || !containerRef.current) return;
+
+      try {
+        if (scannerRef.current) return; // Prevent duplicate instances
+
+        const scanner = new Html5QrcodeScanner(
+          "reader",
+          {
+            fps: 10,
+            qrbox: { width: 250, height: 250 }
+          },
+          false
+        );
+        scannerRef.current = scanner;
+
+        const handleSuccess = (decodedText) => {
+          if (!isMountedRef.current) return;
+          if (scannerRef.current) {
+            const cur = scannerRef.current;
+            scannerRef.current = null;
+            cur.clear().catch(() => {});
+          }
+          if (onScanSuccess) {
+            onScanSuccess(decodedText);
+          }
+        };
+
+        const handleError = () => {
+          // Ignore transient frame scan errors
+        };
+
+        scanner.render(handleSuccess, handleError);
+
+        // Check if unmounted while render was executing
+        if (!isMountedRef.current) {
+          cleanupScanner();
+          return;
+        }
+
+        // Decorate HUD and instruction hint as non-React DOM nodes inside #reader
+        const scanRegion = containerRef.current.querySelector("#reader__scan_region");
+        if (scanRegion && !scanRegion.querySelector(".b2auth-scanner-hud")) {
+          const hud = document.createElement("div");
+          hud.className = "b2auth-scanner-hud";
+          hud.innerHTML = `
+            <span class="hud-corner hud-tl"></span>
+            <span class="hud-corner hud-tr"></span>
+            <span class="hud-corner hud-bl"></span>
+            <span class="hud-corner hud-br"></span>
+            <div class="hud-laser-line"></div>
+            <div class="hud-qr-art">
+              <svg width="76" height="76" viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="76" height="76" rx="14" fill="#F8FAFC"/>
+                <rect x="12" y="12" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
+                <rect x="18" y="18" width="10" height="10" rx="2" fill="#4F46E5"/>
+                <rect x="42" y="12" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
+                <rect x="48" y="18" width="10" height="10" rx="2" fill="#4F46E5"/>
+                <rect x="12" y="42" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
+                <rect x="18" y="48" width="10" height="10" rx="2" fill="#4F46E5"/>
+                <rect x="42" y="42" width="6" height="6" rx="1.5" fill="#6366F1"/>
+                <rect x="58" y="42" width="6" height="6" rx="1.5" fill="#4F46E5"/>
+                <rect x="50" y="50" width="6" height="6" rx="1.5" fill="#6366F1"/>
+                <rect x="42" y="58" width="6" height="6" rx="1.5" fill="#4F46E5"/>
+                <rect x="58" y="58" width="6" height="6" rx="1.5" fill="#6366F1"/>
+                <circle cx="38" cy="23" r="2" fill="#94A3B8"/>
+                <circle cx="23" cy="38" r="2" fill="#94A3B8"/>
+                <circle cx="38" cy="38" r="2.5" fill="#4F46E5"/>
+              </svg>
+            </div>
+          `;
+          scanRegion.appendChild(hud);
+        }
+
+        const dashboard = containerRef.current.querySelector("#reader__dashboard");
+        if (dashboard && !containerRef.current.querySelector(".scanner-hint")) {
+          const hint = document.createElement("p");
+          hint.className = "scanner-hint";
+          hint.innerText = "Point your camera at the QR code";
+          dashboard.parentNode.insertBefore(hint, dashboard);
+        }
+      } catch (err) {
+        console.error("Scanner initialization failed:", err);
+        cleanupScanner();
+      }
+    }, 60);
+
+    return () => {
+      isMountedRef.current = false;
+      cleanupScanner();
+    };
+  }, [onScanSuccess]);
+
+  return (
+    <div className="qr-scanner-card">
+      <div id="reader" ref={containerRef} style={{ width: "100%" }} />
+    </div>
+  );
+};
 
 const SecurityTab = () => {
   const {
@@ -143,56 +279,6 @@ const SecurityTab = () => {
     setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
     setError('');
   };
-
-  useEffect(() => {
-    if (!showAddAuthModal || addAuthMode !== 'scan') return;
-
-    const interval = setInterval(() => {
-      const scanRegion = document.getElementById('reader__scan_region');
-      const dashboard = document.getElementById('reader__dashboard');
-      const hint = document.querySelector('.scanner-hint');
-
-      // Ensure the instruction hint is positioned between scanRegion and dashboard
-      if (dashboard && hint && hint.nextElementSibling !== dashboard) {
-        dashboard.parentNode.insertBefore(hint, dashboard);
-      }
-
-      // Ensure HUD with corners, laser line, and QR illustration is inside scanRegion
-      if (scanRegion && !scanRegion.querySelector('.b2auth-scanner-hud')) {
-        const hud = document.createElement('div');
-        hud.className = 'b2auth-scanner-hud';
-        hud.innerHTML = `
-          <span class="hud-corner hud-tl"></span>
-          <span class="hud-corner hud-tr"></span>
-          <span class="hud-corner hud-bl"></span>
-          <span class="hud-corner hud-br"></span>
-          <div class="hud-laser-line"></div>
-          <div class="hud-qr-art">
-            <svg width="76" height="76" viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="76" height="76" rx="14" fill="#F8FAFC"/>
-              <rect x="12" y="12" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
-              <rect x="18" y="18" width="10" height="10" rx="2" fill="#4F46E5"/>
-              <rect x="42" y="12" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
-              <rect x="48" y="18" width="10" height="10" rx="2" fill="#4F46E5"/>
-              <rect x="12" y="42" width="22" height="22" rx="5" stroke="#4F46E5" stroke-width="2.5" fill="#EEF2FF"/>
-              <rect x="18" y="48" width="10" height="10" rx="2" fill="#4F46E5"/>
-              <rect x="42" y="42" width="6" height="6" rx="1.5" fill="#6366F1"/>
-              <rect x="58" y="42" width="6" height="6" rx="1.5" fill="#4F46E5"/>
-              <rect x="50" y="50" width="6" height="6" rx="1.5" fill="#6366F1"/>
-              <rect x="42" y="58" width="6" height="6" rx="1.5" fill="#4F46E5"/>
-              <rect x="58" y="58" width="6" height="6" rx="1.5" fill="#6366F1"/>
-              <circle cx="38" cy="23" r="2" fill="#94A3B8"/>
-              <circle cx="23" cy="38" r="2" fill="#94A3B8"/>
-              <circle cx="38" cy="38" r="2.5" fill="#4F46E5"/>
-            </svg>
-          </div>
-        `;
-        scanRegion.appendChild(hud);
-      }
-    }, 80);
-
-    return () => clearInterval(interval);
-  }, [showAddAuthModal, addAuthMode]);
 
   return (
     <>
@@ -416,10 +502,7 @@ const SecurityTab = () => {
 
                       <div className="auth-modal-body">
                         {addAuthMode === "scan" ? (
-                          <div className="qr-scanner-card">
-                            <div id="reader" style={{ width: "100%" }}></div>
-                            <p className="scanner-hint">Point your camera at the QR code</p>
-                          </div>
+                          <QrScannerCard onScanSuccess={handleProcessQR} />
                         ) : (
                           <div className="manual-entry-card-wrapper">
                             <div className="manual-entry-card">

@@ -54,7 +54,6 @@ import cliksLogo from './assets/cliks.png';
 import bitToolLogo from './assets/BIT-TOOL-2.png';
 import * as OTPAuth from 'otpauth';
 import { QRCodeSVG } from 'qrcode.react';
-import { Html5QrcodeScanner } from "html5-qrcode";
 import './App.css';
 
 const AuthenticatorCode = ({ secret }) => {
@@ -745,39 +744,7 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    let scanner = null;
-    if (showAddAuthModal && addAuthMode === 'scan') {
-      // Small timeout to ensure DOM element #reader is mounted
-      const timer = setTimeout(() => {
-        const readerElement = document.getElementById("reader");
-        if (!readerElement) return;
 
-        scanner = new Html5QrcodeScanner("reader", {
-          fps: 10,
-          qrbox: { width: 250, height: 250 }
-        }, false);
-
-        const onScanSuccess = (decodedText) => {
-          scanner.clear();
-          handleProcessQR(decodedText);
-        };
-
-        const onScanError = (err) => {
-          // Ignore errors
-        };
-
-        scanner.render(onScanSuccess, onScanError);
-      }, 300);
-
-      return () => {
-        clearTimeout(timer);
-        if (scanner) {
-          scanner.clear().catch(e => console.error("Scanner clear failed", e));
-        }
-      };
-    }
-  }, [showAddAuthModal, addAuthMode]);
 
   const handleProcessQR = (text) => {
     if (text.startsWith('otpauth://')) {
