@@ -437,6 +437,12 @@ const QrScannerCard = ({ onScanSuccess }) => {
   );
 };
 
+const WindowsIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="#0284c7">
+    <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-13.051-1.95" />
+  </svg>
+);
+
 const SecurityTab = () => {
   const {
     userEmails, loading, handleMakePrimary,
@@ -574,40 +580,46 @@ const SecurityTab = () => {
                 <div className="security-grid">
                   {/* Signing in to B2Auth Section */}
                   <div className="security-section">
-                    <h3 className="identity-group-title"><LockIcon size={14} /> Signing in to B2Auth</h3>
+                    <h3 className="identity-group-title"><LockIcon size={14} /> SIGNING IN TO B2AUTH</h3>
                     <div className="identity-container">
                       <div className="identity-row">
                         <div className="identity-leading">
-                          <div className="identity-icon-box"><LockIcon size={18} /></div>
+                          <div className="identity-icon-box security-icon-box-blue"><LockIcon size={18} /></div>
                         </div>
                         <div className="identity-info">
                           <div className="identity-label">Password</div>
-                          <div className="identity-sub">A secure password helps protect your B2Auth Account</div>
+                          <div className="identity-sub">A secure password helps protect your B2Auth account.</div>
                         </div>
                         <div className="identity-trailing">
-                          <button className="row-action-btn" onClick={() => setShowChangePasswordModal(true)}>Change</button>
+                          <button className="btn-dashboard-secondary" onClick={() => setShowChangePasswordModal(true)}>
+                            <Edit3 size={15} /> Change
+                          </button>
                         </div>
                       </div>
                       <div className="identity-row">
                         <div className="identity-leading">
-                          <div className="identity-icon-box"><ShieldCheck size={18} /></div>
+                          <div className="identity-icon-box security-icon-box-purple"><ShieldCheck size={18} /></div>
                         </div>
                         <div className="identity-info">
                           <div className="identity-label">2-Step Verification</div>
-                          <div className="identity-sub">{(profileData?.twoFactorEnabled || settingsData?.twoFactorEnabled) ? 'On' : 'Off'}</div>
+                          <div className="identity-sub">
+                            <span className={`two-factor-status-label ${(profileData?.twoFactorEnabled || settingsData?.twoFactorEnabled) ? 'on' : 'off'}`}>
+                              {(profileData?.twoFactorEnabled || settingsData?.twoFactorEnabled) ? 'On' : 'Off'}
+                            </span>
+                          </div>
                         </div>
                         <div className="identity-trailing">
                           {(profileData?.twoFactorEnabled || settingsData?.twoFactorEnabled) ? (
                             <div className="status-with-action">
                               <div className="status-indicator-pill on">Enabled</div>
-                              <button className="row-action-btn disable-btn" onClick={handleDisable2FA}>Disable</button>
+                              <button className="btn-dashboard-danger" onClick={handleDisable2FA}>Disable</button>
                             </div>
                           ) : (
                             <button
-                              className="row-action-btn"
+                              className="btn-dashboard-primary"
                               onClick={handleEnable2FA}
                             >
-                              Enable
+                              <ShieldCheck size={16} /> Enable
                             </button>
                           )}
                         </div>
@@ -618,45 +630,61 @@ const SecurityTab = () => {
                   {/* Cloud Authenticator Section */}
                   <div className="security-section">
                     <div className="header-with-flex">
-                      <h3 className="identity-group-title"><Smartphone size={14} /> Cloud Authenticator</h3>
-                      <button className="text-link-btn" onClick={() => setShowAddAuthModal(true)}>Add account</button>
+                      <h3 className="identity-group-title"><Smartphone size={14} /> CLOUD AUTHENTICATOR</h3>
+                      <button className="btn-dashboard-primary" onClick={() => setShowAddAuthModal(true)}>
+                        <Plus size={15} /> Add account
+                      </button>
                     </div>
                     <div className="identity-container">
-                      {authenticatorAccounts.length > 0 ? authenticatorAccounts.map(acc => (
-                        <div key={acc.id} className="identity-row auth-row">
-                          <div className="identity-leading">
-                            <div className="identity-icon-box"><Smartphone size={18} /></div>
+                      {authenticatorAccounts.length > 0 ? (
+                        authenticatorAccounts.map(acc => (
+                          <div key={acc.id} className="identity-row auth-row">
+                            <div className="identity-leading">
+                              <div className="identity-icon-box security-icon-box-blue"><Smartphone size={18} /></div>
+                            </div>
+                            <div className="identity-info">
+                              <div className="identity-label">{acc.accountName}</div>
+                              <AuthenticatorCode secret={acc.secretKey} />
+                            </div>
+                            <div className="identity-trailing">
+                              <button className="btn-dashboard-danger" onClick={() => handleDeleteAuthenticatorAccount(acc.id)}>
+                                <Trash2 size={14} /> Delete
+                              </button>
+                            </div>
                           </div>
-                          <div className="identity-info">
-                            <div className="identity-label">{acc.accountName}</div>
-                            <AuthenticatorCode secret={acc.secretKey} />
+                        ))
+                      ) : (
+                        <div className="cloud-auth-empty-card">
+                          <div className="cloud-auth-empty-icon-box">
+                            <Smartphone size={22} />
                           </div>
-                          <div className="identity-trailing">
-                            <button style={{color:"red"}} className="icon-action-btn" onClick={() => handleDeleteAuthenticatorAccount(acc.id)}><Trash2 size={14} /></button>
+                          <div className="cloud-auth-empty-info">
+                            <div className="cloud-auth-empty-title">No authenticator accounts synced.</div>
+                            <div className="cloud-auth-empty-sub">Add an account to keep your B2Auth account secure.</div>
                           </div>
                         </div>
-                      )) : (
-                        <div className="empty-row-hint">No authenticator accounts synced.</div>
                       )}
                     </div>
                   </div>
 
                   {/* Your Devices Section */}
                   <div className="security-section">
-                    <h3 className="identity-group-title"><Monitor size={14} /> Active Sessions</h3>
+                    <h3 className="identity-group-title"><Monitor size={14} /> ACTIVE SESSIONS</h3>
                     <div className="identity-container scrollable-identity-container">
                       {sessions.map(session => {
                         const device = parseUserAgent(session.userAgent);
+                        const isWindows = session.userAgent?.toLowerCase().includes('windows') || device.name?.toLowerCase().includes('windows');
                         return (
-                          <div key={session.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                          <div key={session.id} className="session-item-wrapper">
                             <div 
                               className="identity-row" 
                               onClick={() => setExpandedSessionId(expandedSessionId === session.id ? null : session.id)}
-                              style={{ cursor: 'pointer', borderBottom: 'none' }}
+                              style={{ cursor: 'pointer' }}
                             >
                               <div className="identity-leading">
-                                <div className="identity-icon-box">
-                                  {device.type === 'phone' ? <Smartphone size={18} /> :
+                                <div className="identity-icon-box security-icon-box-blue">
+                                  {isWindows ? <WindowsIcon /> :
+                                    device.type === 'phone' ? <Smartphone size={18} /> :
                                     device.type === 'tablet' ? <Tablet size={18} /> : <Monitor size={18} />}
                                 </div>
                               </div>
@@ -669,12 +697,14 @@ const SecurityTab = () => {
                               </div>
                               <div className="identity-trailing">
                                 {!session.isCurrentSession && (
-                                  <button className="icon-action-btn" onClick={(e) => { e.stopPropagation(); handleRevokeSession(session.id); }}><LogOut size={16} /></button>
+                                  <button className="btn-dashboard-danger" onClick={(e) => { e.stopPropagation(); handleRevokeSession(session.id); }}>
+                                    <LogOut size={14} /> Sign Out
+                                  </button>
                                 )}
                               </div>
                             </div>
                             {expandedSessionId === session.id && (
-                              <div style={{ padding: '0 16px 16px 68px', fontSize: '13px', color: '#4b5563' }}>
+                              <div className="session-details-expanded">
                                 <div style={{ marginBottom: '6px' }}><strong>Location:</strong> {session.location || 'Unknown'}</div>
                                 <div><strong>Device/Browser:</strong> {session.userAgent || 'Unknown'}</div>
                               </div>
@@ -687,21 +717,22 @@ const SecurityTab = () => {
 
                   {/* Connected Apps Section */}
                   <div className="security-section">
-                    <h3 className="identity-group-title"><Globe size={14} /> Third-party apps with account access</h3>
+                    <h3 className="identity-group-title"><Globe size={14} /> THIRD-PARTY APPS WITH ACCOUNT ACCESS</h3>
                     <div className="identity-container scrollable-identity-container">
                       {externalSessions.length > 0 ? externalSessions.map(session => {
                         const device = parseUserAgent(session.userAgent);
+                        const isBeta = session.appName?.toLowerCase().includes('beta');
                         return (
-                        <div key={session.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                        <div key={session.id} className="session-item-wrapper">
                           <div 
                             className="identity-row" 
                             onClick={() => setExpandedExternalSessionId(expandedExternalSessionId === session.id ? null : session.id)} 
-                            style={{ cursor: 'pointer', borderBottom: 'none' }}
+                            style={{ cursor: 'pointer' }}
                           >
                             <div className="identity-leading">
-                              <div className="identity-icon-box">
-                                {session.appName?.toLowerCase().includes('beta storage') || session.appName?.toLowerCase().includes('beta website') ? (
-                                  <img src={betaLogo} alt="Beta App" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
+                              <div className="identity-icon-box security-icon-box-blue">
+                                {isBeta ? (
+                                  <span className="app-letter-badge">B</span>
                                 ) : session.appName?.toLowerCase().includes('cliks business') ? (
                                   <img src={cliksBusinessLogo} alt="Cliks Business" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
                                 ) : session.appName?.toLowerCase().includes('cliks') ? (
@@ -709,22 +740,24 @@ const SecurityTab = () => {
                                 ) : session.appName?.toLowerCase().includes('bit tool') || session.appName?.toLowerCase().includes('bit-tool') ? (
                                   <img src={bitToolLogo} alt="Bit Tool" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
                                 ) : (
-                                  <Globe size={18} />
+                                  <span className="app-letter-badge">{session.appName?.charAt(0) || 'A'}</span>
                                 )}
                               </div>
                             </div>
                             <div className="identity-info">
                               <div className="identity-label">{session.appName}</div>
                               <div className="identity-sub">
-                                {session.ipAddress} • {device.browser} on {device.name} • Authorized {new Date(session.loggedInAt).toLocaleDateString()}
+                                {session.ipAddress} • {device.browser} on {device.name}
                               </div>
                             </div>
                             <div className="identity-trailing">
-                              <button className="row-action-btn danger" onClick={(e) => { e.stopPropagation(); handleRevokeExternalSession(session.id); }}>Remove access</button>
+                              <button className="btn-dashboard-danger" onClick={(e) => { e.stopPropagation(); handleRevokeExternalSession(session.id); }}>
+                                <Trash2 size={14} /> Remove access
+                              </button>
                             </div>
                           </div>
                           {expandedExternalSessionId === session.id && (
-                            <div style={{ padding: '0 16px 16px 68px', fontSize: '13px', color: '#4b5563' }}>
+                            <div className="session-details-expanded">
                               <div style={{ marginBottom: '6px' }}><strong>Location:</strong> {session.location || 'Unknown'}</div>
                               <div><strong>User Agent:</strong> {session.userAgent || 'Unknown'}</div>
                             </div>

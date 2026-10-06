@@ -172,16 +172,15 @@ const DashboardLayout = () => {
 
         <aside className="dashboard-sidebar">
           <nav className="sidebar-nav">
-            <div className="sidebar-group-label" style={{ padding: '0 16px 8px', fontSize: '12px', fontWeight: 600, color: '#5f6368', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Your Accounts
+            <div className="sidebar-group-label">
+              YOUR ACCOUNTS
             </div>
             {['ALL', 'PRIMARY', 'BUSINESS', 'PERSONAL', 'CHILD'].map((category) => {
               const isActive = sidebarCategory === category;
-              const typeLabel = category === 'ALL' ? 'All Accounts' : 
-                  category.charAt(0).toUpperCase() + category.slice(1).toLowerCase() + ' Account';
+              const typeTitle = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
                   
               const getIcon = () => {
-                if (category === 'BUSINESS') return <Briefcase size={16} />;
+                if (category === 'BUSINESS') return <Building size={16} />;
                 if (category === 'PERSONAL') return <User size={16} />;
                 if (category === 'CHILD') return <User size={16} />;
                 if (category === 'PRIMARY') return <CheckCircle size={16} />;
@@ -193,24 +192,27 @@ const DashboardLayout = () => {
                   key={category}
                   className={`sidebar-item ${isActive ? 'active' : ''}`}
                   onClick={() => setSidebarCategory(category)}
-                  style={{ height: 'auto', padding: '12px 16px', alignItems: 'center' }}
                 >
-                  <div className="icon-box" style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: isActive ? '#e8f0fe' : '#f1f3f4', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isActive ? '#1a73e8' : '#5f6368', flexShrink: 0 }}>
+                  <div className={`icon-box ${isActive ? 'active-icon' : ''}`}>
                     {getIcon()}
                   </div>
-                  <div className="label" style={{ marginLeft: '12px', fontWeight: 600, fontSize: '14px', color: isActive ? '#1a73e8' : '#202124' }}>
-                    {typeLabel}
-                  </div>
+                  {category === 'ALL' ? (
+                    <span className="label all-accounts-label">All Accounts</span>
+                  ) : (
+                    <div className="label account-split-label">
+                      <span>{typeTitle}</span>
+                      <span>Account</span>
+                    </div>
+                  )}
                 </button>
               );
             })}
 
             <button
-              className="sidebar-item"
+              className="sidebar-item add-account-sidebar-btn"
               onClick={handleAddAccount}
-              style={{ marginTop: '8px' }}
             >
-              <div className="icon-box"><Plus size={18} /></div>
+              <div className="icon-box-plain"><Plus size={16} /></div>
               <span className="label">Add account</span>
             </button>
           </nav>
@@ -218,11 +220,11 @@ const DashboardLayout = () => {
           <div className="sidebar-spacer"></div>
 
           <footer className="sidebar-footer">
-            <button className="sidebar-item logout-minimal" onClick={handleLogout}>
-              <div className="icon-box" style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <LogOut size={18} />
+            <button className="sidebar-item logout-sidebar-btn" onClick={handleLogout}>
+              <div className="icon-box-plain">
+                <LogOut size={16} />
               </div>
-              <span className="label" style={{ marginLeft: '12px' }}>Sign Out</span>
+              <span className="label">Sign Out</span>
             </button>
           </footer>
         </aside>
