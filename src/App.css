@@ -4837,7 +4837,7 @@ body {
 .admin-primary-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   font-size: 13px;
   color: #64748b;
   font-weight: 500;

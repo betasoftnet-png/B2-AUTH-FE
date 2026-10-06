@@ -71,7 +71,6 @@ const EmailsTab = () => {
                   <div className="admin-primary-email">{email.email}</div>
                   <div className="admin-primary-meta">
                     <span className="admin-primary-username">{email.emailName}</span>
-                    <span className="admin-meta-dot">•</span>
                     <span className="admin-status-wrap">
                       <span className={`admin-status-dot ${email.active ? 'active' : 'inactive'}`} />
                       <span className="admin-status-text">{email.active ? 'Active' : 'Inactive'}</span>
