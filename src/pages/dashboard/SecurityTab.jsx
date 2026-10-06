@@ -465,6 +465,19 @@ const SecurityTab = () => {
     // Add any other destructured state from AppContext here,
     AuthenticatorCode, accessToken, accounts, businessSignupType, businessTypeData, calculateAge, clientId, customAlert, dashboardTab, fetchAuthenticatorAccounts, fetchEmails, fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, fetchingSignupGstins, formData, gstData, handleAddAccount, handleBusinessTypeSelect, handleCreateAccountClick, handleCreateMailbox, handleEnable2FA, handleFileChange, handleFinalSignupSubmit, handleForgotInModal, handleForgotPasswordClick, handleForgotPasswordClickWithEmail, handleForgotPasswordIdentifierSubmit, handleGoToMailSignup, handleLogin, handleLogout, handleMailFormSubmit, handleOnboardingSubmit, handleProfileClick, handleRegisterProfile, handleResetPassword, handleSelectAccount, handleSendMobileOtp, handleSendOtp, handleSendParentOtp, handleSwitchAccount, handleVerificationCallback, handleVerifyGst, handleVerifyLogin2fa, handleVerifyMobileOtp, handleVerifyOtp, handleVerifyPan, handleVerifyParentOtp, leaveLegalPage, normalizeIdentifier, onboardingData, onboardingStep, panData, parentOtpSent, parseUserAgent, primaryBusinessData, primaryBusinessStep, recoveryOptions, redirectUri, registrationMode, resetSignupForm, saveAccount, selectedRecoveryMethod, setAccessToken, setAccounts, setAuthenticatorAccounts, setBusinessSignupType, setBusinessTypeData, setClientId, setCustomAlert, setDashboardTab, setExternalSessions, setFetchedGstins, setFetchingGstins, setFetchingSignupGstins, setFormData, setGstData, setLoading, setOnboardingData, setOnboardingStep, setPanData, setParentOtpSent, setPasswordForm, setPrimaryBusinessData, setPrimaryBusinessStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setRegistrationMode, setSelectedRecoveryMethod, setSessions, setSettingsData, setSetup2FAData, setShowAccountSwitcher, setShowBusinessTypeModal, setSidebarCategory, setSignupFetchedGstins, setSignupType, setState, setSuccessMessage, setTempToken, setUseSavedAccount, setUserEmails, setUsernameSuggestions, setVerificationStatus, setVerifyPanResult, setView, setVkycUrl, settingsData, showAccountSwitcher, showAlert, showBusinessTypeModal, showGstModal, showLegalPage, showPanModal, sidebarCategory, signupFetchedGstins, signupType, successMessage, tempToken, useSavedAccount, usernameSuggestions, validatePassword, verificationStatus, verifyPanResult, view, vkycUrl, authLogo, cliksBusinessLogo, cliksLogo, bitToolLogo,} = useAppContext();
 
+  const [sessionToRevoke, setSessionToRevoke] = useState(null);
+  const [isRevokingAccess, setIsRevokingAccess] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && sessionToRevoke && !isRevokingAccess) {
+        setSessionToRevoke(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [sessionToRevoke, isRevokingAccess]);
+
   const [localForgotStep, setLocalForgotStep] = useState('none'); // 'none', 'options', 'otp', 'reset'
   const [localRecoveryOptions, setLocalRecoveryOptions] = useState({});
   const [selectedLocalMethod, setSelectedLocalMethod] = useState(null);
@@ -751,7 +764,7 @@ const SecurityTab = () => {
                               </div>
                             </div>
                             <div className="identity-trailing">
-                              <button className="btn-dashboard-danger" onClick={(e) => { e.stopPropagation(); handleRevokeExternalSession(session.id); }}>
+                              <button className="btn-dashboard-danger" onClick={(e) => { e.stopPropagation(); setSessionToRevoke(session); }}>
                                 <Trash2 size={14} /> Remove access
                               </button>
                             </div>
@@ -770,6 +783,77 @@ const SecurityTab = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Custom Remove Access Confirmation Modal */}
+                {sessionToRevoke && (
+                  <div 
+                    className="remove-access-modal-overlay"
+                    onClick={(e) => {
+                      if (e.target === e.currentTarget && !isRevokingAccess) {
+                        setSessionToRevoke(null);
+                      }
+                    }}
+                  >
+                    <div 
+                      className="remove-access-modal-card animate-scale-in"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="remove-access-icon-badge">
+                        <Trash2 size={24} />
+                      </div>
+
+                      <h3 className="remove-access-modal-title">Remove access?</h3>
+                      
+                      <p className="remove-access-modal-desc">
+                        Are you sure you want to remove access for this application?
+                      </p>
+
+                      <p className="remove-access-modal-sub">
+                        This application will no longer have access to your B2Auth account.
+                      </p>
+
+                      <div className="remove-access-btn-group">
+                        <button
+                          type="button"
+                          className="btn-remove-access-cancel"
+                          onClick={() => setSessionToRevoke(null)}
+                          disabled={isRevokingAccess}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-remove-access-confirm"
+                          onClick={async () => {
+                            if (isRevokingAccess || !sessionToRevoke) return;
+                            setIsRevokingAccess(true);
+                            try {
+                              const success = await handleRevokeExternalSession(sessionToRevoke.id);
+                              if (success !== false) {
+                                setSessionToRevoke(null);
+                              }
+                            } finally {
+                              setIsRevokingAccess(false);
+                            }
+                          }}
+                          disabled={isRevokingAccess}
+                        >
+                          {isRevokingAccess ? (
+                            <>
+                              <RefreshCw size={14} className="spin" />
+                              <span>Removing...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Trash2 size={14} />
+                              <span>Remove access</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Add Authenticator Account Modal */}
                 {showAddAuthModal && (

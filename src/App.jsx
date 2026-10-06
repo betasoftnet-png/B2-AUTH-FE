@@ -569,9 +569,6 @@ function App() {
   };
 
   const handleRevokeExternalSession = async (sessionId) => {
-    if (!window.confirm("Are you sure you want to remove access for this application?")) {
-      return;
-    }
     setLoading(true);
     try {
       const res = await axios.delete(`${API_BASE}/auth/sessions/external/${sessionId}`, {
@@ -580,9 +577,12 @@ function App() {
       if (res.data.success) {
         fetchExternalSessions(accessToken);
         showAlert("Application access revoked successfully");
+        return true;
       }
+      return false;
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to revoke application access');
+      return false;
     } finally {
       setLoading(false);
     }
