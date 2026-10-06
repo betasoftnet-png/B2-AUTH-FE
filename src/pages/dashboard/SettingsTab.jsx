@@ -53,18 +53,25 @@ const SettingsTab = () => {
                   <p>Manage your recovery information and security preferences.</p>
                 </header>
 
-                <div className="settings-grid">
-                  <div className="glass-card settings-card">
-                    <div className="card-header">
-                      <ShieldCheck size={20} className="accent-icon" />
-                      <h3>Recovery Information</h3>
+                <div className="account-settings-grid">
+                  {/* Left: Recovery Information Card */}
+                  <div className="account-settings-card">
+                    <div className="account-settings-card-header recovery-header">
+                      <div className="account-settings-header-icon-box shield-badge">
+                        <ShieldCheck size={20} />
+                      </div>
+                      <div className="account-settings-header-text">
+                        <h3>Recovery Information</h3>
+                        <p>Keep your recovery details up to date to secure your account.</p>
+                      </div>
                     </div>
 
-                    <div className="settings-form">
-                      <div className="settings-group">
-                        <label>Recovery Email</label>
-                        <div className="input-with-icon">
-                          <Mail size={18} />
+                    <div className="account-settings-card-body">
+                      <div className="account-settings-field">
+                        <label className="account-settings-label">Recovery Email</label>
+                        <span className="account-settings-helper">Used to recover your account and receive important notifications.</span>
+                        <div className="account-settings-input-box">
+                          <Mail size={18} className="field-icon" />
                           <input
                             type="email"
                             value={recoveryInfo.recoveryEmail || ''}
@@ -75,10 +82,11 @@ const SettingsTab = () => {
                         </div>
                       </div>
 
-                      <div className="settings-group">
-                        <label>Phone Number</label>
-                        <div className="input-with-icon">
-                          <Phone size={18} />
+                      <div className="account-settings-field">
+                        <label className="account-settings-label">Phone Number</label>
+                        <span className="account-settings-helper">Used for account recovery and security alerts.</span>
+                        <div className="account-settings-input-box">
+                          <Phone size={18} className="field-icon" />
                           <input
                             type="text"
                             value={recoveryInfo.phoneNumber || ''}
@@ -89,31 +97,51 @@ const SettingsTab = () => {
                         </div>
                       </div>
 
-                      <div className="settings-actions">
+                      <div className="account-settings-actions">
                         {isEditingRecovery ? (
                           <>
-                            <button className="action-btn secondary" onClick={() => setIsEditingRecovery(false)}>Cancel</button>
-                            <button className="action-btn primary-solid" onClick={handleUpdateRecovery} disabled={loading}>
-                              <Save size={16} /> Save Changes
+                            <button className="btn-account-settings-cancel" onClick={() => setIsEditingRecovery(false)}>
+                              Cancel
+                            </button>
+                            <button className="btn-account-settings-primary" onClick={handleUpdateRecovery} disabled={loading}>
+                              <Save size={15} /> Save Changes
                             </button>
                           </>
                         ) : (
-                          <button className="action-btn secondary" onClick={() => setIsEditingRecovery(true)}>
-                            <Edit3 size={16} /> Edit Details
+                          <button className="btn-account-settings-primary" onClick={() => setIsEditingRecovery(true)}>
+                            <Edit3 size={15} /> Edit Details
                           </button>
                         )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="glass-card settings-card">
-                    <div className="card-header">
-                      <Settings size={20} className="accent-icon" />
-                      <h3>Preferences</h3>
+                  {/* Right: Preferences Card */}
+                  <div className="account-settings-card">
+                    <div className="account-settings-card-header preferences-header">
+                      <div className="account-settings-header-icon-box gear-badge">
+                        <Settings size={20} />
+                      </div>
+                      <div className="account-settings-header-text">
+                        <h3>Preferences</h3>
+                        <p>Customize your account experience and security preferences.</p>
+                      </div>
                     </div>
-                    <div className="settings-placeholder">
-                      <AlertCircle size={48} />
-                      <p>Additional settings coming soon in the next update.</p>
+
+                    <div className="account-settings-card-body preferences-body">
+                      <div className="preferences-empty-state">
+                        <div className="preferences-empty-illustration">
+                          <div className="preferences-empty-circle">
+                            <Settings size={34} className="preferences-gear-icon" />
+                          </div>
+                          <span className="pref-sparkle p1"></span>
+                          <span className="pref-sparkle p2"></span>
+                          <span className="pref-sparkle p3"></span>
+                          <span className="pref-sparkle p4"></span>
+                        </div>
+                        <h4>Additional settings coming soon</h4>
+                        <p>We're working on new features to give you more control over your account.</p>
+                      </div>
                     </div>
                   </div>
                 </div>

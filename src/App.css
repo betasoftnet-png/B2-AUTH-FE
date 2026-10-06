@@ -4434,3 +4434,340 @@ body {
   cursor: not-allowed;
   transform: none;
 }
+
+/* ========================================================
+   Redesigned Account Settings Page (Reference Match)
+   ======================================================== */
+.account-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  align-items: stretch;
+  width: 100%;
+}
+
+@media (max-width: 960px) {
+  .account-settings-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.account-settings-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 410px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.account-settings-card:hover {
+  border-color: rgba(203, 213, 225, 0.9);
+  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.06), 0 2px 8px -1px rgba(15, 23, 42, 0.03);
+}
+
+.account-settings-card-header {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.65);
+}
+
+.account-settings-card-header.recovery-header {
+  background: #f0f6ff;
+}
+
+.account-settings-card-header.preferences-header {
+  background: #f5f3ff;
+}
+
+.account-settings-header-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.account-settings-header-icon-box.shield-badge {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.account-settings-header-icon-box.gear-badge {
+  background: #ede9fe;
+  color: #6366f1;
+}
+
+.account-settings-header-icon-box svg {
+  color: inherit;
+}
+
+.account-settings-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.account-settings-header-text h3 {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  font-family: inherit;
+  letter-spacing: -0.2px;
+}
+
+.account-settings-header-text p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.account-settings-card-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.account-settings-card-body.preferences-body {
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.account-settings-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.account-settings-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 3px;
+  font-family: inherit;
+  letter-spacing: -0.1px;
+}
+
+.account-settings-helper {
+  font-size: 12.5px;
+  color: #64748b;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.account-settings-input-box {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.account-settings-input-box:focus-within {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.account-settings-input-box .field-icon {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.account-settings-input-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+  font-family: inherit;
+  height: 100%;
+  padding: 0;
+}
+
+.account-settings-input-box input:disabled {
+  cursor: default;
+  color: #0f172a;
+  opacity: 1;
+  background: transparent;
+}
+
+.account-settings-input-box input::placeholder {
+  color: #94a3b8;
+}
+
+.account-settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.btn-account-settings-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+  color: #ffffff !important;
+  border: none;
+  border-radius: 12px;
+  padding: 10.5px 22px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.32);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.btn-account-settings-primary svg {
+  color: #ffffff;
+}
+
+.btn-account-settings-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.42);
+}
+
+.btn-account-settings-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-account-settings-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-account-settings-cancel {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10.5px 20px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.btn-account-settings-cancel:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* Empty State Styling for Preferences Card */
+.preferences-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 320px;
+  margin: auto;
+}
+
+.preferences-empty-illustration {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preferences-empty-circle {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #f5f3ff;
+  border: 1px solid rgba(224, 219, 254, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08);
+}
+
+.preferences-gear-icon {
+  color: #6366f1;
+}
+
+.pref-sparkle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.pref-sparkle.p1 {
+  width: 5px;
+  height: 5px;
+  top: 6px;
+  right: 0px;
+  background: #6366f1;
+}
+
+.pref-sparkle.p2 {
+  width: 6px;
+  height: 6px;
+  bottom: 24px;
+  left: -8px;
+  background: #3b82f6;
+}
+
+.pref-sparkle.p3 {
+  width: 3.5px;
+  height: 3.5px;
+  top: 8px;
+  left: 6px;
+  background: #c7d2fe;
+}
+
+.pref-sparkle.p4 {
+  width: 4px;
+  height: 4px;
+  top: 26px;
+  right: -8px;
+  background: #818cf8;
+}
+
+.preferences-empty-state h4 {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  font-family: inherit;
+  letter-spacing: -0.2px;
+}
+
+.preferences-empty-state p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
