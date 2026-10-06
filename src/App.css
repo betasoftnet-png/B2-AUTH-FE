@@ -3125,68 +3125,179 @@ body {
   margin: 8px 0 !important;
 }
 
-/* Manual Entry Form */
-.manual-entry-form {
+/* Manual Entry Card Styles */
+.manual-entry-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.manual-entry-card {
+  background: #ffffff;
+  border: 1.5px solid #f1f5f9;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+  padding: 24px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: all 0.2s ease;
+}
+
+.manual-card-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.manual-illustration-wrap {
+  width: 76px;
+  height: 76px;
+  background: #eef2ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  border: 1px solid #e0e7ff;
+}
+
+.manual-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.015em;
+  margin: 0 0 4px;
+}
+
+.manual-card-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+  max-width: 290px;
+}
+
+.manual-form-body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 4px 0 8px;
+  margin-top: 4px;
 }
 
-.auth-input-group {
+.manual-input-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  text-align: left;
 }
 
-.auth-input-group label {
-  font-size: 13px;
+.manual-input-group label {
+  font-size: 13.5px;
   font-weight: 600;
-  color: #334155;
+  color: #1e293b;
 }
 
-.auth-input-group input {
-  padding: 12px 16px;
+.manual-input-group .input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.manual-input-group .input-icon {
+  position: absolute;
+  left: 14px;
+  color: #64748b;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.manual-input-group input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
   border-radius: 12px;
   border: 1.5px solid #e2e8f0;
   font-size: 14px;
   color: #0f172a;
-  background: #f8fafc;
+  background: #ffffff;
   transition: all 0.2s ease;
+  font-family: inherit;
 }
 
-.auth-input-group input:focus {
+.manual-input-group input::placeholder {
+  color: #94a3b8;
+}
+
+.manual-input-group input:focus {
   outline: none;
   border-color: #4f46e5;
-  background: #ffffff;
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
 }
 
-.manual-entry-form .action-btn.primary-solid {
+.manual-input-group .input-with-icon:focus-within .input-icon {
+  color: #4f46e5;
+}
+
+.manual-save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
-  color: white;
-  padding: 12px;
-  border-radius: 12px;
+  color: #ffffff;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 14.5px;
+  padding: 12px 20px;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.28);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
   margin-top: 4px;
+  font-family: inherit;
 }
 
-.manual-entry-form .action-btn.primary-solid:hover:not(:disabled) {
+.manual-save-btn:hover:not(:disabled) {
   background: linear-gradient(135deg, #4338ca 0%, #2563eb 100%);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.38);
 }
 
-.manual-entry-form .action-btn.primary-solid:disabled {
+.manual-save-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.manual-save-btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+.manual-cancel-btn {
+  background: #f1f5f9;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 14px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.manual-cancel-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.manual-cancel-btn:active {
+  transform: translateY(0);
 }
 
 .full-width {

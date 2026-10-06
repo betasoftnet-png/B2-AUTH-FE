@@ -16,7 +16,8 @@ import {
   RefreshCw,
   ChevronLeft,
   QrCode,
-  Keyboard
+  Keyboard,
+  KeyRound
 } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { QRCodeSVG } from 'qrcode.react';
@@ -420,32 +421,84 @@ const SecurityTab = () => {
                             <p className="scanner-hint">Point your camera at the QR code</p>
                           </div>
                         ) : (
-                          <div className="manual-entry-form">
-                            <div className="auth-input-group">
-                              <label>Account Name</label>
-                              <input
-                                type="text"
-                                placeholder="e.g. GitHub: vishal"
-                                value={manualAuthData.name}
-                                onChange={e => setManualAuthData({ ...manualAuthData, name: e.target.value })}
-                              />
+                          <div className="manual-entry-card-wrapper">
+                            <div className="manual-entry-card">
+                              <div className="manual-card-header">
+                                <div className="manual-illustration-wrap">
+                                  <svg width="48" height="48" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    {/* Phone Screen & Body */}
+                                    <rect x="25" y="14" width="30" height="42" rx="6" stroke="#4F46E5" strokeWidth="2.5" fill="#FFFFFF"/>
+                                    {/* TOTP 2x2 Grid Bits */}
+                                    <rect x="31" y="21" width="6" height="6" rx="1.5" fill="#4F46E5"/>
+                                    <rect x="43" y="21" width="6" height="6" rx="1.5" fill="#4F46E5"/>
+                                    <rect x="31" y="31" width="6" height="6" rx="1.5" fill="#6366F1"/>
+                                    <rect x="43" y="31" width="6" height="6" rx="1.5" fill="#6366F1"/>
+                                    {/* Keypad Base Dock */}
+                                    <rect x="18" y="44" width="44" height="22" rx="6" stroke="#4F46E5" strokeWidth="2.5" fill="#FFFFFF"/>
+                                    <circle cx="27" cy="51" r="1.5" fill="#4F46E5"/>
+                                    <circle cx="35" cy="51" r="1.5" fill="#4F46E5"/>
+                                    <circle cx="45" cy="51" r="1.5" fill="#4F46E5"/>
+                                    <circle cx="53" cy="51" r="1.5" fill="#4F46E5"/>
+                                    <line x1="27" y1="58" x2="53" y2="58" stroke="#4F46E5" strokeWidth="2.2" strokeLinecap="round"/>
+                                    {/* Spark Signals */}
+                                    <line x1="64" y1="20" x2="68" y2="17" stroke="#3B82F6" strokeWidth="2.5" strokeLinecap="round"/>
+                                    <line x1="65" y1="28" x2="70" y2="28" stroke="#3B82F6" strokeWidth="2.5" strokeLinecap="round"/>
+                                    <line x1="64" y1="36" x2="68" y2="39" stroke="#3B82F6" strokeWidth="2.5" strokeLinecap="round"/>
+                                  </svg>
+                                </div>
+                                <h4 className="manual-card-title">Enter Account Details</h4>
+                                <p className="manual-card-subtitle">Manually enter the information from your authenticator app.</p>
+                              </div>
+
+                              <div className="manual-form-body">
+                                <div className="manual-input-group">
+                                  <label htmlFor="auth-account-name">Account Name</label>
+                                  <div className="input-with-icon">
+                                    <User size={18} className="input-icon" />
+                                    <input
+                                      id="auth-account-name"
+                                      type="text"
+                                      placeholder="e.g. GitHub: vishal"
+                                      value={manualAuthData.name}
+                                      onChange={e => setManualAuthData({ ...manualAuthData, name: e.target.value })}
+                                      autoComplete="off"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div className="manual-input-group">
+                                  <label htmlFor="auth-secret-key">Secret Key</label>
+                                  <div className="input-with-icon">
+                                    <KeyRound size={18} className="input-icon" />
+                                    <input
+                                      id="auth-secret-key"
+                                      type="text"
+                                      placeholder="Enter 2FA secret"
+                                      value={manualAuthData.secret}
+                                      onChange={e => setManualAuthData({ ...manualAuthData, secret: e.target.value })}
+                                      autoComplete="off"
+                                    />
+                                  </div>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  className="manual-save-btn"
+                                  onClick={() => handleAddAuthenticatorAccount(manualAuthData.name, manualAuthData.secret)}
+                                  disabled={!manualAuthData.name || !manualAuthData.secret}
+                                >
+                                  <span>Save Account</span>
+                                  <ChevronRight size={18} />
+                                </button>
+                              </div>
                             </div>
-                            <div className="auth-input-group">
-                              <label>Secret Key</label>
-                              <input
-                                type="text"
-                                placeholder="Enter 2FA secret"
-                                value={manualAuthData.secret}
-                                onChange={e => setManualAuthData({ ...manualAuthData, secret: e.target.value })}
-                              />
-                            </div>
+
                             <button
                               type="button"
-                              className="action-btn primary-solid full-width"
-                              onClick={() => handleAddAuthenticatorAccount(manualAuthData.name, manualAuthData.secret)}
-                              disabled={!manualAuthData.name || !manualAuthData.secret}
+                              className="manual-cancel-btn"
+                              onClick={() => setShowAddAuthModal(false)}
                             >
-                              Save Account
+                              Cancel
                             </button>
                           </div>
                         )}
