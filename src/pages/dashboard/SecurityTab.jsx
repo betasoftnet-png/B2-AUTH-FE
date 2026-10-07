@@ -602,8 +602,10 @@ const SecurityTab = () => {
 
                 <div className="security-grid">
                   {/* Signing in to B2Auth Section */}
-                  <div className="security-section">
-                    <h3 className="identity-group-title"><LockIcon size={14} /> SIGNING IN TO B2AUTH</h3>
+                  <div className="security-section security-section-top">
+                    <div className="header-with-flex">
+                      <h3 className="identity-group-title"><LockIcon size={14} /> SIGNING IN TO B2AUTH</h3>
+                    </div>
                     <div className="identity-container">
                       <div className="identity-row">
                         <div className="identity-leading">
@@ -651,7 +653,7 @@ const SecurityTab = () => {
                   </div>
 
                   {/* Cloud Authenticator Section */}
-                  <div className="security-section">
+                  <div className="security-section security-section-top">
                     <div className="header-with-flex">
                       <h3 className="identity-group-title"><Smartphone size={14} /> CLOUD AUTHENTICATOR</h3>
                       <button className="btn-dashboard-primary" onClick={() => setShowAddAuthModal(true)}>

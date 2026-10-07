@@ -3406,11 +3406,19 @@ body {
   .security-grid {
     grid-template-columns: 1fr;
   }
+  .security-section.security-section-top {
+    height: auto;
+  }
 }
 
 .security-section {
   display: flex;
   flex-direction: column;
+}
+
+.security-section.security-section-top {
+  align-self: stretch;
+  height: 100%;
 }
 
 .security-section .identity-group-title {
@@ -3422,7 +3430,7 @@ body {
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.7px;
-  margin-bottom: 12px;
+  margin: 0 0 12px 0;
 }
 
 .security-section .identity-group-title svg {
@@ -3436,17 +3444,20 @@ body {
   border-radius: 14px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .security-section .header-with-flex {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 35px;
   margin-bottom: 12px;
 }
 
 .security-section .header-with-flex .identity-group-title {
-  margin-bottom: 0;
+  margin: 0;
 }
 
 /* Icon Badges */
@@ -3623,10 +3634,16 @@ body {
 /* Cloud Authenticator Empty State */
 .cloud-auth-empty-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
   padding: 24px 20px;
   background: #ffffff;
+  flex: 1;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .cloud-auth-empty-icon-box {
@@ -3648,6 +3665,8 @@ body {
 .cloud-auth-empty-info {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 3px;
 }
 
