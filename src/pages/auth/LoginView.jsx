@@ -1,71 +1,48 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
-import authLogo from '../../assets/auth2.png';
 import betaLogo from '../../assets/beta2.png';
-import cliksBusinessLogo from '../../assets/cliks-business.png';
-import cliksLogo from '../../assets/cliks.png';
-import bitToolLogo from '../../assets/BIT-TOOL-2.png';
-import {
-  LayoutDashboard, Mail, ShieldCheck, Settings, Activity, LogOut,
-  Smartphone, Monitor, Tablet, CheckCircle, AlertCircle, XCircle, Search, Building,
-  Minus, FileText, Download, Briefcase, FileSignature, UploadCloud, UserPlus, Info,
-  Trash2, Edit3, Save, Plus, ChevronRight, ChevronDown, User, Phone,
-  Globe, Clock, MapPin,
-  LockIcon,
-  LockOpenIcon,
-  Check,
-  Circle,
-  X,
-  RefreshCw,
-  ChevronLeft
-} from 'lucide-react';
+import { ChevronLeft, Eye, EyeOff } from 'lucide-react';
 
 const LoginView = () => {
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
-    view, setView, customAlert, setCustomAlert, accounts, setAccounts,
-    handleLogin, handleLogout, loading, handleAddAccount, handleRemoveAccount,
-    formData, setFormData, handleInputChange, passwordForm, setPasswordForm,
-    handleSelectAccount, useSavedAccount, setUseSavedAccount, handleSwitchAccount,
-    showAccountSwitcher, setShowAccountSwitcher, handleCreateAccountClick,
-    handleGoToMailSignup, handleForgotInModal, handleVerifyLogin2fa,
-    manualAuthData, setManualAuthData, handleVerifyOtp, timeLeft,
-    handleSendOtp, handleForgotPasswordIdentifierSubmit,
-    handleForgotPasswordClickWithEmail, handleVerifyPan, verifyPanResult,
-    panData, setPanData, handleMakePrimary, selectedRecoveryMethod,
-    setSelectedRecoveryMethod, recoveryOptions, handleSend2faRecoveryOtp,
-    handleVerify2faRecoveryOtp, show2faRecovery, setShow2faRecovery,
-    signupType, setSignupType, handleFileChange, handleProcessQR,
-    registrationMode, setRegistrationMode, resetSignupForm,
-    handleRegisterProfile, handleVerifyParentOtp, handleSendParentOtp,
-    parentOtpSent, setParentOtpSent, handleSendMobileOtp, handleVerifyMobileOtp,
-    mobileOtpStep, setMobileOtpStep, handleVerifyGst, gstData, setGstData,
-    handleFetchGstins, fetchingGstins, fetchedGstins, handleSelectGstin,
-    signupFetchedGstins, setSignupFetchedGstins, fetchingSignupGstins, setFetchingSignupGstins,
-    primaryBusinessData, setPrimaryBusinessData, primaryBusinessStep, setPrimaryBusinessStep,
-    handleOnboardingSubmit, handleFinalSignupSubmit, handleCreateMailbox,
-    userEmails, usernameSuggestions, setUsernameSuggestions, 
-    handleResetPassword, handleUpdateRecovery, language, setLanguage,
-    PasswordRequirements, validatePassword, AuthenticatorCode,
-    setup2FAData, setSetup2FACode, handleVerifyAndEnable2FA,
-    cliksBusinessLogo, cliksLogo, authLogo, bitToolLogo, showLegalPage, handleForgotPasswordClick,
-    accessToken, addAuthMode, authenticatorAccounts, businessSignupType, businessTypeData, calculateAge, clientId, dashboardTab, error, expandedExternalSessionId, expandedSessionId, externalSessions, fetchAuthenticatorAccounts, fetchEmails, fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, handleAddAuthenticatorAccount, handleBusinessTypeSelect, handleChangePassword, handleDeleteAuthenticatorAccount, handleDisable2FA, handleEnable2FA, handleMailFormSubmit, handleProfileClick, handleRevokeExternalSession, handleRevokeSession, handleSignOutAll, handleVerificationCallback, isEditingRecovery, leaveLegalPage, normalizeIdentifier, onboardingData, onboardingStep, parseUserAgent, profileData, recoveryInfo, redirectUri, saveAccount, sessions, setAccessToken, setAddAuthMode, setAuthenticatorAccounts, setBusinessSignupType, setBusinessTypeData, setClientId, setDashboardTab, setError, setExpandedExternalSessionId, setExpandedSessionId, setExternalSessions, setFetchedGstins, setFetchingGstins, setIsEditingRecovery, setLoading, setOnboardingData, setOnboardingStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setSessions, setSettingsData, setSetup2FAData, setShowAddAuthModal, setShowBusinessTypeModal, setShowChangePasswordModal, setShowGstModal, setShowPanModal, setShowSetup2FAModal, setSidebarCategory, setState, setSuccessMessage, setTempToken, setUserEmails, setVerificationStatus, setVerifyPanResult, setVkycUrl, settingsData, setup2FACode, showAddAuthModal, showAlert, showBusinessTypeModal, showChangePasswordModal, showGstModal, showPanModal, showSetup2FAModal, sidebarCategory, state, successMessage, tempToken, verificationStatus, vkycUrl,} = useAppContext();
+    setView,
+    accounts,
+    handleLogin,
+    loading,
+    formData,
+    setFormData,
+    handleInputChange,
+    useSavedAccount,
+    setUseSavedAccount,
+    handleCreateAccountClick,
+    handleForgotPasswordClick,
+    showLegalPage,
+    error,
+  } = useAppContext();
 
   return (
-    <form onSubmit={handleLogin} className="auth-step-merged" style={{ position: 'relative' }}>
+    <form onSubmit={handleLogin} className="b2auth-login-card">
       {(!useSavedAccount && accounts.length > 0) && (
-        <button type="button" onClick={() => setView('account-selection')} style={{ position: 'absolute', top: 0, left: 0, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', color: '#64748b' }}>
+        <button
+          type="button"
+          onClick={() => setView('account-selection')}
+          className="b2auth-back-btn"
+        >
           <ChevronLeft size={16} /> Back
         </button>
       )}
 
-      <div className="input-field-group" style={{ width: '100%', textAlign: 'center', marginTop: (!useSavedAccount && accounts.length > 0) ? '24px' : '0' }}>
-        <img src={betaLogo} alt="b2auth beta" className="auth-logo" style={{ height: '48px', marginBottom: '16px' }} />
-        <label style={{ fontSize: '24px', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Sign in to B2Auth</label>
-        <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '32px' }}>
-          Use your BETA Account
-        </p>
+      {/* Header with B2Auth Logo */}
+      <div className="b2auth-header">
+        <img
+          src={betaLogo}
+          alt="B2Auth"
+          className="b2auth-logo"
+        />
+        <h1 className="b2auth-title">Sign in to B2Auth</h1>
+        <p className="b2auth-subtitle">Use your BETA Account</p>
       </div>
 
       {useSavedAccount && formData.identifier ? (
@@ -75,77 +52,128 @@ const LoginView = () => {
               {formData.identifier.split('@')[0]?.[0]?.toUpperCase() || 'U'}
             </div>
             <div className="relogin-info">
-              <span className="relogin-email">{formData.identifier.includes('@') ? formData.identifier : `${formData.identifier}@bnxmail.com`}</span>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                <button type="button" className="switch-account-btn" onClick={() => {
-                  setUseSavedAccount(false);
-                  setFormData(prev => ({ ...prev, identifier: '', password: '' }));
-                  setView('login-email');
-                }}>
+              <span className="relogin-email">
+                {formData.identifier.includes('@') ? formData.identifier : `${formData.identifier}@bnxmail.com`}
+              </span>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '4px' }}>
+                <button
+                  type="button"
+                  className="switch-account-btn"
+                  onClick={() => {
+                    setUseSavedAccount(false);
+                    setFormData(prev => ({ ...prev, identifier: '', password: '' }));
+                    setView('login-email');
+                  }}
+                >
                   Use another account
                 </button>
                 {accounts.length > 1 && (
-                  <button type="button" className="switch-account-btn" onClick={() => {
-                    setUseSavedAccount(false);
-                    setView('account-selection');
-                  }}>
+                  <button
+                    type="button"
+                    className="switch-account-btn"
+                    onClick={() => {
+                      setUseSavedAccount(false);
+                      setView('account-selection');
+                    }}
+                  >
                     Switch account
                   </button>
                 )}
               </div>
             </div>
           </div>
-          <div className="input-field-group relogin-password-group">
-            <label>Password:</label>
-            <input
-              type="password"
-              placeholder='Enter your password'
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              required
-              autoFocus
-            />
+
+          <div className="b2auth-form-group" style={{ marginTop: '20px' }}>
+            <label className="b2auth-label">Password:</label>
+            <div className="b2auth-input-wrapper">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Enter password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+                autoFocus
+                className="b2auth-input b2auth-password-input"
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="b2auth-eye-btn"
+                onClick={() => setShowPassword(prev => !prev)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
         </div>
       ) : (
-        <div className="login-grid">
-          <div className="input-field-group">
-            <label>Email:</label>
-            <div className={`login-input-wrapper ${!formData.identifier?.includes('@') ? 'has-domain-hint' : ''}`}>
+        <div className="b2auth-form-fields">
+          <div className="b2auth-form-group">
+            <label htmlFor="b2auth-email-input" className="b2auth-label">Email:</label>
+            <div className={`b2auth-input-wrapper ${formData.identifier && !formData.identifier.includes('@') ? 'has-domain-hint' : ''}`}>
               <input
+                id="b2auth-email-input"
                 type="text"
                 name="identifier"
                 value={formData.identifier}
                 onChange={handleInputChange}
                 required
-                placeholder="Username"
+                placeholder="Enter email address"
+                className="b2auth-input"
+                autoComplete="username"
               />
-              {!formData.identifier?.includes('@') && <span className="domain-hint">@bnxmail.com</span>}
+              {formData.identifier && !formData.identifier.includes('@') && (
+                <span className="b2auth-domain-hint">@bnxmail.com</span>
+              )}
             </div>
           </div>
-          <div className="input-field-group">
-            <label>Password:</label>
-            <input
-              type="password"
-              placeholder='Enter your password'
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              required
-            />
+
+          <div className="b2auth-form-group">
+            <label htmlFor="b2auth-password-input" className="b2auth-label">Password:</label>
+            <div className="b2auth-input-wrapper">
+              <input
+                id="b2auth-password-input"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Enter password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+                className="b2auth-input b2auth-password-input"
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="b2auth-eye-btn"
+                onClick={() => setShowPassword(prev => !prev)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      <div className="forgot-password-link" onClick={handleForgotPasswordClick}>
-        Forgot Password?
+      {/* Forgot Password Link */}
+      <div className="b2auth-forgot-wrapper">
+        <span
+          className="b2auth-forgot-link"
+          onClick={handleForgotPasswordClick}
+          role="button"
+          tabIndex={0}
+        >
+          Forgot Password?
+        </span>
       </div>
 
-      {accounts.length > 0 && (
+      {accounts.length > 0 && !useSavedAccount && (
         <div
-          className="forgot-password-link"
-          style={{ marginTop: '-20px', marginBottom: '32px' }}
+          className="b2auth-saved-account-link"
           onClick={() => {
             if (accounts.length === 1) {
               const acc = accounts[0];
@@ -163,26 +191,64 @@ const LoginView = () => {
         </div>
       )}
 
-      {error && <div className="error-message" style={{ color: 'red', marginTop: '16px', marginBottom: '16px', textAlign: 'center', width: '100%' }}>{error}</div>}
-      <div className="login-btn-container">
-        <button type="submit" className="merged-login-btn" disabled={loading}>
-          {loading ? '...' : 'Login'}
-        </button>
-      </div>
-      <div className="auth-footer-merged">
-        <div className="footer-right-links">
-          <div style={{ display: 'flex', flexDirection: 'row', gap: '9px' }}>
-            <span>Help</span>
-            <button type="button" onClick={() => showLegalPage('privacy')}>Privacy</button>
-            <button type="button" onClick={() => showLegalPage('terms')}>Terms</button>
+      {error && (
+        <div className="b2auth-error-message">
+          {error}
+        </div>
+      )}
+
+      {/* Login Button */}
+      <button
+        type="submit"
+        className="b2auth-login-btn"
+        disabled={loading}
+      >
+        {loading ? '...' : 'Login'}
+      </button>
+
+      {/* Footer */}
+      <div className="b2auth-footer">
+        <div className="b2auth-footer-left">
+          <div className="b2auth-footer-row">
+            <span className="b2auth-footer-text">Help</span>
+            <button
+              type="button"
+              className="b2auth-footer-link"
+              onClick={() => showLegalPage('privacy')}
+            >
+              Privacy
+            </button>
+            <button
+              type="button"
+              className="b2auth-footer-link"
+              onClick={() => showLegalPage('terms')}
+            >
+              Terms
+            </button>
           </div>
-          <div>
-            <span style={{ fontSize: '12px', color: 'blue', fontFamily: 'inherit' }}>Report Issue</span>
+          <div className="b2auth-footer-row">
+            <span
+              className="b2auth-report-link"
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                window.open('mailto:support@beta-softnet.com?subject=B2Auth%20Issue%20Report', '_blank');
+              }}
+            >
+              Report Issue
+            </span>
           </div>
         </div>
-        <div><img src={authLogo} alt="" className="auth-logo" height={40} style={{ marginRight: '25px' }} /></div>
-        <div className="footer-left-link" onClick={handleCreateAccountClick}>
-          Create Account
+
+        <div className="b2auth-footer-right">
+          <span
+            className="b2auth-create-account-link"
+            onClick={handleCreateAccountClick}
+            role="button"
+            tabIndex={0}
+          >
+            Create Account
+          </span>
         </div>
       </div>
     </form>

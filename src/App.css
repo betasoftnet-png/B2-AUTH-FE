@@ -48,25 +48,357 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
-              radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
-              #ffffff;
+  padding: 30px 16px;
+  background: 
+    radial-gradient(ellipse 90% 65% at 15% 15%, rgba(212, 230, 255, 0.65) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 85% 85%, rgba(222, 236, 255, 0.6) 0%, transparent 60%),
+    linear-gradient(135deg, #eef4fc 0%, #f7faff 45%, #ecf3fd 100%);
+  background-attachment: fixed;
+  box-sizing: border-box;
 }
 
 .auth-card {
   width: 100%;
-  max-width: 600px;
-  padding: 30px 40px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 40px;
-  box-shadow: 0 40px 100px 30px rgba(0, 0, 0, 0.04),
-              0 20px 40px 20px rgba(0, 0, 0, 0.02);
+  max-width: 460px;
+  padding: 44px 42px 36px 42px;
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 
+    0 20px 50px -10px rgba(25, 55, 130, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    0 0 0 1px rgba(228, 236, 248, 0.7);
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  box-sizing: border-box;
+  transition: max-width 0.3s ease, padding 0.3s ease;
+}
+
+.auth-card:has(.legal-document-container),
+.auth-card:has(.signup-wide-content) {
+  max-width: 620px;
+}
+
+@media (max-width: 520px) {
+  .google-auth-container {
+    padding: 16px 12px;
+  }
+  
+  .auth-card {
+    max-width: 100%;
+    padding: 32px 22px 28px 22px;
+    border-radius: 22px;
+    box-shadow: 0 10px 30px -5px rgba(25, 55, 130, 0.08);
+  }
+}
+
+/* ==================================================
+   B2AUTH BNXMAIL-STYLE LOGIN REDESIGN
+   ================================================== */
+
+.b2auth-login-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.b2auth-header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.b2auth-logo {
+  height: 56px;
+  width: auto;
+  object-fit: contain;
+  margin: 0 auto 16px auto;
+  display: block;
+}
+
+.b2auth-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #334155;
+  letter-spacing: -0.4px;
+  margin: 0 0 6px 0;
+  line-height: 1.25;
+}
+
+.b2auth-subtitle {
+  font-size: 14.5px;
+  color: #64748b;
+  font-weight: 400;
+  margin: 0;
+}
+
+.b2auth-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.b2auth-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+}
+
+.b2auth-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: left;
+  letter-spacing: -0.1px;
+}
+
+.b2auth-input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.b2auth-input {
+  width: 100%;
+  height: 48px;
+  background-color: #edf3fc;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-size: 15px;
+  color: #1e293b;
+  box-sizing: border-box;
+  outline: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.b2auth-input::placeholder {
+  color: #94a3b8;
+  font-size: 14.5px;
+}
+
+.b2auth-input:focus {
+  background-color: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3.5px rgba(59, 130, 246, 0.15);
+}
+
+.b2auth-password-input {
+  padding-right: 48px;
+}
+
+.b2auth-input-wrapper.has-domain-hint .b2auth-input {
+  padding-right: 125px;
+}
+
+.b2auth-domain-hint {
+  position: absolute;
+  right: 16px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.b2auth-eye-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.b2auth-eye-btn:hover {
+  color: #1e293b;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.b2auth-forgot-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: 24px;
+}
+
+.b2auth-forgot-link {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #2563eb;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  user-select: none;
+}
+
+.b2auth-forgot-link:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+.b2auth-saved-account-link {
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #2563eb;
+  cursor: pointer;
+  margin-top: -12px;
+  margin-bottom: 20px;
+}
+
+.b2auth-saved-account-link:hover {
+  text-decoration: underline;
+}
+
+.b2auth-login-btn {
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(135deg, #2b45eb 0%, #1a6cf0 55%, #0284c7 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.38);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.b2auth-login-btn:hover:not(:disabled) {
+  transform: translateY(-1.5px);
+  box-shadow: 0 10px 24px -3px rgba(37, 99, 235, 0.48);
+  background: linear-gradient(135deg, #253fd9 0%, #1562e2 55%, #0278b8 100%);
+}
+
+.b2auth-login-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px -2px rgba(37, 99, 235, 0.35);
+}
+
+.b2auth-login-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.b2auth-error-message {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.b2auth-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 36px;
+  padding-top: 4px;
+}
+
+.b2auth-footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.b2auth-footer-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.b2auth-footer-text,
+.b2auth-footer-link {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 400;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.b2auth-footer-link:hover,
+.b2auth-footer-text:hover {
+  color: #1e293b;
+}
+
+.b2auth-report-link {
+  font-size: 13px;
+  color: #2563eb;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-block;
+  transition: opacity 0.15s ease;
+}
+
+.b2auth-report-link:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+.b2auth-footer-right {
+  display: flex;
+  align-items: flex-end;
+}
+
+.b2auth-create-account-link {
+  font-size: 13.5px;
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  user-select: none;
+}
+
+.b2auth-create-account-link:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+.b2auth-back-btn {
+  position: absolute;
+  top: -24px;
+  left: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 0;
+  transition: color 0.15s ease;
+}
+
+.b2auth-back-btn:hover {
+  color: #1e293b;
 }
 
 /* .auth-card::before {
