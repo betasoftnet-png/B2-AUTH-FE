@@ -1,96 +1,107 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
-import authLogo from '../../assets/auth2.png';
-import cliksBusinessLogo from '../../assets/cliks-business.png';
-import cliksLogo from '../../assets/cliks.png';
-import bitToolLogo from '../../assets/BIT-TOOL-2.png';
-import {
-  LayoutDashboard, Mail, ShieldCheck, Settings, Activity, LogOut,
-  Smartphone, Monitor, Tablet, CheckCircle, AlertCircle, XCircle, Search, Building,
-  Minus, FileText, Download, Briefcase, FileSignature, UploadCloud, UserPlus, Info,
-  Trash2, Edit3, Save, Plus, ChevronRight, ChevronDown, User, Phone,
-  Globe, Clock, MapPin,
-  LockIcon,
-  LockOpenIcon,
-  Check,
-  Circle,
-  X,
-  RefreshCw,
-  ChevronLeft
-} from 'lucide-react';
+import { Smartphone, Mail, ChevronRight } from 'lucide-react';
 
 const ForgotPasswordOptions = () => {
-
   const {
-    view, setView, customAlert, setCustomAlert, accounts, setAccounts,
-    handleLogin, handleLogout, loading, handleAddAccount, handleRemoveAccount,
-    formData, setFormData, handleInputChange, passwordForm, setPasswordForm,
-    handleSelectAccount, useSavedAccount, setUseSavedAccount, handleSwitchAccount,
-    showAccountSwitcher, setShowAccountSwitcher, handleCreateAccountClick,
-    handleGoToMailSignup, handleForgotInModal, handleVerifyLogin2fa,
-    manualAuthData, setManualAuthData, handleVerifyOtp, timeLeft,
-    handleSendOtp, handleForgotPasswordIdentifierSubmit,
-    handleForgotPasswordClickWithEmail, handleVerifyPan, verifyPanResult,
-    panData, setPanData, handleMakePrimary, selectedRecoveryMethod,
-    setSelectedRecoveryMethod, recoveryOptions, handleSend2faRecoveryOtp,
-    handleVerify2faRecoveryOtp, show2faRecovery, setShow2faRecovery,
-    signupType, setSignupType, handleFileChange, handleProcessQR,
-    registrationMode, setRegistrationMode, resetSignupForm,
-    handleRegisterProfile, handleVerifyParentOtp, handleSendParentOtp,
-    parentOtpSent, setParentOtpSent, handleSendMobileOtp, handleVerifyMobileOtp,
-    mobileOtpStep, setMobileOtpStep, handleVerifyGst, gstData, setGstData,
-    handleFetchGstins, fetchingGstins, fetchedGstins, handleSelectGstin,
-    signupFetchedGstins, setSignupFetchedGstins, fetchingSignupGstins, setFetchingSignupGstins,
-    primaryBusinessData, setPrimaryBusinessData, primaryBusinessStep, setPrimaryBusinessStep,
-    handleOnboardingSubmit, handleFinalSignupSubmit, handleCreateMailbox,
-    userEmails, usernameSuggestions, setUsernameSuggestions, 
-    handleResetPassword, handleUpdateRecovery, language, setLanguage,
-    PasswordRequirements, validatePassword, AuthenticatorCode,
-    setup2FAData, setSetup2FACode, handleVerifyAndEnable2FA,
-    cliksBusinessLogo, cliksLogo, authLogo, bitToolLogo,
-    // Note: add more here if needed,
-    accessToken, addAuthMode, authenticatorAccounts, businessSignupType, businessTypeData, calculateAge, clientId, dashboardTab, error, expandedExternalSessionId, expandedSessionId, externalSessions, fetchAuthenticatorAccounts, fetchEmails, fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, handleAddAuthenticatorAccount, handleBusinessTypeSelect, handleChangePassword, handleDeleteAuthenticatorAccount, handleDisable2FA, handleEnable2FA, handleForgotPasswordClick, handleMailFormSubmit, handleProfileClick, handleRevokeExternalSession, handleRevokeSession, handleSignOutAll, handleVerificationCallback, isEditingRecovery, leaveLegalPage, normalizeIdentifier, onboardingData, onboardingStep, parseUserAgent, profileData, recoveryInfo, redirectUri, saveAccount, sessions, setAccessToken, setAddAuthMode, setAuthenticatorAccounts, setBusinessSignupType, setBusinessTypeData, setClientId, setDashboardTab, setError, setExpandedExternalSessionId, setExpandedSessionId, setExternalSessions, setFetchedGstins, setFetchingGstins, setIsEditingRecovery, setLoading, setOnboardingData, setOnboardingStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setSessions, setSettingsData, setSetup2FAData, setShowAddAuthModal, setShowBusinessTypeModal, setShowChangePasswordModal, setShowGstModal, setShowPanModal, setShowSetup2FAModal, setSidebarCategory, setState, setSuccessMessage, setTempToken, setUserEmails, setVerificationStatus, setVerifyPanResult, setVkycUrl, settingsData, setup2FACode, showAddAuthModal, showAlert, showBusinessTypeModal, showChangePasswordModal, showGstModal, showLegalPage, showPanModal, showSetup2FAModal, sidebarCategory, state, successMessage, tempToken, verificationStatus, vkycUrl,} = useAppContext();
+    setView,
+    loading,
+    recoveryOptions,
+    handleSendOtp,
+    selectedRecoveryMethod,
+    setSelectedRecoveryMethod,
+    error,
+    setError,
+  } = useAppContext();
+
+  const [activeMethod, setActiveMethod] = useState(selectedRecoveryMethod || '');
+
+  const onSelectMethod = (method) => {
+    setActiveMethod(method);
+    if (setSelectedRecoveryMethod) {
+      setSelectedRecoveryMethod(method);
+    }
+    handleSendOtp(method);
+  };
 
   return (
-    <>
-      <div className="auth-step-merged">
-              <div className="login-grid">
-                <div className="input-field-group">
-                  <label style={{ fontSize: '18px', fontWeight: '700', display: 'block', marginBottom: '8px' }}>Account Recovery</label>
-                  <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
-                    Select a recovery method to receive a verification code.
-                  </p>
+    <div className="b2auth-recovery-container">
+      <div className="b2auth-recovery-header">
+        <h1 className="b2auth-recovery-title">Account Recovery</h1>
+        <p className="b2auth-recovery-description">
+          Choose how you’d like to verify your identity and recover your account.
+        </p>
+      </div>
 
-                  <div className="recovery-methods-list">
-                    {recoveryOptions?.recoveryEmail && (
-                      <div className="recovery-option-premium" onClick={() => handleSendOtp('EMAIL')}>
-                        <div className="option-icon"><Mail size={20} /></div>
-                        <div className="option-info">
-                          <span className="option-label">Email</span>
-                          <span className="option-value">{recoveryOptions.recoveryEmail}</span>
-                        </div>
-                        <ChevronRight size={18} className="option-arrow" />
-                      </div>
-                    )}
-                    {recoveryOptions?.phoneNumber && (
-                      <div className="recovery-option-premium" onClick={() => handleSendOtp('PHONE')}>
-                        <div className="option-icon"><Smartphone size={20} /></div>
-                        <div className="option-info">
-                          <span className="option-label">Phone</span>
-                          <span className="option-value">{recoveryOptions.phoneNumber}</span>
-                        </div>
-                        <ChevronRight size={18} className="option-arrow" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="auth-footer-merged" style={{ marginTop: '32px', borderTop: 'none', justifyContent: 'center' }}>
-                <button className="text-link-btn" onClick={() => setView('forgot-password-identifier')}>Try another way</button>
-              </div>
+      {error && (
+        <div className="b2auth-inline-error" role="alert" style={{ marginTop: '0', marginBottom: '16px' }}>
+          {error}
+        </div>
+      )}
+
+      <div className="recovery-options-group">
+        {recoveryOptions?.phoneNumber && (
+          <div
+            className={`recovery-option-card ${activeMethod === 'PHONE' ? 'selected' : ''} ${loading ? 'loading' : ''}`}
+            onClick={() => onSelectMethod('PHONE')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelectMethod('PHONE');
+              }
+            }}
+          >
+            <div className="recovery-icon-box">
+              <Smartphone size={20} strokeWidth={2} />
             </div>
-    </>
+            <div className="recovery-info">
+              <span className="recovery-label">Phone</span>
+              <span className="recovery-value">{recoveryOptions.phoneNumber}</span>
+            </div>
+            <ChevronRight size={18} className="recovery-arrow" />
+          </div>
+        )}
+
+        {recoveryOptions?.recoveryEmail && (
+          <div
+            className={`recovery-option-card ${activeMethod === 'EMAIL' ? 'selected' : ''} ${loading ? 'loading' : ''}`}
+            onClick={() => onSelectMethod('EMAIL')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelectMethod('EMAIL');
+              }
+            }}
+          >
+            <div className="recovery-icon-box">
+              <Mail size={20} strokeWidth={2} />
+            </div>
+            <div className="recovery-info">
+              <span className="recovery-label">Email</span>
+              <span className="recovery-value">{recoveryOptions.recoveryEmail}</span>
+            </div>
+            <ChevronRight size={18} className="recovery-arrow" />
+          </div>
+        )}
+      </div>
+
+      <div className="recovery-actions">
+        <button
+          type="button"
+          className="recovery-secondary-btn"
+          onClick={() => {
+            if (setError) setError('');
+            setView('forgot-password-identifier');
+          }}
+        >
+          Try another way
+        </button>
+      </div>
+    </div>
   );
 };
 
