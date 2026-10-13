@@ -1013,6 +1013,208 @@ body {
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
 }
 
+/* ==================================================
+   B2AUTH OTP VERIFICATION REDESIGN
+   ================================================== */
+
+.b2auth-inline-success {
+  color: #15803d;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-align: left;
+  margin-bottom: 18px;
+  animation: b2authFadeIn 0.2s ease-in-out;
+}
+
+.otp-verification-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.otp-inputs-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.otp-digit-input {
+  width: 50px;
+  height: 56px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  background-color: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.otp-digit-input:focus {
+  background-color: #ffffff;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3.5px rgba(124, 58, 237, 0.15);
+  transform: translateY(-1px);
+}
+
+.otp-digit-input.filled {
+  border-color: #94a3b8;
+  background-color: #ffffff;
+}
+
+.otp-digit-input.has-error {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.otp-digit-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.otp-resend-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 26px;
+  font-size: 14px;
+  color: #64748b;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.otp-resend-text {
+  color: #64748b;
+}
+
+.otp-resend-btn {
+  background: none;
+  border: none;
+  color: #7c3aed;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  font-family: inherit;
+  transition: color 0.15s ease;
+}
+
+.otp-resend-btn:hover:not(:disabled) {
+  color: #6d28d9;
+  text-decoration: underline;
+}
+
+.otp-resend-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.otp-countdown-text {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.otp-verify-submit-btn {
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -4px rgba(124, 58, 237, 0.4);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  margin-bottom: 20px;
+  user-select: none;
+}
+
+.otp-verify-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+  box-shadow: 0 10px 24px -3px rgba(124, 58, 237, 0.5);
+  transform: translateY(-1.5px);
+}
+
+.otp-verify-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px -2px rgba(124, 58, 237, 0.35);
+}
+
+.otp-verify-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.otp-btn-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.otp-spinner {
+  animation: spin 1s linear infinite;
+}
+
+.otp-back-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.otp-back-link {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  outline: none;
+  user-select: none;
+}
+
+.otp-back-link:hover {
+  color: #1e293b;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+@media (max-width: 480px) {
+  .otp-inputs-wrapper {
+    gap: 6px;
+  }
+  .otp-digit-input {
+    width: 42px;
+    height: 48px;
+    font-size: 19px;
+    border-radius: 10px;
+  }
+}
+
 .input-helper-link {
   display: flex;
   justify-content: flex-end;
