@@ -1220,6 +1220,164 @@ body {
   }
 }
 
+/* ==================================================
+   B2AUTH RESET PASSWORD REDESIGN
+   ================================================== */
+
+.reset-password-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.reset-requirements-container {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 10px;
+}
+
+.reset-requirements-heading {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.reset-requirements-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+  text-align: left;
+}
+
+.reset-req-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.reset-req-item.met {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.reset-req-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: #e2e8f0;
+  color: #64748b;
+  transition: all 0.2s ease;
+}
+
+.reset-req-item.met .reset-req-icon {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.reset-req-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #94a3b8;
+}
+
+.reset-field-error {
+  font-size: 12.5px;
+  color: #dc2626;
+  font-weight: 500;
+  text-align: left;
+  margin-top: 5px;
+  display: block;
+  animation: b2authFadeIn 0.2s ease;
+}
+
+.reset-field-success {
+  font-size: 12.5px;
+  color: #16a34a;
+  font-weight: 500;
+  text-align: left;
+  margin-top: 5px;
+  display: block;
+  animation: b2authFadeIn 0.2s ease;
+}
+
+.reset-submit-btn {
+  width: 100%;
+  height: 50px;
+  background-color: #0d47a1;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -4px rgba(13, 71, 161, 0.38);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  margin-top: 26px;
+  margin-bottom: 20px;
+  user-select: none;
+}
+
+.reset-submit-btn:hover:not(:disabled) {
+  background-color: #083580;
+  box-shadow: 0 10px 24px -3px rgba(8, 53, 128, 0.45);
+  transform: translateY(-1.5px);
+}
+
+.reset-submit-btn:active:not(:disabled) {
+  background-color: #062b69;
+  transform: translateY(0);
+  box-shadow: 0 4px 12px -2px rgba(8, 53, 128, 0.35);
+}
+
+.reset-submit-btn:focus-visible {
+  box-shadow: 0 0 0 3.5px rgba(13, 71, 161, 0.25);
+}
+
+.reset-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.reset-btn-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reset-back-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .reset-requirements-list {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
 .input-helper-link {
   display: flex;
   justify-content: flex-end;
