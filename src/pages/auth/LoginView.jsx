@@ -20,6 +20,7 @@ const LoginView = () => {
     handleForgotPasswordClick,
     showLegalPage,
     error,
+    setError,
   } = useAppContext();
 
   return (
@@ -27,7 +28,10 @@ const LoginView = () => {
       {(!useSavedAccount && accounts.length > 0) && (
         <button
           type="button"
-          onClick={() => setView('account-selection')}
+          onClick={() => {
+            if (setError) setError('');
+            setView('account-selection');
+          }}
           className="b2auth-back-btn"
         >
           <ChevronLeft size={16} /> Back
@@ -43,6 +47,11 @@ const LoginView = () => {
         />
         <h1 className="b2auth-title">Sign in to B2Auth</h1>
         <p className="b2auth-subtitle">Use your BETA Account</p>
+        {error && (
+          <div className="b2auth-inline-error" role="alert">
+            {error}
+          </div>
+        )}
       </div>
 
       {useSavedAccount && formData.identifier ? (
@@ -60,6 +69,7 @@ const LoginView = () => {
                   type="button"
                   className="switch-account-btn"
                   onClick={() => {
+                    if (setError) setError('');
                     setUseSavedAccount(false);
                     setFormData(prev => ({ ...prev, identifier: '', password: '' }));
                     setView('login-email');
@@ -72,6 +82,7 @@ const LoginView = () => {
                     type="button"
                     className="switch-account-btn"
                     onClick={() => {
+                      if (setError) setError('');
                       setUseSavedAccount(false);
                       setView('account-selection');
                     }}
@@ -175,6 +186,7 @@ const LoginView = () => {
         <div
           className="b2auth-saved-account-link"
           onClick={() => {
+            if (setError) setError('');
             if (accounts.length === 1) {
               const acc = accounts[0];
               localStorage.setItem('bnx_last_identifier', acc.userData.email);
@@ -188,12 +200,6 @@ const LoginView = () => {
           }}
         >
           Sign in with a saved account
-        </div>
-      )}
-
-      {error && (
-        <div className="b2auth-error-message">
-          {error}
         </div>
       )}
 

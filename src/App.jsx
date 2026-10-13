@@ -1154,9 +1154,23 @@ function App() {
       }
     } catch (err) {
       console.error("Login Error:", err);
-      const msg = err.response?.data?.message || err.message || 'Invalid credentials';
-      alert('Login Error: ' + msg);
-      setError(msg);
+      const rawMsg = err.response?.data?.message || err.message || '';
+      const status = err.response?.status;
+      const isInvalidCredentials =
+        status === 401 ||
+        (status === 400 && /invalid|credentials|incorrect|not found|password|email/i.test(rawMsg)) ||
+        /invalid credentials/i.test(rawMsg) ||
+        /invalid email or password/i.test(rawMsg) ||
+        /incorrect password/i.test(rawMsg) ||
+        /user not found/i.test(rawMsg) ||
+        rawMsg === 'Invalid credentials' ||
+        !rawMsg;
+
+      if (isInvalidCredentials) {
+        setError('Invalid email or password. Please try again.');
+      } else {
+        setError(rawMsg || 'Invalid email or password. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
