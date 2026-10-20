@@ -23,7 +23,8 @@ import {
 } from 'lucide-react';
 
 const SignupPasswordSetup = () => {
-  const [showPasswords, setShowPasswords] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     view, setView, customAlert, setCustomAlert, accounts, setAccounts,
@@ -74,7 +75,7 @@ const SignupPasswordSetup = () => {
 
                 <div className="input-group">
                   <input 
-                    type={showPasswords ? 'text' : 'password'} 
+                    type={showPassword ? 'text' : 'password'} 
                     name="password" 
                     value={formData.password} 
                     onChange={handleInputChange} 
@@ -86,17 +87,17 @@ const SignupPasswordSetup = () => {
                   <button
                     type="button"
                     className="password-toggle-btn"
-                    onClick={() => setShowPasswords(prev => !prev)}
-                    aria-label={showPasswords ? 'Hide passwords' : 'Show passwords'}
-                    title={showPasswords ? 'Hide passwords' : 'Show passwords'}
+                    onClick={() => setShowPassword(prev => !prev)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    title={showPassword ? 'Hide password' : 'Show password'}
                   >
-                    {showPasswords ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
 
                 <div className="input-group">
                   <input 
-                    type={showPasswords ? 'text' : 'password'} 
+                    type={showConfirmPassword ? 'text' : 'password'} 
                     name="confirmPassword" 
                     value={formData.confirmPassword} 
                     onChange={handleInputChange} 
@@ -108,11 +109,11 @@ const SignupPasswordSetup = () => {
                   <button
                     type="button"
                     className="password-toggle-btn"
-                    onClick={() => setShowPasswords(prev => !prev)}
-                    aria-label={showPasswords ? 'Hide passwords' : 'Show passwords'}
-                    title={showPasswords ? 'Hide passwords' : 'Show passwords'}
+                    onClick={() => setShowConfirmPassword(prev => !prev)}
+                    aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                    title={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
                   >
-                    {showPasswords ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
 
