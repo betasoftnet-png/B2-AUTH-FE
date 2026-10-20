@@ -29,9 +29,10 @@ const DashboardLayout = () => {
   }, [accessToken, navigate]);
 
   const currentTab = location.pathname.split('/')[1] || 'dashboard';
+  const isDashboard = currentTab === 'dashboard';
 
   return (
-      <div className="dashboard-container">
+      <div className={`dashboard-container ${!isDashboard ? 'no-sidebar' : ''}`}>
         {/* Top Navigation / Account Switcher */}
         <header className="dashboard-topbar">
           <div className="topbar-left">
@@ -170,66 +171,68 @@ const DashboardLayout = () => {
           </div>
         </header>
 
-        <aside className="dashboard-sidebar">
-          <nav className="sidebar-nav">
-            <div className="sidebar-group-label">
-              YOUR ACCOUNTS
-            </div>
-            {['ALL', 'PRIMARY', 'BUSINESS', 'PERSONAL', 'CHILD'].map((category) => {
-              const isActive = sidebarCategory === category;
-              const typeTitle = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
-                  
-              const getIcon = () => {
-                if (category === 'BUSINESS') return <Building size={16} />;
-                if (category === 'PERSONAL') return <User size={16} />;
-                if (category === 'CHILD') return <User size={16} />;
-                if (category === 'PRIMARY') return <CheckCircle size={16} />;
-                return <Mail size={16} />;
-              };
-
-              return (
-                <button
-                  key={category}
-                  className={`sidebar-item ${isActive ? 'active' : ''}`}
-                  onClick={() => setSidebarCategory(category)}
-                >
-                  <div className={`icon-box ${isActive ? 'active-icon' : ''}`}>
-                    {getIcon()}
-                  </div>
-                  {category === 'ALL' ? (
-                    <span className="label all-accounts-label">All Accounts</span>
-                  ) : (
-                    <div className="label account-split-label">
-                      <span>{typeTitle}</span>
-                      <span>Account</span>
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-
-            <button
-              className="sidebar-item add-account-sidebar-btn"
-              onClick={handleAddAccount}
-            >
-              <div className="icon-box-plain"><Plus size={16} /></div>
-              <span className="label">Add account</span>
-            </button>
-          </nav>
-
-          <div className="sidebar-spacer"></div>
-
-          <footer className="sidebar-footer">
-            <button className="sidebar-item logout-sidebar-btn" onClick={handleLogout}>
-              <div className="icon-box-plain">
-                <LogOut size={16} />
+        {isDashboard && (
+          <aside className="dashboard-sidebar">
+            <nav className="sidebar-nav">
+              <div className="sidebar-group-label">
+                YOUR ACCOUNTS
               </div>
-              <span className="label">Sign Out</span>
-            </button>
-          </footer>
-        </aside>
+              {['ALL', 'PRIMARY', 'BUSINESS', 'PERSONAL', 'CHILD'].map((category) => {
+                const isActive = sidebarCategory === category;
+                const typeTitle = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+                    
+                const getIcon = () => {
+                  if (category === 'BUSINESS') return <Building size={16} />;
+                  if (category === 'PERSONAL') return <User size={16} />;
+                  if (category === 'CHILD') return <User size={16} />;
+                  if (category === 'PRIMARY') return <CheckCircle size={16} />;
+                  return <Mail size={16} />;
+                };
 
-        <main className="dashboard-content">
+                return (
+                  <button
+                    key={category}
+                    className={`sidebar-item ${isActive ? 'active' : ''}`}
+                    onClick={() => setSidebarCategory(category)}
+                  >
+                    <div className={`icon-box ${isActive ? 'active-icon' : ''}`}>
+                      {getIcon()}
+                    </div>
+                    {category === 'ALL' ? (
+                      <span className="label all-accounts-label">All Accounts</span>
+                    ) : (
+                      <div className="label account-split-label">
+                        <span>{typeTitle}</span>
+                        <span>Account</span>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+
+              <button
+                className="sidebar-item add-account-sidebar-btn"
+                onClick={handleAddAccount}
+              >
+                <div className="icon-box-plain"><Plus size={16} /></div>
+                <span className="label">Add account</span>
+              </button>
+            </nav>
+
+            <div className="sidebar-spacer"></div>
+
+            <footer className="sidebar-footer">
+              <button className="sidebar-item logout-sidebar-btn" onClick={handleLogout}>
+                <div className="icon-box-plain">
+                  <LogOut size={16} />
+                </div>
+                <span className="label">Sign Out</span>
+              </button>
+            </footer>
+          </aside>
+        )}
+
+        <main className={`dashboard-content ${!isDashboard ? 'no-sidebar' : ''}`}>
           <AnimatePresence mode="wait">
             <Outlet />
           </AnimatePresence>

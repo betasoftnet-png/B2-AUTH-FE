@@ -2253,6 +2253,21 @@ body {
   overflow-y: auto;
 }
 
+/* Layout when sidebar is hidden (Security, Settings, etc.) */
+.dashboard-container.no-sidebar .dashboard-topbar {
+  left: 0 !important;
+}
+
+.dashboard-container.no-sidebar .dashboard-content {
+  width: 100%;
+}
+
+.dashboard-container.no-sidebar .content-section {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 .content-section {
   max-width: 1000px;
   margin: 0 auto;
