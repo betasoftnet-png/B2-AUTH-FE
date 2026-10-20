@@ -1221,6 +1221,369 @@ body {
 }
 
 /* ==================================================
+   B2AUTH SIGNUP OTP VERIFICATION REDESIGN
+   ================================================== */
+
+.auth-card:has(.b2auth-otp-card-container) {
+  max-width: 480px;
+}
+
+.b2auth-otp-card-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.b2auth-otp-header {
+  text-align: center;
+  margin-bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.b2auth-otp-logo {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.b2auth-otp-step-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  background-color: var(--primary-soft);
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.b2auth-otp-title {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.4px;
+  line-height: 1.25;
+}
+
+.b2auth-otp-description {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+  max-width: 380px;
+  text-align: center;
+}
+
+.b2auth-otp-phone-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #f1f5f9;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  font-size: 13.5px;
+  color: #475569;
+  flex-wrap: wrap;
+}
+
+.b2auth-otp-phone-text strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.b2auth-otp-change-number-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-family: inherit;
+  transition: color 0.15s ease;
+}
+
+.b2auth-otp-change-number-btn:hover {
+  color: var(--primary-hover);
+}
+
+.b2auth-otp-inline-error {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  margin-bottom: 16px;
+  text-align: left;
+  box-sizing: border-box;
+  animation: b2authFadeIn 0.2s ease-in-out;
+}
+
+.b2auth-otp-inline-success {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  margin-bottom: 16px;
+  text-align: left;
+  box-sizing: border-box;
+  animation: b2authFadeIn 0.2s ease-in-out;
+}
+
+.b2auth-otp-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.b2auth-otp-phone-input-group {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.b2auth-otp-input-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #334155;
+  display: block;
+}
+
+.b2auth-otp-inputs-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin: 8px 0 20px 0;
+}
+
+.b2auth-otp-digit-input {
+  width: 50px;
+  height: 56px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  background-color: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.b2auth-otp-digit-input:hover:not(:disabled):not(:focus) {
+  border-color: #94a3b8;
+  background-color: #ffffff;
+}
+
+.b2auth-otp-digit-input:focus,
+.b2auth-otp-digit-input.active {
+  background-color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3.5px rgba(79, 70, 229, 0.16);
+  transform: translateY(-1px);
+}
+
+.b2auth-otp-digit-input.filled {
+  background-color: #ffffff;
+  border-color: #94a3b8;
+}
+
+.b2auth-otp-digit-input.has-error {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.b2auth-otp-digit-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.b2auth-otp-resend-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: #64748b;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.b2auth-otp-resend-text {
+  color: #64748b;
+}
+
+.b2auth-otp-resend-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  font-family: inherit;
+  transition: color 0.15s ease;
+}
+
+.b2auth-otp-resend-btn:hover:not(:disabled) {
+  color: var(--primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.b2auth-otp-resend-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.b2auth-otp-countdown-text {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.b2auth-otp-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.b2auth-otp-submit-btn {
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -4px rgba(79, 70, 229, 0.35);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  user-select: none;
+}
+
+.b2auth-otp-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+  transform: translateY(-1.5px);
+  box-shadow: 0 10px 24px -3px rgba(79, 70, 229, 0.45);
+}
+
+.b2auth-otp-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px -2px rgba(79, 70, 229, 0.3);
+}
+
+.b2auth-otp-submit-btn:disabled {
+  background: #cbd5e1;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+  color: #94a3b8;
+}
+
+.b2auth-otp-btn-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.b2auth-otp-spinner {
+  animation: spin 1s linear infinite;
+}
+
+.b2auth-otp-back-text-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 10px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  outline: none;
+}
+
+.b2auth-otp-back-text-btn:hover:not(:disabled) {
+  color: #1e293b;
+  background-color: #f1f5f9;
+}
+
+@media (max-width: 480px) {
+  .auth-card:has(.b2auth-otp-card-container) {
+    padding: 28px 18px 24px 18px;
+  }
+  .b2auth-otp-inputs-wrapper {
+    gap: 8px;
+  }
+  .b2auth-otp-digit-input {
+    width: 42px;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 10px;
+  }
+  .b2auth-otp-title {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 380px) {
+  .b2auth-otp-inputs-wrapper {
+    gap: 6px;
+  }
+  .b2auth-otp-digit-input {
+    width: 36px;
+    height: 46px;
+    font-size: 18px;
+    border-radius: 8px;
+  }
+}
+
+/* ==================================================
    B2AUTH RESET PASSWORD REDESIGN
    ================================================== */
 
