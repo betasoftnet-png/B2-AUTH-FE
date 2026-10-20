@@ -1860,6 +1860,158 @@ body {
   border-radius: 4px;
 }
 
+/* ==================================================
+   B2AUTH DATE OF BIRTH SEGMENTED INPUT
+   ================================================== */
+
+.dob-input-group {
+  position: relative;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.dob-control-wrapper {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px 0 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  background-color: var(--bg-input);
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  cursor: text;
+}
+
+.dob-control-wrapper:hover {
+  border-color: #cbd5e1;
+}
+
+.dob-control-wrapper.is-focused {
+  border-color: var(--primary);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px var(--primary-soft);
+}
+
+.dob-control-wrapper.has-error {
+  border-color: var(--danger);
+  background-color: #fef2f2;
+}
+
+.dob-segments-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+
+.dob-segment {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 15px;
+  color: var(--text-main);
+  font-family: inherit;
+  font-weight: 500;
+  text-align: center;
+  padding: 0;
+  height: 36px;
+  box-sizing: border-box;
+}
+
+.dob-segment::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.dob-segment.dob-day,
+.dob-segment.dob-month {
+  width: 32px;
+}
+
+.dob-segment.dob-year {
+  width: 54px;
+  letter-spacing: 0.5px;
+}
+
+.dob-divider {
+  color: #94a3b8;
+  font-size: 15px;
+  font-weight: 400;
+  user-select: none;
+  margin: 0 2px;
+  display: flex;
+  align-items: center;
+}
+
+.dob-floating-label {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: all 0.3s ease;
+  font-size: 15px;
+  user-select: none;
+}
+
+.dob-control-wrapper.is-focused ~ .dob-floating-label,
+.dob-control-wrapper.has-value ~ .dob-floating-label {
+  top: -10px;
+  left: 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  background: #fff;
+  padding: 0 6px;
+  border-radius: 4px;
+}
+
+.dob-control-wrapper.has-error ~ .dob-floating-label {
+  color: var(--danger);
+}
+
+.dob-calendar-icon-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.dob-calendar-icon-btn:hover {
+  color: var(--primary);
+  background-color: var(--primary-soft);
+}
+
+.dob-calendar-icon-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.dob-hidden-native-picker {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  clip: rect(0, 0, 0, 0);
+}
+
 .primary-btn {
   width: 100%;
   background: var(--primary);

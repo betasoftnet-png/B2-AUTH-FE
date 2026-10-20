@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
 import betaLogo from '../../assets/beta2.png';
+import DateOfBirthInput, { validateCalendarDate } from './DateOfBirthInput';
 import cliksBusinessLogo from '../../assets/cliks-business.png';
 import cliksLogo from '../../assets/cliks.png';
 import bitToolLogo from '../../assets/BIT-TOOL-2.png';
@@ -52,9 +53,33 @@ const SignupProfile = () => {
     // Note: add more here if needed,
     accessToken, addAuthMode, authenticatorAccounts, businessSignupType, businessTypeData, calculateAge, clientId, dashboardTab, error, expandedExternalSessionId, expandedSessionId, externalSessions, fetchAuthenticatorAccounts, fetchEmails, fetchExternalSessions, fetchFullProfile, fetchRecoveryInfo, fetchSessions, handleAddAuthenticatorAccount, handleBusinessTypeSelect, handleChangePassword, handleDeleteAuthenticatorAccount, handleDisable2FA, handleEnable2FA, handleForgotPasswordClick, handleMailFormSubmit, handleProfileClick, handleRevokeExternalSession, handleRevokeSession, handleSignOutAll, handleVerificationCallback, isEditingRecovery, leaveLegalPage, normalizeIdentifier, onboardingData, onboardingStep, parseUserAgent, profileData, recoveryInfo, redirectUri, saveAccount, sessions, setAccessToken, setAddAuthMode, setAuthenticatorAccounts, setBusinessSignupType, setBusinessTypeData, setClientId, setDashboardTab, setError, setExpandedExternalSessionId, setExpandedSessionId, setExternalSessions, setFetchedGstins, setFetchingGstins, setIsEditingRecovery, setLoading, setOnboardingData, setOnboardingStep, setProfileData, setRecoveryInfo, setRecoveryOptions, setRedirectUri, setSessions, setSettingsData, setSetup2FAData, setShowAddAuthModal, setShowBusinessTypeModal, setShowChangePasswordModal, setShowGstModal, setShowPanModal, setShowSetup2FAModal, setSidebarCategory, setState, setSuccessMessage, setTempToken, setUserEmails, setVerificationStatus, setVerifyPanResult, setVkycUrl, settingsData, setup2FACode, showAddAuthModal, showAlert, showBusinessTypeModal, showChangePasswordModal, showGstModal, showLegalPage, showPanModal, showSetup2FAModal, sidebarCategory, state, successMessage, tempToken, verificationStatus, vkycUrl,} = useAppContext();
 
+  const handleProfileSubmit = (e) => {
+    e.preventDefault();
+    if (setError) setError('');
+
+    if (!formData.dob) {
+      if (setError) setError('Please enter your complete Date of Birth (DD/MM/YYYY).');
+      return;
+    }
+
+    const parts = formData.dob.split('-');
+    if (parts.length === 3) {
+      const valResult = validateCalendarDate(parts[2], parts[1], parts[0]);
+      if (!valResult.valid) {
+        if (setError) setError(valResult.message || 'Please enter a valid Date of Birth.');
+        return;
+      }
+    } else {
+      if (setError) setError('Please enter a valid Date of Birth (DD/MM/YYYY).');
+      return;
+    }
+
+    handleGoToMailSignup(e);
+  };
+
   return (
     <>
-      <form onSubmit={handleGoToMailSignup} className="auth-step">
+      <form onSubmit={handleProfileSubmit} className="auth-step">
               <div className="input-field-group" style={{ width: '100%', textAlign: 'center' }}>
                 <img src={betaLogo} alt="b2auth" className="auth-logo" style={{ height: '48px', marginBottom: '16px' }} />
                 <label style={{ fontSize: '18px', fontWeight: '700', display: 'block', marginBottom: '8px' }}>Create your profile</label>
@@ -68,7 +93,19 @@ const SignupProfile = () => {
                 <div className="input-group"><input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required placeholder=" " /><label>First name</label></div>
                 <div className="input-group"><input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required placeholder=" " /><label>Last name</label></div>
               </div>
-              <div className="input-group"><input type="date" name="dob" value={formData.dob} onChange={handleInputChange} required placeholder=" " /><label>Date of Birth</label></div>
+              <DateOfBirthInput
+                value={formData.dob}
+                onChange={(val) => setFormData((prev) => ({ ...prev, dob: val }))}
+                hasError={Boolean(
+                  error &&
+                    (error.toLowerCase().includes('date') ||
+                      error.toLowerCase().includes('year') ||
+                      error.toLowerCase().includes('month') ||
+                      error.toLowerCase().includes('age') ||
+                      error.toLowerCase().includes('february') ||
+                      error.toLowerCase().includes('calendar'))
+                )}
+              />
               
               <div className="auth-actions">
                 <button type="button" className="text-btn" onClick={() => setView('signup-selection')}>Back</button>
