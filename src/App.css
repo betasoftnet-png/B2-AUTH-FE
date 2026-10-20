@@ -6635,4 +6635,164 @@ body {
   }
 }
 
+/* ==================================================
+   2FA TOTP Setup Modal & QR Styles
+   ================================================== */
+.totp-qr-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px auto;
+  background: #ffffff;
+  padding: 14px;
+  border-radius: 16px;
+  width: fit-content;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.totp-qr-placeholder {
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.totp-secret-container {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.totp-secret-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.totp-secret-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.totp-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.totp-copy-btn:hover:not(:disabled) {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.totp-copy-btn.copied {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #15803d;
+}
+
+.totp-secret-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+}
+
+.totp-secret-code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 1.5px;
+  user-select: all;
+}
+
+.totp-inline-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.totp-code-input-group {
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.totp-input-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.totp-input-subtext {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0 0 10px 0;
+}
+
+.totp-code-field {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 24px;
+  color: var(--text-main);
+  text-align: center;
+  letter-spacing: 6px;
+  font-weight: 700;
+  font-family: inherit;
+  background-color: var(--bg-input);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.totp-code-field:focus {
+  outline: none;
+  border-color: var(--primary);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px var(--primary-soft);
+}
+
+.totp-code-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.totp-verify-btn {
+  min-width: 140px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 

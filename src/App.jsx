@@ -94,7 +94,7 @@ const AuthenticatorCode = ({ secret }) => {
   );
 };
 
-const API_BASE = import.meta.env.VITE_API_BASE;
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080/api';
 
 
 const getInitialView = () => {
@@ -790,31 +790,47 @@ function App() {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
       if (res.data.success) {
+        const secret = res.data.data?.secret || '';
+        let qrCodeUrl = res.data.data?.qrCodeUrl || '';
+
+        // Ensure fully compliant otpauth:// provisioning URI
+        if (!qrCodeUrl && secret) {
+          const userAccount = profileData?.email || formData?.identifier || 'User';
+          qrCodeUrl = `otpauth://totp/B2Auth:${encodeURIComponent(userAccount)}?secret=${secret}&issuer=B2Auth&algorithm=SHA1&digits=6&period=30`;
+        }
+
         setSetup2FAData({
-          secret: res.data.data.secret,
-          qrCodeUrl: res.data.data.qrCodeUrl
+          secret: secret,
+          qrCodeUrl: qrCodeUrl
         });
         setSetup2FACode('');
         setShowSetup2FAModal(true);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to initiate 2-Step Verification setup');
+      setError(err.response?.data?.message || 'Failed to initiate 2-Step Verification setup. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleCancel2FASetup = () => {
+    setShowSetup2FAModal(false);
+    setSetup2FACode('');
+    setError('');
+    setSetup2FAData({ secret: '', qrCodeUrl: '' });
+  };
+
   const handleVerifyAndEnable2FA = async (e) => {
     e.preventDefault();
     if (!setup2FACode || setup2FACode.trim().length !== 6) {
-      setError('Please enter a valid 6-digit verification code');
+      setError('Please enter a valid 6-digit verification code.');
       return;
     }
     setLoading(true);
     setError('');
     try {
       const res = await axios.post(`${API_BASE}/users/2fa/verify`, {
-        code: setup2FACode
+        code: setup2FACode.trim()
       }, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
@@ -822,11 +838,20 @@ function App() {
         setProfileData(prev => prev ? ({ ...prev, twoFactorEnabled: true }) : prev);
         setSettingsData(prev => prev ? ({ ...prev, twoFactorEnabled: true }) : prev);
         setShowSetup2FAModal(false);
+        setSetup2FACode('');
+        setSetup2FAData({ secret: '', qrCodeUrl: '' });
         fetchAuthenticatorAccounts(accessToken);
+        fetchFullProfile(accessToken);
         showAlert("2-Step Verification has been enabled successfully.");
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Verification failed. Please check the code.');
+      const serverMsg = err.response?.data?.message || '';
+      if (/invalid code/i.test(serverMsg) || err.response?.status === 400) {
+        setError('Invalid verification code. Please try again.');
+      } else {
+        setError(serverMsg || 'Invalid verification code. Please try again.');
+      }
+      setSetup2FACode('');
     } finally {
       setLoading(false);
     }
@@ -2123,7 +2148,7 @@ function App() {
     handleProfileClick, handleRegisterProfile, handleResetPassword, handleRevokeExternalSession, handleRevokeSession,
     handleSelectAccount, handleSend2faRecoveryOtp, handleSendMobileOtp, handleSendOtp, handleSendParentOtp,
     handleSignOutAll, handleSwitchAccount, handleUpdateRecovery, handleVerificationCallback, handleVerify2faRecoveryOtp,
-    handleVerifyAndEnable2FA, handleVerifyGst, handleVerifyLogin2fa, handleVerifyMobileOtp, handleVerifyOtp,
+    handleVerifyAndEnable2FA, handleCancel2FASetup, handleVerifyGst, handleVerifyLogin2fa, handleVerifyMobileOtp, handleVerifyOtp,
     handleVerifyPan, handleVerifyParentOtp, isEditingRecovery, language, leaveLegalPage, loading, manualAuthData,
     mobileOtpStep, normalizeIdentifier, onboardingData, onboardingStep, panData,
     parentOtpSent, parseUserAgent, passwordForm, primaryBusinessData, primaryBusinessStep, profileData,
