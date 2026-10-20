@@ -31,8 +31,17 @@ const DashboardLayout = () => {
   const currentTab = location.pathname.split('/')[1] || 'dashboard';
   const isDashboard = currentTab === 'dashboard';
 
+  // Enable animation after initial mount so reloading on /security or /settings doesn't produce an unwanted flash
+  const [hasMounted, setHasMounted] = React.useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHasMounted(true);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-      <div className={`dashboard-container ${!isDashboard ? 'no-sidebar' : ''}`}>
+      <div className={`dashboard-container ${!isDashboard ? 'no-sidebar' : ''} ${hasMounted ? 'sidebar-animated' : 'no-transition'}`}>
         {/* Top Navigation / Account Switcher */}
         <header className="dashboard-topbar">
           <div className="topbar-left">
@@ -171,66 +180,74 @@ const DashboardLayout = () => {
           </div>
         </header>
 
-        {isDashboard && (
-          <aside className="dashboard-sidebar">
-            <nav className="sidebar-nav">
-              <div className="sidebar-group-label">
-                YOUR ACCOUNTS
-              </div>
-              {['ALL', 'PRIMARY', 'BUSINESS', 'PERSONAL', 'CHILD'].map((category) => {
-                const isActive = sidebarCategory === category;
-                const typeTitle = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
-                    
-                const getIcon = () => {
-                  if (category === 'BUSINESS') return <Building size={16} />;
-                  if (category === 'PERSONAL') return <User size={16} />;
-                  if (category === 'CHILD') return <User size={16} />;
-                  if (category === 'PRIMARY') return <CheckCircle size={16} />;
-                  return <Mail size={16} />;
-                };
+        <aside
+          className={`dashboard-sidebar ${!isDashboard ? 'sidebar-hidden' : ''}`}
+          aria-hidden={!isDashboard}
+          tabIndex={!isDashboard ? -1 : undefined}
+        >
+          <nav className="sidebar-nav">
+            <div className="sidebar-group-label">
+              YOUR ACCOUNTS
+            </div>
+            {['ALL', 'PRIMARY', 'BUSINESS', 'PERSONAL', 'CHILD'].map((category) => {
+              const isActive = sidebarCategory === category;
+              const typeTitle = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+                  
+              const getIcon = () => {
+                if (category === 'BUSINESS') return <Building size={16} />;
+                if (category === 'PERSONAL') return <User size={16} />;
+                if (category === 'CHILD') return <User size={16} />;
+                if (category === 'PRIMARY') return <CheckCircle size={16} />;
+                return <Mail size={16} />;
+              };
 
-                return (
-                  <button
-                    key={category}
-                    className={`sidebar-item ${isActive ? 'active' : ''}`}
-                    onClick={() => setSidebarCategory(category)}
-                  >
-                    <div className={`icon-box ${isActive ? 'active-icon' : ''}`}>
-                      {getIcon()}
+              return (
+                <button
+                  key={category}
+                  className={`sidebar-item ${isActive ? 'active' : ''}`}
+                  onClick={() => setSidebarCategory(category)}
+                  tabIndex={!isDashboard ? -1 : undefined}
+                >
+                  <div className={`icon-box ${isActive ? 'active-icon' : ''}`}>
+                    {getIcon()}
+                  </div>
+                  {category === 'ALL' ? (
+                    <span className="label all-accounts-label">All Accounts</span>
+                  ) : (
+                    <div className="label account-split-label">
+                      <span>{typeTitle}</span>
+                      <span>Account</span>
                     </div>
-                    {category === 'ALL' ? (
-                      <span className="label all-accounts-label">All Accounts</span>
-                    ) : (
-                      <div className="label account-split-label">
-                        <span>{typeTitle}</span>
-                        <span>Account</span>
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
+                  )}
+                </button>
+              );
+            })}
 
-              <button
-                className="sidebar-item add-account-sidebar-btn"
-                onClick={handleAddAccount}
-              >
-                <div className="icon-box-plain"><Plus size={16} /></div>
-                <span className="label">Add account</span>
-              </button>
-            </nav>
+            <button
+              className="sidebar-item add-account-sidebar-btn"
+              onClick={handleAddAccount}
+              tabIndex={!isDashboard ? -1 : undefined}
+            >
+              <div className="icon-box-plain"><Plus size={16} /></div>
+              <span className="label">Add account</span>
+            </button>
+          </nav>
 
-            <div className="sidebar-spacer"></div>
+          <div className="sidebar-spacer"></div>
 
-            <footer className="sidebar-footer">
-              <button className="sidebar-item logout-sidebar-btn" onClick={handleLogout}>
-                <div className="icon-box-plain">
-                  <LogOut size={16} />
-                </div>
-                <span className="label">Sign Out</span>
-              </button>
-            </footer>
-          </aside>
-        )}
+          <footer className="sidebar-footer">
+            <button
+              className="sidebar-item logout-sidebar-btn"
+              onClick={handleLogout}
+              tabIndex={!isDashboard ? -1 : undefined}
+            >
+              <div className="icon-box-plain">
+                <LogOut size={16} />
+              </div>
+              <span className="label">Sign Out</span>
+            </button>
+          </footer>
+        </aside>
 
         <main className={`dashboard-content ${!isDashboard ? 'no-sidebar' : ''}`}>
           <AnimatePresence mode="wait">
