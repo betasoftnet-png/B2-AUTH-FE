@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
 import betaLogo from '../../assets/beta2.png';
@@ -17,10 +17,13 @@ import {
   Circle,
   X,
   RefreshCw,
-  ChevronLeft
+  ChevronLeft,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 const SignupPasswordSetup = () => {
+  const [showPasswords, setShowPasswords] = useState(false);
 
   const {
     view, setView, customAlert, setCustomAlert, accounts, setAccounts,
@@ -71,26 +74,46 @@ const SignupPasswordSetup = () => {
 
                 <div className="input-group">
                   <input 
-                    type="password" 
+                    type={showPasswords ? 'text' : 'password'} 
                     name="password" 
                     value={formData.password} 
                     onChange={handleInputChange} 
                     required 
                     placeholder=" " 
+                    className="password-toggle-input"
                   />
                   <label>Password</label>
+                  <button
+                    type="button"
+                    className="password-toggle-btn"
+                    onClick={() => setShowPasswords(prev => !prev)}
+                    aria-label={showPasswords ? 'Hide passwords' : 'Show passwords'}
+                    title={showPasswords ? 'Hide passwords' : 'Show passwords'}
+                  >
+                    {showPasswords ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
 
                 <div className="input-group">
                   <input 
-                    type="password" 
+                    type={showPasswords ? 'text' : 'password'} 
                     name="confirmPassword" 
                     value={formData.confirmPassword} 
                     onChange={handleInputChange} 
                     required 
                     placeholder=" " 
+                    className="password-toggle-input"
                   />
                   <label>Confirm Password</label>
+                  <button
+                    type="button"
+                    className="password-toggle-btn"
+                    onClick={() => setShowPasswords(prev => !prev)}
+                    aria-label={showPasswords ? 'Hide passwords' : 'Show passwords'}
+                    title={showPasswords ? 'Hide passwords' : 'Show passwords'}
+                  >
+                    {showPasswords ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
 
                 <PasswordRequirements password={formData.password} />
