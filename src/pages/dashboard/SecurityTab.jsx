@@ -1061,11 +1061,11 @@ const SecurityTab = () => {
 
                   return (
                     <div className="auth-modal-overlay">
-                      <div className="auth-modal-content animate-scale-in" style={{ maxWidth: '460px' }}>
-                        <div className="auth-modal-header">
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <ShieldCheck size={22} color="var(--primary)" />
-                            <h3 style={{ margin: 0 }}>Enable 2-Step Verification</h3>
+                      <div className="totp-modal-content animate-scale-in">
+                        <div className="totp-modal-header">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <ShieldCheck size={20} color="var(--primary)" />
+                            <h3>Enable 2-Step Verification</h3>
                           </div>
                           <button
                             type="button"
@@ -1074,36 +1074,36 @@ const SecurityTab = () => {
                             disabled={loading}
                             aria-label="Close modal"
                           >
-                            <X size={20} />
+                            <X size={18} />
                           </button>
                         </div>
 
                         {isVerifySuccess ? (
-                          <div className="auth-modal-body" style={{ textAlign: 'center', padding: '36px 28px' }}>
+                          <div className="totp-modal-body" style={{ textAlign: 'center', padding: '28px 20px' }}>
                             <div style={{
-                              width: '56px',
-                              height: '56px',
+                              width: '50px',
+                              height: '50px',
                               borderRadius: '50%',
                               background: '#ecfdf5',
                               color: '#10b981',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              margin: '0 auto 16px auto'
+                              margin: '0 auto 12px auto'
                             }}>
-                              <CheckCircle size={32} />
+                              <CheckCircle size={28} />
                             </div>
-                            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#0f172a', margin: '0 0 8px 0' }}>
+                            <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#0f172a', margin: '0 0 6px 0' }}>
                               Verification Successful!
                             </h3>
-                            <p style={{ fontSize: '14px', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                            <p style={{ fontSize: '13px', color: '#64748b', margin: 0, lineHeight: 1.4 }}>
                               2-Step Verification has been successfully enabled for your account.
                             </p>
                           </div>
                         ) : (
-                          <form onSubmit={handleSubmit2FA}>
-                            <div className="auth-modal-body" style={{ textAlign: 'center', padding: '24px 28px' }}>
-                              <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '20px', lineHeight: 1.5 }}>
+                          <form onSubmit={handleSubmit2FA} className="totp-modal-form">
+                            <div className="totp-modal-body">
+                              <p className="totp-modal-subtitle">
                                 Scan this QR code with your authenticator app (Google Authenticator, Microsoft Authenticator, Authy, etc.) or manually enter the key below.
                               </p>
 
@@ -1112,7 +1112,7 @@ const SecurityTab = () => {
                                 {totpUri ? (
                                   <QRCodeSVG
                                     value={totpUri}
-                                    size={180}
+                                    size={130}
                                     level="M"
                                     includeMargin={true}
                                   />
@@ -1135,7 +1135,7 @@ const SecurityTab = () => {
                                     title="Copy secret key to clipboard"
                                     aria-label="Copy secret key"
                                   >
-                                    {copiedSecret ? <Check size={13} /> : <Copy size={13} />}
+                                    {copiedSecret ? <Check size={12} /> : <Copy size={12} />}
                                     <span>{copiedSecret ? 'Copied!' : 'Copy'}</span>
                                   </button>
                                 </div>
@@ -1149,8 +1149,8 @@ const SecurityTab = () => {
                               {/* Inline Error Message with Dismiss X */}
                               {error && (
                                 <div className="totp-inline-error" role="alert">
-                                  <AlertCircle size={16} style={{ flexShrink: 0 }} />
-                                  <span style={{ flex: 1, textAlign: 'left' }}>{error}</span>
+                                  <AlertCircle size={15} style={{ flexShrink: 0 }} />
+                                  <span className="totp-error-text">{error}</span>
                                   <button
                                     type="button"
                                     className="totp-error-close-btn"
@@ -1162,13 +1162,13 @@ const SecurityTab = () => {
                                     aria-label="Dismiss error"
                                     title="Dismiss error"
                                   >
-                                    <X size={14} />
+                                    <X size={13} />
                                   </button>
                                 </div>
                               )}
 
                               {/* 6-Digit Verification Code Input */}
-                              <div className="auth-input-group totp-code-input-group">
+                              <div className="totp-code-input-group">
                                 <label className="totp-input-label" htmlFor="totp-code-input">Verification Code</label>
                                 <p className="totp-input-subtext">Enter the current 6-digit code shown in your app</p>
                                 <input
@@ -1193,7 +1193,7 @@ const SecurityTab = () => {
                               </div>
                             </div>
 
-                            <div className="auth-modal-footer" style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', padding: '16px 24px', borderTop: '1px solid var(--border)' }}>
+                            <div className="totp-modal-footer">
                               <button
                                 type="button"
                                 className="text-btn"
@@ -1209,7 +1209,7 @@ const SecurityTab = () => {
                               >
                                 {loading ? (
                                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                                    <RefreshCw size={16} className="spin" />
+                                    <RefreshCw size={15} className="spin" />
                                     <span>Verifying...</span>
                                   </span>
                                 ) : (
