@@ -472,14 +472,18 @@ const SecurityTab = () => {
   const [sessionToRevoke, setSessionToRevoke] = useState(null);
   const [isRevokingAccess, setIsRevokingAccess] = useState(false);
   const [copiedSecret, setCopiedSecret] = useState(false);
+  const [isVerifySuccess, setIsVerifySuccess] = useState(false);
   const totpInputRef = useRef(null);
 
   useEffect(() => {
     if (showSetup2FAModal) {
       setCopiedSecret(false);
+      setIsVerifySuccess(false);
       setTimeout(() => {
         totpInputRef.current?.focus();
       }, 100);
+    } else {
+      setIsVerifySuccess(false);
     }
   }, [showSetup2FAModal]);
 
@@ -1033,12 +1037,27 @@ const SecurityTab = () => {
                       </div>
                     </div>
                   </div>
-                )}
-
                 {/* 2FA Setup Modal */}
                 {showSetup2FAModal && (() => {
                   const userAccount = profileData?.email || formData?.identifier || 'User';
                   const totpUri = setup2FAData.qrCodeUrl || (setup2FAData.secret ? `otpauth://totp/B2Auth:${encodeURIComponent(userAccount)}?secret=${setup2FAData.secret}&issuer=B2Auth&algorithm=SHA1&digits=6&period=30` : '');
+
+                  const handleModalClose = () => {
+                    setIsVerifySuccess(false);
+                    handleCancel2FASetup();
+                  };
+
+                  const handleSubmit2FA = async (e) => {
+                    e.preventDefault();
+                    const success = await handleVerifyAndEnable2FA(e);
+                    if (success) {
+                      setIsVerifySuccess(true);
+                      setTimeout(() => {
+                        setIsVerifySuccess(false);
+                        setShowSetup2FAModal(false);
+                      }, 1300);
+                    }
+                  };
 
                   return (
                     <div className="auth-modal-overlay">
@@ -1051,7 +1070,7 @@ const SecurityTab = () => {
                           <button
                             type="button"
                             className="auth-close-btn"
-                            onClick={handleCancel2FASetup}
+                            onClick={handleModalClose}
                             disabled={loading}
                             aria-label="Close modal"
                           >
@@ -1059,110 +1078,147 @@ const SecurityTab = () => {
                           </button>
                         </div>
 
-                        <form onSubmit={handleVerifyAndEnable2FA}>
-                          <div className="auth-modal-body" style={{ textAlign: 'center', padding: '24px 28px' }}>
-                            <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '20px', lineHeight: 1.5 }}>
-                              Scan this QR code with your authenticator app (Google Authenticator, Microsoft Authenticator, Authy, etc.) or manually enter the key below.
+                        {isVerifySuccess ? (
+                          <div className="auth-modal-body" style={{ textAlign: 'center', padding: '36px 28px' }}>
+                            <div style={{
+                              width: '56px',
+                              height: '56px',
+                              borderRadius: '50%',
+                              background: '#ecfdf5',
+                              color: '#10b981',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              margin: '0 auto 16px auto'
+                            }}>
+                              <CheckCircle size={32} />
+                            </div>
+                            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#0f172a', margin: '0 0 8px 0' }}>
+                              Verification Successful!
+                            </h3>
+                            <p style={{ fontSize: '14px', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                              2-Step Verification has been successfully enabled for your account.
                             </p>
+                          </div>
+                        ) : (
+                          <form onSubmit={handleSubmit2FA}>
+                            <div className="auth-modal-body" style={{ textAlign: 'center', padding: '24px 28px' }}>
+                              <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '20px', lineHeight: 1.5 }}>
+                                Scan this QR code with your authenticator app (Google Authenticator, Microsoft Authenticator, Authy, etc.) or manually enter the key below.
+                              </p>
 
-                            {/* Scannable QR Code */}
-                            <div className="totp-qr-wrapper">
-                              {totpUri ? (
-                                <QRCodeSVG
-                                  value={totpUri}
-                                  size={180}
-                                  level="M"
-                                  includeMargin={true}
-                                />
-                              ) : (
-                                <div className="totp-qr-placeholder">
-                                  <RefreshCw className="spin" size={24} color="#94a3b8" />
+                              {/* Scannable QR Code */}
+                              <div className="totp-qr-wrapper">
+                                {totpUri ? (
+                                  <QRCodeSVG
+                                    value={totpUri}
+                                    size={180}
+                                    level="M"
+                                    includeMargin={true}
+                                  />
+                                ) : (
+                                  <div className="totp-qr-placeholder">
+                                    <RefreshCw className="spin" size={24} color="#94a3b8" />
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Manual Secret Key with Copy Button */}
+                              <div className="totp-secret-container">
+                                <div className="totp-secret-label-row">
+                                  <span className="totp-secret-label">Secret Key (Manual Entry)</span>
+                                  <button
+                                    type="button"
+                                    className={`totp-copy-btn ${copiedSecret ? 'copied' : ''}`}
+                                    onClick={handleCopySecret}
+                                    disabled={!setup2FAData.secret}
+                                    title="Copy secret key to clipboard"
+                                    aria-label="Copy secret key"
+                                  >
+                                    {copiedSecret ? <Check size={13} /> : <Copy size={13} />}
+                                    <span>{copiedSecret ? 'Copied!' : 'Copy'}</span>
+                                  </button>
+                                </div>
+                                <div className="totp-secret-box">
+                                  <code className="totp-secret-code">
+                                    {formatSecret(setup2FAData.secret)}
+                                  </code>
+                                </div>
+                              </div>
+
+                              {/* Inline Error Message with Dismiss X */}
+                              {error && (
+                                <div className="totp-inline-error" role="alert">
+                                  <AlertCircle size={16} style={{ flexShrink: 0 }} />
+                                  <span style={{ flex: 1, textAlign: 'left' }}>{error}</span>
+                                  <button
+                                    type="button"
+                                    className="totp-error-close-btn"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      setError('');
+                                    }}
+                                    aria-label="Dismiss error"
+                                    title="Dismiss error"
+                                  >
+                                    <X size={14} />
+                                  </button>
                                 </div>
                               )}
+
+                              {/* 6-Digit Verification Code Input */}
+                              <div className="auth-input-group totp-code-input-group">
+                                <label className="totp-input-label" htmlFor="totp-code-input">Verification Code</label>
+                                <p className="totp-input-subtext">Enter the current 6-digit code shown in your app</p>
+                                <input
+                                  id="totp-code-input"
+                                  ref={totpInputRef}
+                                  type="text"
+                                  inputMode="numeric"
+                                  pattern="[0-9]*"
+                                  maxLength={6}
+                                  placeholder="000000"
+                                  value={setup2FACode}
+                                  onChange={(e) => {
+                                    if (error) setError('');
+                                    setSetup2FACode(e.target.value.replace(/\D/g, '').slice(0, 6));
+                                  }}
+                                  disabled={loading}
+                                  autoFocus
+                                  autoComplete="one-time-code"
+                                  className="totp-code-field"
+                                  required
+                                />
+                              </div>
                             </div>
 
-                            {/* Manual Secret Key with Copy Button */}
-                            <div className="totp-secret-container">
-                              <div className="totp-secret-label-row">
-                                <span className="totp-secret-label">Secret Key (Manual Entry)</span>
-                                <button
-                                  type="button"
-                                  className={`totp-copy-btn ${copiedSecret ? 'copied' : ''}`}
-                                  onClick={handleCopySecret}
-                                  disabled={!setup2FAData.secret}
-                                  title="Copy secret key to clipboard"
-                                  aria-label="Copy secret key"
-                                >
-                                  {copiedSecret ? <Check size={13} /> : <Copy size={13} />}
-                                  <span>{copiedSecret ? 'Copied!' : 'Copy'}</span>
-                                </button>
-                              </div>
-                              <div className="totp-secret-box">
-                                <code className="totp-secret-code">
-                                  {formatSecret(setup2FAData.secret)}
-                                </code>
-                              </div>
-                            </div>
-
-                            {/* Inline Error Message */}
-                            {error && (
-                              <div className="totp-inline-error" role="alert">
-                                <AlertCircle size={16} style={{ flexShrink: 0 }} />
-                                <span>{error}</span>
-                              </div>
-                            )}
-
-                            {/* 6-Digit Verification Code Input */}
-                            <div className="auth-input-group totp-code-input-group">
-                              <label className="totp-input-label" htmlFor="totp-code-input">Verification Code</label>
-                              <p className="totp-input-subtext">Enter the current 6-digit code shown in your app</p>
-                              <input
-                                id="totp-code-input"
-                                ref={totpInputRef}
-                                type="text"
-                                inputMode="numeric"
-                                pattern="[0-9]*"
-                                maxLength={6}
-                                placeholder="000000"
-                                value={setup2FACode}
-                                onChange={(e) => {
-                                  if (error) setError('');
-                                  setSetup2FACode(e.target.value.replace(/\D/g, '').slice(0, 6));
-                                }}
+                            <div className="auth-modal-footer" style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', padding: '16px 24px', borderTop: '1px solid var(--border)' }}>
+                              <button
+                                type="button"
+                                className="text-btn"
+                                onClick={handleModalClose}
                                 disabled={loading}
-                                autoFocus
-                                autoComplete="one-time-code"
-                                className="totp-code-field"
-                                required
-                              />
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="submit"
+                                className="primary-btn totp-verify-btn"
+                                disabled={loading || setup2FACode.length !== 6}
+                              >
+                                {loading ? (
+                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                                    <RefreshCw size={16} className="spin" />
+                                    <span>Verifying...</span>
+                                  </span>
+                                ) : (
+                                  'Verify & Enable'
+                                )}
+                              </button>
                             </div>
-                          </div>
-
-                          <div className="auth-modal-footer" style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', padding: '16px 24px', borderTop: '1px solid var(--border)' }}>
-                            <button
-                              type="button"
-                              className="text-btn"
-                              onClick={handleCancel2FASetup}
-                              disabled={loading}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              type="submit"
-                              className="primary-btn totp-verify-btn"
-                              disabled={loading || setup2FACode.length !== 6}
-                            >
-                              {loading ? (
-                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                                  <RefreshCw size={16} className="spin" />
-                                  <span>Verifying...</span>
-                                </span>
-                              ) : (
-                                'Verify & Enable'
-                              )}
-                            </button>
-                          </div>
-                        </form>
+                          </form>
+                        )}
                       </div>
                     </div>
                   );

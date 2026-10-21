@@ -6739,6 +6739,27 @@ body {
   text-align: left;
 }
 
+.totp-error-close-btn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  margin-left: 6px;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.totp-error-close-btn:hover {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+
 .totp-code-input-group {
   text-align: left;
   margin-bottom: 8px;
