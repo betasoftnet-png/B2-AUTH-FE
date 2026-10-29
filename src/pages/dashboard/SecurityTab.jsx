@@ -1037,6 +1037,8 @@ const SecurityTab = () => {
                       </div>
                     </div>
                   </div>
+                )}
+
                 {/* 2FA Setup Modal */}
                 {showSetup2FAModal && (() => {
                   const userAccount = profileData?.email || formData?.identifier || 'User';
