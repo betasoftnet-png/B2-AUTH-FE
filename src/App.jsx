@@ -374,8 +374,18 @@ function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const refId = params.get('reference_id') || params.get('verification_id');
-    const cid = params.get('client_id');
-    const ruri = params.get('redirect_uri');
+    const cid = params.get('client_id') || params.get('clientId');
+    const ruriRaw = params.get('redirect_uri') || params.get('redirectUri') || params.get('redirect_url');
+    let ruri = ruriRaw ? ruriRaw.trim() : '';
+    if (ruri) {
+      try {
+        if (ruri.includes('%3A') || ruri.includes('%3a') || ruri.includes('%2F') || ruri.includes('%2f')) {
+          ruri = decodeURIComponent(ruri);
+        }
+      } catch (e) {
+        console.warn('Failed to decode redirect_uri:', e);
+      }
+    }
 
     if (window.location.pathname === '/privacy-policy' || window.location.pathname === '/terms-and-conditions') {
       return;
