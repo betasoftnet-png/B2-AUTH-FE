@@ -1059,12 +1059,17 @@ function App() {
           window.location.href = `${redirectUri}?code=${code}&state=${state}`;
         }
       } catch (err) {
-        setError('Session expired. Please log in again.');
-        // Remove expired from list
-        const updated = accounts.filter(acc => acc.userData.email !== userData.email);
-        setAccounts(updated);
-        localStorage.setItem('bnx_accounts', JSON.stringify(updated));
-        setView('login-email');
+        const ssoMsg = err.response?.data?.message || err.message || '';
+        if (err.response?.status === 400) {
+          setError(`SSO Error: ${ssoMsg}`);
+        } else {
+          setError('Session expired. Please log in again.');
+          // Remove expired from list
+          const updated = accounts.filter(acc => acc.userData.email !== userData.email);
+          setAccounts(updated);
+          localStorage.setItem('bnx_accounts', JSON.stringify(updated));
+          setView('login-email');
+        }
       } finally {
         setLoading(false);
       }
@@ -1239,6 +1244,7 @@ function App() {
             isPrimary: userData.isPrimary
           });
 
+        try {
           const authRes = await axios.post(
             `${API_BASE}/oauth/authorize`,
             { clientId, redirectUri, state },
@@ -1249,6 +1255,12 @@ function App() {
             const code = authRes.data.data.code;
             window.location.href = `${redirectUri}?code=${code}&state=${state}`;
           }
+        } catch (authErr) {
+          console.error("SSO Authorization Error:", authErr);
+          const ssoMsg = authErr.response?.data?.message || authErr.message || 'SSO authorization failed';
+          setError(`SSO Error: ${ssoMsg}`);
+          return;
+        }
         } else {
           window.location.href = 'https://mail.bnxmail.com';
         }
@@ -1330,6 +1342,7 @@ function App() {
             isPrimary: userData.isPrimary
           });
 
+        try {
           const authRes = await axios.post(
             `${API_BASE}/oauth/authorize`,
             { clientId, redirectUri, state },
@@ -1340,6 +1353,12 @@ function App() {
             const code = authRes.data.data.code;
             window.location.href = `${redirectUri}?code=${code}&state=${state}`;
           }
+        } catch (authErr) {
+          console.error("SSO Authorization Error:", authErr);
+          const ssoMsg = authErr.response?.data?.message || authErr.message || 'SSO authorization failed';
+          setError(`SSO Error: ${ssoMsg}`);
+          return;
+        }
         } else {
           window.location.href = 'https://mail.bnxmail.com';
         }
